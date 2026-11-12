@@ -32,6 +32,9 @@ main{max-width:680px;margin:0 auto;padding:28px 18px 80px}
 .chapter-kicker{color:var(--ember2);letter-spacing:.4em;font-size:14px;margin-top:20px}
 .chapter-title{font-size:56px;margin:0;letter-spacing:.2em;color:var(--ink)}
 .lead{color:var(--ink2);font-size:18px}
+.home-intro{max-width:560px;margin:6px 0 18px;color:var(--ink2);font-size:15px;line-height:1.9}
+.home-intro p{margin:6px 0}
+.home-intro p:first-child{color:var(--ink);font-size:16px}
 .cover-hero{position:relative;max-width:760px;margin:10px auto 18px;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
 .cover-hero img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover}
 .cover-ov{position:absolute;left:0;right:0;bottom:0;padding:70px 24px 18px;background:linear-gradient(180deg,rgba(12,9,14,0) 0%,rgba(12,9,14,.55) 40%,rgba(12,9,14,.85) 100%)}
@@ -1898,6 +1901,12 @@ function next() { const step = queue.shift(); updateHud(); if (step) step(); }
 // ---------- 章節選單 ----------
 // 封面副標（可自行改寫）
 const TAGLINE = "翻開牌之後，你會……？";
+// 封面玩法簡介（可自行改寫；每一項是一段）
+const INTRO = [
+  "這不是性格測驗，是一趟讀懂塔羅牌的旅程。",
+  "路上的每件事，都會翻開一張牌。選出最符合這張牌意思的做法，就讀懂了它；讀懂得夠多，四樣工具才會醒來。",
+  "第一趟走不完是正常的。一趟大約 20 分鐘，再出發時，你會比上一次更懂這些牌。"
+];
 
 function showHome() {
   run = null; queue = [];
@@ -1908,6 +1917,9 @@ function showHome() {
   s.appendChild(el("h1", "home-title", "我來異世界可不想再成為塔羅師"));
   const unlocked = DEMO || hasCleared();
   s.appendChild(el("p", "lead", TAGLINE));
+  const intro = el("div", "home-intro");
+  INTRO.forEach(x => intro.appendChild(el("p", null, x)));
+  s.appendChild(intro);
   const jr = el("div", "btn-row journey-box");
   jr.appendChild(continueBtn("踏上旅程", startJourney));
   const saved = loadJourney();
