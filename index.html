@@ -1,0 +1,3021 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>我來異世界可不想再成為塔羅師</title>
+<link href="fonts/fonts.css" rel="stylesheet">
+<style>
+:root{
+  --bg:#1c1410; --bg2:#26190f; --ink:#f1e6d6; --ink2:#c9b59c; --muted:#8c7a66;
+  --ember:#e0693a; --ember2:#f2a35c; --gold:#e8c27a; --line:#4a3424; --card:#f4e9d6; --card-ink:#3a2618;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:radial-gradient(ellipse at 50% -10%,#3b2112 0%,var(--bg) 55%) fixed;color:var(--ink);
+  font-family:"Noto Serif TC","Songti TC","PMingLiU",serif;line-height:1.85;min-height:100vh}
+header{position:sticky;top:0;z-index:5;background:rgba(28,20,16,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);
+  padding:10px 16px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;font-size:14px;color:var(--ink2)}
+.meter{display:flex;align-items:center;gap:8px}
+.meter-bar{width:120px;height:8px;border-radius:4px;background:#3a281b;overflow:hidden}
+#heat-fill{height:100%;width:0;background:linear-gradient(90deg,var(--ember),var(--ember2));transition:width .6s}
+#wand{padding:2px 8px;border:1px solid var(--line);border-radius:10px}
+#wand.awake{color:var(--gold);border-color:var(--gold);box-shadow:0 0 10px rgba(232,194,122,.35)}
+.spacer{flex:1}
+.tool{background:none;border:1px solid var(--line);color:var(--muted);font:inherit;font-size:12px;padding:2px 8px;border-radius:8px;cursor:pointer}
+.tool:hover{color:var(--ink2)}
+#flags{display:none;gap:6px;flex-basis:100%;flex-wrap:wrap}
+.flag{font-size:12px;padding:0 6px;border-radius:6px;background:#2d1f15}
+.flag.good{color:#9fd18b}.flag.bad{color:#e88a7a}
+main{max-width:680px;margin:0 auto;padding:28px 18px 80px}
+#stage{animation:fade .4s}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+.chapter-kicker{color:var(--ember2);letter-spacing:.4em;font-size:14px;margin-top:20px}
+.chapter-title{font-size:56px;margin:0;letter-spacing:.2em;color:var(--ink)}
+.lead{color:var(--ink2);font-size:18px}
+.cover-hero{position:relative;max-width:760px;margin:10px auto 18px;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+.cover-hero img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover}
+.cover-ov{position:absolute;left:0;right:0;bottom:0;padding:70px 24px 18px;background:linear-gradient(180deg,rgba(12,9,14,0) 0%,rgba(12,9,14,.55) 40%,rgba(12,9,14,.85) 100%)}
+.cover-title{margin:0;font-size:clamp(36px,8vw,56px);letter-spacing:.2em;color:#fff8ec;text-shadow:0 2px 12px rgba(0,0,0,.7)}
+.cover-lead{margin:4px 0 0;font-size:clamp(14px,3.6vw,18px);color:#f3e6cf;text-shadow:0 1px 8px rgba(0,0,0,.8)}.lead.small{font-size:15px;text-align:center}
+.panel{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:6px 18px;color:var(--ink2);font-size:15px}
+.panel b{color:var(--ink)}
+.step-label{font-size:13px;letter-spacing:.25em;color:var(--ember2);margin-bottom:14px}
+.major-label{color:var(--gold)}
+.narr{font-size:17px;margin:0 0 12px}
+.hint{color:var(--muted);font-size:13px;text-align:center}
+.dejavu{color:var(--gold);font-style:italic;font-size:15px;opacity:.9}
+.btn-row{display:flex;gap:10px;justify-content:center;margin-top:22px;flex-wrap:wrap}
+.btn{font:inherit;font-size:16px;padding:10px 26px;border-radius:24px;cursor:pointer;border:1px solid var(--ember)}
+.btn.primary{background:linear-gradient(180deg,#e0693a,#b84a24);color:#fff8ef;border-color:#b84a24}
+.btn.primary:hover{filter:brightness(1.1)}
+.btn.ghost{background:none;color:var(--ink2);border-color:var(--line)}
+.card-row{display:flex;gap:18px;justify-content:center;margin:20px 0 34px;flex-wrap:wrap}
+.card-slot{display:flex;flex-direction:column;align-items:center;gap:6px}
+.slot-cap{font-size:13px;color:var(--muted);letter-spacing:.2em}
+.card{width:112px;height:187px;border-radius:8px;position:relative;flex:none}
+.card.back{background:#5a2b16;border:2px solid #8a4a2a;box-shadow:0 6px 16px rgba(0,0,0,.4)}
+.back-pattern{position:absolute;inset:8px;border:1px solid rgba(242,163,92,.5);border-radius:6px;
+  background:repeating-linear-gradient(45deg,rgba(242,163,92,.12) 0 6px,transparent 6px 12px)}
+.card.back.clickable{cursor:pointer;transition:transform .2s}
+.card.back.clickable:hover{transform:translateY(-6px);box-shadow:0 10px 22px rgba(224,105,58,.35)}
+.card.back.dim{opacity:.3;cursor:default;transform:none;box-shadow:none}
+.card.face{background:var(--card);color:var(--card-ink);border:2px solid #c9a774;box-shadow:0 6px 16px rgba(0,0,0,.45)}
+.card.face.major{border-color:var(--gold);background:linear-gradient(180deg,#fbf2df,#efdcb8)}
+.card-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:transform .3s}
+.card.reversed .card-inner{transform:rotate(180deg)}
+/* 1909 Pam-A 牌面 */
+.card.face.art{padding:0;overflow:visible;background:#f4ecd8;border:2px solid #c9a774}
+.card.face.art.major{border-color:var(--gold)}
+.card-art{position:absolute;inset:0;border-radius:6px;overflow:hidden;transition:transform .3s}
+.card-art img{width:100%;height:100%;object-fit:cover;display:block}
+.card.reversed .card-art{transform:rotate(180deg)}
+.card-cap{position:absolute;bottom:-24px;left:-20px;right:-20px;text-align:center;font-size:12px;color:var(--ink2);letter-spacing:.08em;white-space:nowrap}
+.card.reversed .card-cap .o{color:#e88a7a}
+/* 小牌（回憶、圖鑑、回憶牆） */
+.mini-art{display:inline-block;flex:none;width:var(--mw,44px);aspect-ratio:3/5;border-radius:4px;overflow:hidden;border:1px solid #c9a774;background:#f4ecd8;vertical-align:middle}
+.mini-art img{width:100%;height:100%;object-fit:cover;display:block}
+.mini-art.rev img{transform:rotate(180deg)}
+.mini-art.back{background:repeating-linear-gradient(45deg,rgba(242,163,92,.12) 0 5px,transparent 5px 10px),#3a2214;border-color:var(--line);display:inline-grid;place-items:center;color:var(--muted);font-size:18px}
+.sum-card{width:auto;min-width:150px;display:flex;align-items:center;gap:10px}
+.sum-card .mini-art{--mw:46px}
+.cgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media (max-width:420px){.cgrid{grid-template-columns:repeat(2,1fr)}}
+.ccell{display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px 4px;border-radius:8px;border:1px solid var(--line);font-size:13px;text-align:center}
+.ccell .mini-art{--mw:64px}
+.ccell small{font-size:11px;color:var(--muted)}
+.ccell.solved{background:rgba(232,194,122,.15);border-color:var(--gold);color:var(--gold)}
+.ccell.solved .mini-art{border-color:var(--gold);box-shadow:0 0 10px rgba(232,194,122,.35)}
+.ccell.seen{color:var(--ink2)}.ccell.seen .mini-art{opacity:.45;filter:grayscale(.6)}
+.ccell.unseen{color:var(--muted)}
+.portrait.has-img{width:88px;height:88px;padding:0;overflow:hidden}
+.portrait.has-img img{width:100%;height:100%;object-fit:cover;display:block}
+.cover-img{display:block;width:100%;max-width:760px;margin:18px auto 6px;border-radius:10px;border:1px solid var(--line);aspect-ratio:3/2;object-fit:cover}
+.cc-cover{display:block;width:calc(100% + 40px);margin:-18px -20px 12px;height:120px;object-fit:cover;border-radius:14px 14px 0 0;opacity:.9}
+.chapter-card{overflow:hidden}
+.wt-cards{display:flex;gap:6px;margin:4px 0 6px}
+.wt-cards .mini-art{--mw:34px}
+.card-num{font-size:34px;font-weight:700;color:#a7432a}
+.card.major .card-num{color:#8a6a1e}
+.card-name{font-size:18px;font-weight:600;letter-spacing:.1em}
+.card-code{font-size:11px;color:#8c7356;letter-spacing:.15em}
+.card-orient{position:absolute;bottom:-24px;left:0;right:0;text-align:center;font-size:12px;color:var(--ink2)}
+.card.reversed .card-orient{color:#e88a7a}
+.flip-in{animation:flip .45s}
+@keyframes flip{from{transform:rotateY(90deg)}to{transform:rotateY(0)}}
+.event{display:flex;gap:22px;align-items:flex-start;margin-bottom:40px}
+.event .card{margin-top:4px}
+.event-text{flex:1}
+@media (max-width:520px){.event{flex-direction:column;align-items:center}.event .card{margin-bottom:22px}}
+.options{display:flex;flex-direction:column;gap:10px}
+.option{font:inherit;font-size:16px;text-align:left;padding:12px 16px;border-radius:10px;cursor:pointer;
+  background:rgba(255,255,255,.04);color:var(--ink);border:1px solid var(--line);transition:all .2s}
+.option:hover:not(:disabled){border-color:var(--ember2);background:rgba(224,105,58,.08)}
+.option.picked{border-color:var(--ember2);background:rgba(224,105,58,.14)}
+.option.faded{opacity:.35}
+.option:disabled{cursor:default}
+.outcome{margin-top:18px}
+.attitude{font-size:14px;color:var(--ink2);border-left:3px solid var(--line);padding-left:10px}
+.gain{display:inline-block;margin-top:4px;padding:2px 14px;border-radius:14px;background:rgba(224,105,58,.2);color:var(--ember2);font-weight:600;animation:pop .5s}
+.gain.muted{background:rgba(255,255,255,.05);color:var(--muted);font-weight:400}
+@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+.ending{text-align:center;padding:30px 20px;border-radius:14px;border:1px solid var(--line);margin-top:10px}
+.ending.awake{border-color:var(--gold);box-shadow:0 0 40px rgba(232,194,122,.2) inset}
+.ending-tag{margin-top:10px;font-size:14px;letter-spacing:.2em;color:var(--gold)}
+.ending.half .ending-tag{color:var(--muted)}
+.summary{display:flex;flex-direction:column;gap:6px}
+.sum-row{display:flex;gap:12px;align-items:center;padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.03);font-size:15px}
+.sum-card{width:96px;flex:none;color:var(--ink)}
+.sum-att{flex:1;color:var(--ink2)}
+.pt{color:var(--ember2);font-weight:600}.pt.zero{color:var(--muted)}.pt.muted{color:var(--muted);font-weight:400;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cell{border-radius:8px;padding:10px 6px;text-align:center;font-size:14px;border:1px solid var(--line);min-height:58px;display:flex;flex-direction:column;justify-content:center}
+.cell small{font-size:11px;color:var(--muted)}
+.cell.solved{background:rgba(232,194,122,.15);border-color:var(--gold);color:var(--gold)}
+.cell.seen{color:var(--ink2);opacity:.6}
+.cell.unseen{color:var(--muted)}
+h3.sec{font-size:15px;color:var(--ink2);letter-spacing:.15em;margin:22px 0 10px;font-weight:600}
+.people{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:520px){.people{grid-template-columns:1fr}}
+.person{display:flex;gap:12px;border:1px solid var(--line);border-radius:10px;padding:10px;background:rgba(255,255,255,.03)}
+.person.met{border-color:#7a4a2a}
+.portrait{width:72px;height:96px;flex:none;border-radius:8px;background:linear-gradient(180deg,#4a2615,#2b170d);border:1px solid #8a4a2a;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--ember2);font-size:22px;font-weight:700}
+.portrait small{font-size:10px;color:var(--muted);font-weight:400;margin-top:4px}
+.person.unmet .portrait{background:#241912;border-color:var(--line);color:var(--muted)}
+.pname{font-weight:600;color:var(--ink)}.pcard{font-size:12px;color:var(--gold);margin-left:8px;font-weight:400}
+.pinfo p{margin:4px 0 0;font-size:13px;line-height:1.7;color:var(--ink2)}
+.person.unmet .pname{color:var(--muted)}
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:#3a2214;border:1px solid var(--gold);color:var(--gold);
+  padding:8px 18px;border-radius:20px;opacity:0;pointer-events:none;z-index:30}
+#toast.show{animation:toast 2.4s}
+@keyframes toast{0%{opacity:0;transform:translate(-50%,20px)}12%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,0)}}
+.center{text-align:center}
+.deck-table{position:relative;height:250px;margin:10px 0 0}
+.deck-card{position:absolute;left:50%;top:20px;margin-left:-56px;transition:transform .6s cubic-bezier(.2,.8,.2,1),opacity .4s,top .3s}
+.deck-card.shuffling{animation:riffle .7s ease-in-out 2}
+@keyframes riffle{0%,100%{transform:translateX(0)}35%{transform:translateX(var(--dx)) rotate(4deg)}65%{transform:translateX(calc(var(--dx) * -.3))}}
+.deck-card.fanned:hover:not(.taken):not(.dim){top:4px}
+.deck-card.taken{opacity:0;pointer-events:none}
+.deck-card.dim{opacity:.25;cursor:default}
+.picked-row{min-height:200px;margin-top:0}
+.picked-row .slot-cap{margin-top:22px}
+body[data-theme="water"]{--bg:#0e1820;--bg2:#13222d;--ink:#e3eef3;--ink2:#a9c3cf;--muted:#6f8a97;
+  --ember:#3a8fb7;--ember2:#7cc4e0;--gold:#bfe3f0;--line:#244150;--card:#eef5f7;--card-ink:#173040}
+body[data-theme="water"]{background:radial-gradient(ellipse at 50% -10%,#173a4d 0%,var(--bg) 55%) fixed}
+body[data-theme="water"] header{background:rgba(14,24,32,.92)}
+body[data-theme="water"] .meter-bar{background:#1d3340}
+body[data-theme="water"] .card.back{background:#16405a;border-color:#2f6f8f}
+body[data-theme="water"] .back-pattern{border-color:rgba(124,196,224,.5);background:repeating-linear-gradient(45deg,rgba(124,196,224,.12) 0 6px,transparent 6px 12px)}
+body[data-theme="water"] .card.face{border-color:#8fb9c9}
+body[data-theme="water"] .card.face.major{border-color:#c9a774;background:linear-gradient(180deg,#fbf2df,#efdcb8)}
+body[data-theme="water"] .card-num{color:#2a6f93}
+body[data-theme="water"] .card.major .card-num{color:#8a6a1e}
+body[data-theme="water"] .btn.primary{background:linear-gradient(180deg,#3a8fb7,#256a8c);border-color:#256a8c}
+body[data-theme="water"] .option:hover:not(:disabled){background:rgba(58,143,183,.1)}
+body[data-theme="water"] .option.picked{background:rgba(58,143,183,.18)}
+body[data-theme="water"] .gain{background:rgba(58,143,183,.22)}
+body[data-theme="water"] .portrait{background:linear-gradient(180deg,#1b4560,#10283a);border-color:#2f6f8f}
+body[data-theme="water"] #toast{background:#14303f}
+body[data-theme="air"]{--bg:#15161d;--bg2:#1c1d27;--ink:#eceef6;--ink2:#b4b8cc;--muted:#7a7f96;
+  --ember:#6c74b8;--ember2:#aab1ea;--gold:#d9dcf5;--line:#33364a;--card:#f1f2f7;--card-ink:#24263a}
+body[data-theme="air"]{background:radial-gradient(ellipse at 50% -10%,#2a2d45 0%,var(--bg) 55%) fixed}
+body[data-theme="air"] header{background:rgba(21,22,29,.92)}
+body[data-theme="air"] .meter-bar{background:#262838}
+body[data-theme="air"] .card.back{background:#2f3352;border-color:#555b8f}
+body[data-theme="air"] .back-pattern{border-color:rgba(170,177,234,.5);background:repeating-linear-gradient(45deg,rgba(170,177,234,.12) 0 6px,transparent 6px 12px)}
+body[data-theme="air"] .card.face{border-color:#a6aac8}
+body[data-theme="air"] .card-num{color:#4b52a0}
+body[data-theme="air"] .btn.primary{background:linear-gradient(180deg,#6c74b8,#4d5494);border-color:#4d5494}
+body[data-theme="air"] .option:hover:not(:disabled){background:rgba(108,116,184,.1)}
+body[data-theme="air"] .option.picked{background:rgba(108,116,184,.2)}
+body[data-theme="air"] .gain{background:rgba(108,116,184,.25)}
+body[data-theme="air"] .portrait{background:linear-gradient(180deg,#30355a,#1d2036);border-color:#555b8f}
+body[data-theme="air"] #toast{background:#262840}
+body[data-theme="earth"]{--bg:#14170f;--bg2:#1b1f14;--ink:#eee9d6;--ink2:#c3bc9c;--muted:#8a8669;
+  --ember:#7f9440;--ember2:#c9b45a;--gold:#e6d58c;--line:#3a3f27;--card:#f3efdf;--card-ink:#2e2b17}
+body[data-theme="earth"]{background:radial-gradient(ellipse at 50% -10%,#2f3518 0%,var(--bg) 55%) fixed}
+body[data-theme="earth"] header{background:rgba(20,23,15,.92)}
+body[data-theme="earth"] .meter-bar{background:#272b1a}
+body[data-theme="earth"] .card.back{background:#3d4520;border-color:#6d7a36}
+body[data-theme="earth"] .back-pattern{border-color:rgba(201,180,90,.5);background:repeating-linear-gradient(45deg,rgba(201,180,90,.12) 0 6px,transparent 6px 12px)}
+body[data-theme="earth"] .card.face{border-color:#bfb17a}
+body[data-theme="earth"] .card-num{color:#6b7a2a}
+body[data-theme="earth"] .card.major .card-num{color:#8a6a1e}
+body[data-theme="earth"] .btn.primary{background:linear-gradient(180deg,#7f9440,#5f7130);border-color:#5f7130}
+body[data-theme="earth"] .option:hover:not(:disabled){background:rgba(127,148,64,.1)}
+body[data-theme="earth"] .option.picked{background:rgba(127,148,64,.2)}
+body[data-theme="earth"] .gain{background:rgba(127,148,64,.25)}
+body[data-theme="earth"] .portrait{background:linear-gradient(180deg,#3f4722,#232812);border-color:#6d7a36}
+body[data-theme="earth"] #toast{background:#2a3018}
+.chapter-card.theme-air{background:linear-gradient(135deg,#262a44,#15161d);border-color:#555b8f;color:#eceef6}
+.chapter-card.theme-earth{background:linear-gradient(135deg,#2f3518,#14170f);border-color:#6d7a36;color:#eee9d6}
+body[data-theme="cliff"]{--bg:#110f17;--bg2:#1a1722;--ink:#f0eadb;--ink2:#c2b9a3;--muted:#857d6c;
+  --ember:#b8913f;--ember2:#e3c172;--gold:#f0d68c;--line:#3a3329;--card:#f6efdf;--card-ink:#2b2416}
+body[data-theme="cliff"]{background:radial-gradient(ellipse at 50% -10%,#2c2338 0%,var(--bg) 60%) fixed}
+body[data-theme="cliff"] header{background:rgba(17,15,23,.92)}
+body[data-theme="cliff"] .btn.primary{background:linear-gradient(180deg,#b8913f,#8c6c2a);border-color:#8c6c2a}
+body[data-theme="cliff"] .option.picked{background:rgba(184,145,63,.18)}
+#hud.finale .meter,#hud.finale #wand,#hud.finale #run-num,#hud.finale #toggle-flags,#hud.finale #reset{display:none}
+.chapter-card.theme-cliff{background:linear-gradient(135deg,#2c2338,#110f17);border-color:#8c6c2a;color:#f0eadb}
+.toolchip{display:inline-block;padding:2px 10px;border-radius:12px;border:1px solid var(--line);margin:2px;font-size:14px;color:var(--muted)}
+.toolchip.on{border-color:var(--gold);color:var(--gold)}
+.judge-block{margin:18px 0 6px}
+.judge-land{font-size:14px;letter-spacing:.2em;color:var(--ember2);margin-bottom:8px}
+.own{display:flex;gap:8px;margin-top:8px}
+.own-input{flex:1;font:inherit;font-size:15px;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink)}
+.btn.small{font-size:14px;padding:6px 16px}
+.judged{color:var(--gold)}
+.home-title{font-size:30px;margin:6px 0 0;letter-spacing:.08em}
+.chapters{display:grid;gap:14px;margin-top:20px}
+.chapter-card{font:inherit;text-align:left;cursor:pointer;border-radius:14px;padding:18px 20px;border:1px solid;transition:transform .2s}
+.chapter-card:hover{transform:translateY(-3px)}
+.chapter-card.theme-fire{background:linear-gradient(135deg,#3a1d10,#1f140e);border-color:#7a4a2a;color:#f1e6d6}
+.chapter-card.theme-water{background:linear-gradient(135deg,#123247,#0e1820);border-color:#2f6f8f;color:#e3eef3}
+.cc-kicker{font-size:13px;letter-spacing:.3em;opacity:.7}
+.cc-title{font-size:32px;font-weight:700;letter-spacing:.2em}
+.cc-lead{opacity:.85}
+.cc-meta{font-size:13px;opacity:.6;margin-top:6px}
+.meet{margin:4px 0 12px;padding:6px 12px;border-left:3px solid var(--ember2);background:rgba(255,255,255,.04);border-radius:0 8px 8px 0;font-size:14px;color:var(--ink2)}
+.meet b{color:var(--ink);margin-right:2px}.meet-label{font-size:11px;letter-spacing:.2em;color:var(--ember2);margin-right:10px}
+#confirm{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:20}
+#confirm .box{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:20px 24px;max-width:320px;text-align:center}
+.journey-box{text-align:center;margin:8px 0 28px}
+.spread{display:flex;flex-direction:column;gap:16px;margin:10px 0 24px;padding:18px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03)}
+.spread-label{font-size:13px;color:var(--muted);letter-spacing:.15em;margin-bottom:6px}
+.spread-cards{display:flex;flex-wrap:wrap;gap:6px}
+.mini{width:48px;height:76px;border-radius:5px;background:var(--card);color:var(--card-ink);border:1px solid #c9a774;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;line-height:1.25;text-align:center;padding:2px}
+.mini b{font-size:15px}
+.mini.major{border-color:var(--gold);background:linear-gradient(180deg,#fbf2df,#efdcb8)}
+.mini.rev{transform:rotate(180deg)}
+.spread-quotes p{margin:4px 0;color:var(--ink);font-size:16px}
+.narr.wedge{font-size:18px;line-height:2.1}
+.wedge-card{justify-content:center}
+.keep-title{text-align:center;font-size:26px;margin:6px 0;letter-spacing:.08em}
+.keep-holder{display:flex;justify-content:center;margin:16px 0}
+.keep-img{width:100%;max-width:520px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin:18px 0}
+.wall-tile{font:inherit;text-align:left;background:linear-gradient(180deg,#2c2338,#110f17);color:#f0eadb;border:1px solid #8c6c2a;border-radius:12px;padding:14px;cursor:pointer;min-height:150px;display:flex;flex-direction:column;gap:4px}
+.wall-tile.loop{border-color:#4a3d55;opacity:.85}
+.wall-tile:hover{filter:brightness(1.15)}
+.wt-n{font-size:20px;font-weight:700}.wt-e{font-size:13px;color:#c9a774}.wt-q{font-size:14px;flex:1;line-height:1.6}.wt-d{font-size:12px;color:#857d6c}
+.fb-label{margin:18px 0 6px;color:var(--ink2);font-size:14px}
+.fb-row{display:flex;gap:8px;flex-wrap:wrap}
+.option.fb-chip{width:auto;display:inline-block;margin:0}
+.star{font-size:30px;background:none;border:none;color:#5a5048;cursor:pointer;padding:0 2px}.star.on{color:var(--gold)}
+.fb-input,.fb-text{width:100%;box-sizing:border-box}
+.fb-text{min-height:120px;font:inherit;resize:vertical}
+.privacy p{margin:12px 0;line-height:1.9}
+.home-foot{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:34px}
+.btn.small{font-size:13px;padding:6px 14px}
+a.btn{text-decoration:none;display:inline-block}
+[hidden]{display:none!important}
+.keep-lead{text-align:center;color:var(--ink2);margin:4px 0 0}
+.keep-lines{max-width:560px;margin:10px auto 0;color:var(--ink2);font-size:15px;line-height:1.9}
+.keep-lines p{margin:4px 0}
+.hint.center{text-align:center}
+#credit-tag{position:fixed;right:10px;bottom:10px;z-index:15;display:none;font:inherit;font-size:11px;letter-spacing:.05em;padding:3px 9px;border-radius:10px;
+  background:rgba(0,0,0,.45);border:1px solid var(--line);color:var(--muted);cursor:pointer}
+#credit-tag:hover{color:var(--ink2)}
+#credits{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:30;padding:16px}
+#credits .box{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:22px 24px;max-width:460px;font-size:14px;line-height:1.9;color:var(--ink2)}
+#credits h3{margin:0 0 8px;color:var(--ink);font-size:18px;letter-spacing:.1em}
+#credits p{margin:8px 0}
+.unlock-hint{text-align:center;color:var(--muted);font-size:14px;margin:6px 0 0}
+</style>
+</head>
+<body>
+<header id="hud">
+  <button class="tool" id="home">選單</button>
+  <div class="meter"><span id="meter-name">火候</span> <div class="meter-bar"><div id="heat-fill"></div></div> <span id="heat-num"></span></div>
+  <span id="wand"></span>
+  <span id="run-num"></span>
+  <span class="spacer"></span>
+  <button class="tool" id="toggle-flags">旗標（測試）</button>
+  <button class="tool" id="reset">重置進度</button>
+  <div id="flags"></div>
+</header>
+<main><div id="stage"></div></main>
+<div id="toast"></div>
+<div id="confirm"><div class="box"><p id="confirm-text"></p>
+  <div class="btn-row"><button class="btn primary" id="confirm-yes">清除</button><button class="btn ghost" id="confirm-no">取消</button></div></div></div>
+<script>
+// ================================================================
+// 版本開關：試玩版與正式版 v1.0 用同一份程式。
+// 正式版只改兩處：這一行改成 false，<title> 拿掉「試玩版：」。
+// 試玩版：章節選單一開始就開放、顯示測試工具；正式版：真結局後才開放章節選單。
+const DEMO = false;
+// 分享用的遊戲網址（正式版 v1.0）
+const SHARE_URL = "https://edchriswu.github.io/tarot-journey/";
+// ================================================================
+// 赤原試玩版事件資料（草稿）
+// 每個計分事件：id = 牌號 + U(正位)/R(逆位)
+// options: act 行為、att 背後態度、s 得分、res 結果、f 旗標變化 {角色: 'good'|'bad'|'normal'}
+// bridges: 角色帶著好或壞的旗標出場時，替換 open 的承接句
+
+const CARD_NAMES = {
+  W01: "權杖王牌", W02: "權杖二", W03: "權杖三", W04: "權杖四", W05: "權杖五",
+  W06: "權杖六", W07: "權杖七", W08: "權杖八", W09: "權杖九", W10: "權杖十",
+  M04: "皇帝", M08: "力量", M14: "節制"
+};
+
+const EVENTS = {
+  W01U: {
+    open: "進入赤原的路上，草原突然燒起一小片野火。",
+    body: "綾下意識舉起短魔杖，杖頭亮了一下就熄了，火也剛好被風吹滅。一個紅頭髮的少年從坡上衝下來，盯著他的杖直看。",
+    options: [
+      { act: "把杖收回包袱，裝作什麼都沒發生。", att: "怕麻煩，把火花壓下去", s: 0,
+        res: "少年還是硬拉他進城，但綾一路上都不肯再提那道光。" },
+      { act: "問少年：「你也看到了嗎？剛剛那是什麼？」", att: "對一閃而過的火花保持好奇", s: 1,
+        res: "少年眼睛一亮：「我叫丈！走，帶你去見赤城大人！」", f: { 丈: "good" } },
+      { act: "舉杖對著草原再揮一次，想讓它再亮起來。", att: "急著抓住火花，要它照自己的意思", s: 0,
+        res: "杖怎麼揮都不亮。少年笑出聲：「火不是這樣叫的啦。」他拉著綾進城。" }
+    ],
+    dejavu: "綾隱約記得，那道光不是叫出來的。"
+  },
+  W01R: {
+    open: "進入赤原的路上，草原突然燒起一片野火。",
+    body: "綾舉起短魔杖，杖完全沒反應，火舌一下子捲到腳邊。濃煙裡，一隻手把他拖了出去——是個紅頭髮的少年。",
+    options: [
+      { act: "推開少年，說自己本來就逃得出來。", att: "顧面子，不承認害怕", s: 0,
+        res: "少年哼了一聲：「好啦好啦，英雄。」他還是領著綾進了城。", f: { 丈: "bad" } },
+      { act: "坐在地上發抖，老實說：「我剛剛好怕。」", att: "承認恐懼，火才有地方重新燒起來", s: 1,
+        res: "少年蹲下來：「怕很正常啊，我叫丈。」綾覺得杖在包袱裡微微發熱。", f: { 丈: "good" } },
+      { act: "立刻問少年，哪裡可以學怎麼用這根杖。", att: "跳過感受，急著變強", s: 0,
+        res: "丈說赤城大人什麼都懂，拉著他進城。綾的手一路都在抖，他自己沒發現。" }
+    ],
+    dejavu: "綾隱約記得，上次火燒過來的時候，他一直假裝自己不怕。"
+  },
+
+  W02U: {
+    open: "丈帶綾爬上城牆，赤城正指著遠方。",
+    body: "「那邊是田，那邊是礦場，再過去是還沒人開過的荒地。」他轉頭看綾：「你想留下來嗎？」",
+    bridges: { 丈: { good: "丈興沖沖地帶綾爬上城牆，赤城正指著遠方。", bad: "丈一路沒說話，把綾帶上城牆就走了。赤城正指著遠方。" } },
+    options: [
+      { act: "說：「我只是路過，還有地方要去。」", att: "不願投入，怕被綁住", s: 0,
+        res: "赤城點點頭，沒再多說。城牆上的風有點冷。" },
+      { act: "指著荒地問：「那裡如果要開墾，要多少人？多久？」", att: "把眼光放遠，開始規劃", s: 1,
+        res: "赤城笑了，第一次正眼看他：「好問題。我想了三年。」", f: { 赤城: "good" } },
+      { act: "說：「你要我做什麼，我都可以做！」", att: "討好，把方向交給別人", s: 0,
+        res: "赤城拍拍他的肩：「先想清楚你自己要什麼。」" }
+    ],
+    dejavu: "綾隱約記得，城牆上的赤城想聽的，是他自己的看法。"
+  },
+  W02R: {
+    open: "丈帶綾爬上城牆，赤城正和老臣吵得面紅耳赤。",
+    body: "開拓荒地的圖已經放了三年，誰都說要等時機。赤城把圖塞給綾：「你說，現在該不該動？」",
+    bridges: { 丈: { good: "丈興沖沖地帶綾爬上城牆，赤城正和老臣吵得面紅耳赤。", bad: "丈把綾帶上城牆就走了。赤城正和老臣吵得面紅耳赤。" } },
+    options: [
+      { act: "照圖上的數字算了一遍，說人手還不夠，再等等。", att: "用理由掩蓋害怕", s: 0,
+        res: "老臣連連點頭。赤城把圖捲起來，又塞回了櫃子。", f: { 赤城: "bad" } },
+      { act: "說：「你們不是在等時機，是在怕吧？」", att: "看見停滯背後的恐懼", s: 1,
+        res: "城牆上安靜了很久。赤城突然大笑：「被一個小鬼說中了。」", f: { 赤城: "good" } },
+      { act: "說：「我才剛來，這不是我能決定的。」", att: "置身事外", s: 0,
+        res: "赤城嘆了口氣，揮手要他們先下去。" }
+    ],
+    dejavu: "綾隱約記得，上次城牆上大家都在講理由，沒人講出真正卡住的東西。"
+  },
+
+  W04U: {
+    open: "赤原的主人家葵辦了豐收節，廣場上掛滿了燈。",
+    body: "她把一大盤烤餅塞給綾：「客人先吃！」大家圍著火堆跳舞，有人朝綾伸出手。",
+    options: [
+      { act: "接過盤子，先去幫忙搬柴、收碗。", att: "用幫忙換位置，不敢只是被歡迎", s: 0,
+        res: "葵把他手裡的碗搶走：「今天你是客人，懂不懂？」" },
+      { act: "牽住那隻手跟著亂跳，踩到別人的腳也笑。", att: "讓自己被接納，享受當下", s: 1,
+        res: "跳到一半，綾突然發現，他已經很久沒有這樣笑了。", f: { 葵: "good" } },
+      { act: "坐在角落看大家跳，覺得這樣就很好。", att: "旁觀，不讓自己真正加入", s: 0,
+        res: "葵坐到他旁邊，摸著黑貓沒說話。火堆的光照不太到這個角落。" }
+    ],
+    dejavu: "綾隱約記得，上次的豐收節，他好像一直沒有真的走進火光裡。"
+  },
+  W04R: {
+    open: "赤原辦起了豐收節，廣場上的燈都亮了。",
+    body: "綾站在廣場外面，沒人招呼他，他也不敢走進去。一隻黑貓蹭了蹭他的腳，往廣場跑去。",
+    options: [
+      { act: "轉身回住處，告訴自己本來就不屬於這裡。", att: "先拒絕別人，免得被拒絕", s: 0,
+        res: "回去的路很暗，遠遠還聽得到笑聲。" },
+      { act: "跟著黑貓走進去，對第一個看到的人說：「我可以加入嗎？」", att: "自己跨出那一步", s: 1,
+        res: "那是葵。她愣了一下，大笑：「我還以為你不想來！」", f: { 葵: "good" } },
+      { act: "繞到廚房後門，問有沒有需要幫忙的。", att: "用做事掩飾不自在", s: 0,
+        res: "廚娘塞給他一桶要洗的鍋子。一整晚，他都沒看到火堆。" }
+    ],
+    dejavu: "綾隱約記得，上次那隻黑貓好像在等他跟上。"
+  },
+
+  W05U: {
+    open: "豐收節的比武大會上，丈硬把綾推上場。",
+    body: "對手是赤原最強的騎士烈風。台下的人吹著口哨，烈風把木杖丟給綾：「來吧。」",
+    options: [
+      { act: "抓起木杖大喊一聲衝上去，全場歡呼。", att: "想證明自己、怕輸", s: 0,
+        res: "三招就被打下台。烈風拉他起來：「你不是在跟我打，是在跟自己證明什麼吧？」" },
+      { act: "先繞著場子走，看烈風怎麼出招，邊打邊學他的步伐。", att: "把對手當成磨練", s: 1,
+        res: "還是輸了，但他撐得比誰都久。烈風笑說：「下次再來。」", f: { 烈風: "good" } },
+      { act: "跟丈說「我才剛來，這不公平」，退到場邊。", att: "逃避較量", s: 0,
+        res: "丈聳聳肩上場替他打。綾在場邊看著，覺得心裡有個東西沒點著。", f: { 丈: "bad" } }
+    ],
+    dejavu: "綾隱約記得，上次衝得太急，好像沒看清楚對手。"
+  },
+  W05R: {
+    open: "豐收節的比武大會上，綾和赤原最強的騎士烈風打到一半，台下變成真的吵架，有人掀翻了攤子，節慶不歡而散。",
+    body: "綾也被捲進去，臉上挨了一拳。烈風站在一片狼藉中間，手裡還握著木杖。",
+    options: [
+      { act: "撿起被打掉的木杖，要烈風再跟他比一場。", att: "不甘心，把較量變成私怨", s: 0,
+        res: "烈風轉身就走。綾握著木杖站在一地狼藉裡，越想越氣。", f: { 烈風: "bad" } },
+      { act: "拉著丈離開，說：「這種節慶不參加也罷。」", att: "逃開，並把錯推給場面", s: 0,
+        res: "丈沒說話。回去的路上，兩個人都覺得今天白過了。", f: { 丈: "bad" } },
+      { act: "去幫被撞倒的攤販撿東西，邊撿邊想自己剛才為什麼那麼氣。", att: "退一步，看見自己的情緒", s: 1,
+        res: "攤販塞給他一顆烤地瓜。綾想通了：他氣的不是那一拳，是自己其實很想贏。" }
+    ],
+    dejavu: "綾隱約記得，上次氣到最後，連自己在氣什麼都沒弄懂。"
+  },
+
+  W03U: {
+    open: "出發前，赤城站在城牆上望向鄰谷。",
+    body: "斥候帶回一張地圖：鄰谷的井在山坳裡，四周畫滿了羊圈。赤城把圖攤在綾面前：「你看出什麼？」",
+    options: [
+      { act: "指著地形說，從北邊的坡繞過去最快。", att: "只看怎麼贏，沒看見對方", s: 0,
+        res: "赤城滿意地點頭，在圖上畫了一個粗粗的箭頭。" },
+      { act: "說：「羊圈這麼多，那裡住的可能不是士兵，是牧羊人。」", att: "看得遠，看見全局", s: 1,
+        res: "赤城盯著地圖很久沒說話，只把箭頭畫得淡了一點。", f: { 赤城: "good" } },
+      { act: "說：「我只是跟著去，這種事你決定就好。」", att: "不願看，把判斷交出去", s: 0,
+        res: "赤城捲起地圖：「那就跟緊一點。」" }
+    ],
+    dejavu: "綾隱約記得，上次那張地圖上，有一樣東西他沒仔細看。"
+  },
+  W03R: {
+    open: "出發前，派出去的斥候遲遲沒有回來。",
+    body: "赤城在城牆上來回走，終於下令摸黑提前出發。丈已經在牽馬了。",
+    options: [
+      { act: "第一個衝去牽馬，想表現給赤城看。", att: "被急躁帶著跑", s: 0,
+        res: "赤城難得誇了他一句。隊伍在黑暗裡出發，沒人知道前面有什麼。" },
+      { act: "走到赤城身邊說：「再等一個時辰。斥候沒回來，本身就是消息。」", att: "耐住急躁，等該等的", s: 1,
+        res: "赤城瞪著他，罵了一句，還是讓大家等。天亮前，斥候回來了。", f: { 赤城: "good" } },
+      { act: "躲到隊伍最後面，希望自己不用去。", att: "逃避", s: 0,
+        res: "丈回頭找到他，把一支火把塞進他手裡。" }
+    ],
+    dejavu: "綾隱約記得，上次大家都太急了，好像有個消息還沒到。"
+  },
+
+  W07U: {
+    open: "隊伍經過一個小村，幾個士兵要牽走村民的羊當軍糧。",
+    body: "一個老婦人拉著羊繩不放。全隊的人都在看，沒有人說話。",
+    options: [
+      { act: "衝上去搶回羊繩，跟士兵扭成一團。", att: "衝動逞強，讓場面更糟", s: 0,
+        res: "羊跑了，老婦人跌倒，綾被押到隊伍最後面。" },
+      { act: "站到老婦人前面：「拿了她的羊，她這個冬天就沒了。」然後站著不動。", att: "堅守立場，不退也不攻", s: 1,
+        res: "士兵們互看一眼，摸摸鼻子走開了。" },
+      { act: "偷偷把自己的乾糧塞給老婦人，什麼都沒說。", att: "用私下補償代替站出來", s: 0,
+        res: "羊還是被牽走了。老婦人握著乾糧，看了他很久。" }
+    ],
+    dejavu: "綾隱約記得，上次他不是沒做事，只是沒有站出來。"
+  },
+  W07R: {
+    open: "隊伍經過一個小村，幾個士兵要牽走村民的羊。",
+    body: "綾想開口，全隊的人都看著他。他低下頭，眼看羊被牽走了。",
+    options: [
+      { act: "告訴自己：「反正我說了也沒用。」", att: "替退縮找理由", s: 0,
+        res: "晚上紮營，羊肉的味道飄過來，他一口都吃不下。" },
+      { act: "跑回去找老婦人：「對不起，我剛才不敢。」", att: "承認自己退縮了", s: 1,
+        res: "老婦人摸摸他的頭：「下次就敢了。」他覺得胸口有東西重新燒起來。" },
+      { act: "追上士兵，把羊硬搶回來。", att: "用衝動掩蓋羞愧", s: 0,
+        res: "羊是搶回來了，綾也被罰扛了一整天的行李。" }
+    ],
+    dejavu: "綾隱約記得，上次他一直想把那一刻當作沒發生過。"
+  },
+
+  W08U: {
+    open: "連夜行軍，烈風駕車在前，丈和綾負責在隊伍間傳令。",
+    body: "烈風說：「馬要往哪走不重要，車上的人要往哪走才重要。」命令一道接一道，綾跑得喘不過氣。",
+    bridges: {
+      烈風: { good: "連夜行軍，烈風一眼認出綾，把他叫到車邊：「比武那個傢伙，前隊的命令交給你傳。」", bad: "連夜行軍，烈風看到綾，別過頭去，叫他到隊伍後面傳令。" },
+      丈: { good: "連夜行軍，丈搶著跟綾一組傳令，跑得比誰都快。", bad: "連夜行軍，丈一路不跟綾說話，兩人只是各自在隊伍間傳令。" }
+    },
+    options: [
+      { act: "每道命令都自己補幾句解釋，怕大家聽不懂。", att: "想掌控，反而拖慢", s: 0,
+        res: "後隊越聽越糊塗。烈風回頭吼了一聲：「照原話傳！」", f: { 烈風: "bad" } },
+      { act: "一字不差地傳，跑到了就馬上回頭接下一道。", att: "跟上節奏，讓事情流動", s: 1,
+        res: "天亮前，整支隊伍像一支射出去的箭。烈風回頭看了他一眼。", f: { 烈風: "good" } },
+      { act: "跑不動了，叫丈一個人先傳。", att: "被速度壓垮就放手", s: 0,
+        res: "丈一個人跑了兩趟，嘴裡罵個不停。", f: { 丈: "bad" } }
+    ],
+    dejavu: "綾隱約記得，上次的命令越傳越長，最後誰也聽不懂。"
+  },
+  W08R: {
+    open: "連夜行軍，烈風駕車在前，丈和綾負責在隊伍間傳令，命令傳錯了。",
+    body: "前隊和後隊在夜裡走散。丈說是綾傳錯，綾說是丈聽錯，火把一支支熄掉。",
+    bridges: {
+      丈: { good: "連夜行軍，烈風駕車在前，丈和綾負責在隊伍間傳令，命令傳錯了。丈一臉為難，不知道該怪誰。", bad: "連夜行軍，烈風駕車在前，丈和綾負責在隊伍間傳令，命令傳錯了。丈本來就還在氣，這下更火了。" }
+    },
+    options: [
+      { act: "跟丈吵到底，一定要弄清楚是誰的錯。", att: "忙著指責，讓混亂繼續", s: 0,
+        res: "兩人吵到天亮，後隊在山谷裡多繞了半夜。", f: { 丈: "bad" } },
+      { act: "說：「誰錯等一下再說，先吹號，讓後隊往聲音走。」", att: "先止住混亂", s: 1,
+        res: "號聲在山谷裡迴盪，火把一支支重新亮起來。丈愣了一下，跟著吹。", f: { 丈: "good" } },
+      { act: "一個人往回跑，想自己把後隊找回來。", att: "一個人扛，讓局面更亂", s: 0,
+        res: "結果連綾也走散了，是烈風騎馬把他找回來的。", f: { 烈風: "bad" } }
+    ],
+    dejavu: "綾隱約記得，上次那一夜，他們花了好多力氣在吵是誰的錯。"
+  },
+
+  W06U: {
+    open: "對峙的第一個晚上，井邊的牧羊人燃起了營火。",
+    body: "消息傳開了：是綾擋在井前。牧羊人圍著帶傷的綾歡呼，把他抬了起來。井的另一頭，赤原的士兵還握著棍子，表情複雜。",
+    bridges: {
+      烈風: { good: "對峙的第一個晚上，井邊的牧羊人燃起了營火。井的另一頭，烈風遠遠朝綾比了個大拇指。", bad: "對峙的第一個晚上，井邊的牧羊人燃起了營火。烈風冷冷地站在井另一頭的士兵中間。" }
+    },
+    options: [
+      { act: "被抬著揮手，大喊：「赤原的人也該聽聽這歡呼！」", att: "享受勝利，卻拿來壓自己人", s: 0,
+        res: "士兵們的臉更難看了，有人朝地上吐了口水。", f: { 烈風: "bad" } },
+      { act: "一直說「我沒做什麼，真的沒什麼」，掙扎著要下來。", att: "不敢接受肯定", s: 0,
+        res: "牧羊人把他放下來，有點尷尬地散開了。" },
+      { act: "讓他們抬一會兒，下來後走到士兵那邊，跟大家一起坐。", att: "坦然接受，也記得自己從哪裡來", s: 1,
+        res: "一個士兵遞給他水壺。烈風沒說話，往旁邊挪出一個位子。", f: { 烈風: "good" } }
+    ],
+    dejavu: "綾隱約記得，上次的歡呼聲裡，有一群人被晾在旁邊。"
+  },
+  W06R: {
+    open: "對峙的第一個晚上，綾回到赤原的營地，士兵們罵他是叛徒。",
+    body: "烈風也不跟他說話。晚飯時，沒有人願意坐在他旁邊。",
+    bridges: {
+      烈風: { good: "對峙的第一個晚上，綾回到赤原的營地，士兵們罵他是叛徒，連一向欣賞他的烈風都沉默了。", bad: "對峙的第一個晚上，綾回到赤原的營地，士兵們罵他是叛徒，烈風罵得最大聲。" }
+    },
+    options: [
+      { act: "站上木箱，大聲解釋自己為什麼這麼做。", att: "急著要被理解", s: 0,
+        res: "越解釋，噓聲越大。他從木箱上下來，臉燙得發疼。" },
+      { act: "一個人坐到營地外，告訴自己他們都是笨蛋。", att: "用輕視保護自己", s: 0,
+        res: "夜很冷。他越想越氣，也越想越孤單。" },
+      { act: "照常吃飯、照常值夜，有人問起，就平平淡淡說一遍。", att: "不被名聲左右，守住自己", s: 1,
+        res: "半夜換班時，一個士兵小聲說：「其實……我也不想搶那口井。」" }
+    ],
+    dejavu: "綾隱約記得，上次被罵的時候，他太想讓所有人立刻懂他。"
+  },
+
+  W09U: {
+    open: "兩邊在井邊對峙了三天。",
+    body: "綾帶著傷守在井旁不肯走，累到站著就能睡著。丈端來一碗熱湯。",
+    bridges: {
+      丈: { good: "兩邊在井邊對峙了三天，丈天天跑來陪他。", bad: "兩邊在井邊對峙了三天，丈一直沒出現，直到第三天晚上。" }
+    },
+    options: [
+      { act: "推開湯：「我不能走，一走他們就會動手。」", att: "硬撐，把自己耗盡", s: 0,
+        res: "第四天早上，綾在井邊昏倒了。" },
+      { act: "喝下湯，請丈替他守一個時辰，自己靠著井邊睡。", att: "堅持，也懂得休息", s: 1,
+        res: "醒來時天剛亮，丈還站在原地，井也還在。", f: { 丈: "good" } },
+      { act: "喝完湯說：「我撐不住了，換別人吧。」然後回營地。", att: "一累就放手", s: 0,
+        res: "那天晚上，有人往井裡丟了石頭。" }
+    ],
+    dejavu: "綾隱約記得，上次他把自己撐到倒下。"
+  },
+  W09R: {
+    open: "對峙的第三晚，綾的傷口發炎了。",
+    body: "他越來越緊繃，任何聲音都像有人要偷襲。黑暗裡有腳步聲靠近，他抓起杖就揮——是來送藥的丈。",
+    bridges: {
+      丈: { good: "對峙的第三晚，綾的傷口發炎了。丈一直很擔心他。", bad: "對峙的第三晚，綾的傷口發炎了；他和丈已經兩天沒說話。" }
+    },
+    options: [
+      { act: "說：「誰叫你不出聲！」", att: "把錯推給別人", s: 0,
+        res: "丈把藥丟在地上，轉身走了。", f: { 丈: "bad" } },
+      { act: "放下杖坐下來：「我不對勁，已經分不清誰是敵人了。」", att: "察覺疲憊讓自己失去判斷", s: 1,
+        res: "丈替他換了藥，陪他坐到天亮。他的肩膀第一次鬆了下來。", f: { 丈: "good" } },
+      { act: "跟丈道歉，然後繼續握著杖守夜，眼睛不敢閉。", att: "道了歉，卻不肯面對自己的狀態", s: 0,
+        res: "天亮時，他的手還在發抖。" }
+    ],
+    dejavu: "綾隱約記得，上次那一晚，他把每個靠近的人都當成敵人。"
+  },
+
+  W10U: {
+    open: "兩邊一起修水道。",
+    body: "傷還沒好的綾也來幫忙搬木頭。赤城走過來，看著他滿是泥巴的手。",
+    options: [
+      { act: "搶著扛最大的那根，證明自己沒問題。", att: "逞強", s: 0,
+        res: "走到一半腿一軟，木頭砸進泥裡。赤城皺起眉。" },
+      { act: "扛自己扛得動的那份，跟牧羊人輪流，一趟一趟來回。", att: "扛起自己的那一份", s: 1,
+        res: "赤城看了他很久，想起自己年輕時一個人扛著赤原的樣子，第一次對綾點了頭。" },
+      { act: "說「我受傷了」，坐在一旁指揮大家。", att: "用理由卸下責任", s: 0,
+        res: "沒人聽他指揮。赤城什麼也沒說，自己扛起了一根木頭。" }
+    ],
+    dejavu: "綾隱約記得，修水道那天，他沒有好好扛起自己的那一份。"
+  },
+  W10R: {
+    open: "兩邊一起修水道。",
+    body: "綾帶傷一個人扛最重的木頭，不讓別人幫，最後倒在水道邊。赤城把他扶起來：「我年輕時也這樣，後來才知道，赤原不是一個人扛得動的。」",
+    options: [
+      { act: "爬起來說「我還可以」，又去扛。", att: "不肯放下", s: 0,
+        res: "他第二次倒下時，是被抬回營地的。" },
+      { act: "喊住旁邊的牧羊少年：「來，我們一人一頭。」", att: "把重擔分出去", s: 1,
+        res: "兩個人扛起來，木頭忽然輕了一半。赤城在一旁笑了。" },
+      { act: "覺得自己沒用，回營地躺著。", att: "從一個極端跳到另一個極端", s: 0,
+        res: "帳篷外的號子聲一直沒停，他把臉埋進毯子裡。" }
+    ],
+    dejavu: "綾隱約記得，上次他把所有的木頭都當成自己一個人的。"
+  }
+};
+
+// W10 開頭依 M08 的選擇多一句
+const W10_PREFIX = {
+  well: "肩上的瘀青還在痛。",
+  grab: "手臂上的傷口剛結痂。",
+  kids: "牧羊孩子們跟在他後面跑來跑去。"
+};
+
+const MAJORS = {
+  M04: {
+    text: "幾天後，上游的河乾了一半。赤城在王座上召集眾人：「我守了這片土地三十年，赤原的人一個都不能渴死。鄰谷的水，我一定要拿到。」當晚，他下令出征。",
+    flagLine: { who: "赤城", good: "他在人群裡找到綾，親自點名：「你也來。」", other: "綾還沒搞懂狀況，就被丈拉進了出征的隊伍。" },
+    reset: ["赤城"]
+  },
+  M08: {
+    text: "到了鄰谷才發現，這裡只是一群牧羊人和一口井。隊伍要強占水井，士兵們舉起了棍子。",
+    choice: [
+      { key: "well", act: "站到井前，張開雙手不讓。", res: "一根棍子打在他肩上，他沒有讓開。" },
+      { key: "grab", act: "衝上去抓住帶頭士兵的棍子。", res: "扭打中，他的手臂被劃開一道口子。" },
+      { key: "kids", act: "擋在牧羊孩子前面，先把孩子們帶開。", res: "孩子們安全了，他自己被推倒，撞上了井沿。" }
+    ],
+    after: "赤城趕到，暴怒地要拿下水井。",
+    flagLine: { who: "葵", good: "葵第一個衝過來站到綾身邊，叫著他的名字，平靜地說出鄰谷的處境。", other: "葵聽到騷動趕來，站到牧羊人這邊，平靜地說出鄰谷的處境。" },
+    end: "赤城握緊的拳頭，慢慢鬆開了。",
+    reset: ["葵", "赤城"]
+  },
+  M14: {
+    text: "對峙的第四天，赤城和牧羊人的長老坐在井邊。長老打起一桶井水，慢慢倒進赤城的水袋：「倒太快，井會乾；不倒，你們會渴。」兩邊約好共用水源，輪流取水。",
+    flagLine: { who: "烈風", good: "烈風蹲下來，替長老扶著水桶。", bad: "烈風沉著臉站在赤城身後，不肯坐下。", other: "" },
+    reset: ["赤城", "烈風"]
+  }
+};
+
+const SLOTS = {
+  A: { name: "熱鬧的赤原", cards: ["W02", "W04", "W05"], pick: 2 },
+  B: { name: "出征路上", cards: ["W03", "W07", "W08"], pick: 2 },
+  C: { name: "對峙之後", cards: ["W06", "W09"], pick: 2 }
+};
+
+const THRESHOLD = 8;
+
+// 人物圖鑑（圖之後生成，先用佔位）
+const PEOPLE = [
+  { name: "丈", tag: "赤原的少年，熱血又三分鐘熱度", card: "權杖侍者", intro: "紅頭髮的少年，赤原的導遊。熱血、什麼都想試，三分鐘熱度也是真的。和綾最合拍，也最常吵架。" },
+  { name: "烈風", tag: "赤原最強的騎士", card: "權杖騎士", intro: "赤原最強的騎士，衝動、勇敢、從不回頭。他會帶綾走錯路，也會帶他走出困境。" },
+  { name: "葵", tag: "赤原的主人家，身邊總跟著一隻黑貓", card: "權杖王后", intro: "赤原的主人家，身邊總跟著一隻黑貓。溫暖又自信，教綾「燃燒自己，不等於燒光自己」。" },
+  { name: "赤城", tag: "赤原的領袖，守了這片土地三十年", card: "權杖國王", intro: "赤原的領袖，守了這片土地三十年。有遠見、會領導，就是不太聽人說話。" }
+];
+
+const CHIYUAN = {
+  id: "chiyuan", kicker: "第一章", title: "赤原", lead: "熱情可以點燃世界，也可以燒傷自己。",
+  theme: "fire", meter: "火候", tool: "短魔杖", storeKey: "tarot-chiyuan-proto-v1",
+  startCode: "W01", endCode: "W10",
+  openNarr: "赤原的風很熱。抽兩張牌：這段旅程的起點，與終點。",
+  cardOrder: ["W01", "W02", "W03", "W04", "W05", "W06", "W07", "W08", "W09", "W10"],
+  cardNames: CARD_NAMES, chars: ["丈", "烈風", "葵", "赤城"],
+  sequence: [["open"], ["ev", "W01", "起點"], ["slot", "A"], ["major", "M04"], ["slot", "B"],
+    ["major", "M08"], ["slot", "C"], ["major", "M14"], ["ev", "W10", "終點"], ["end"]],
+  slots: SLOTS, lastPrefix: W10_PREFIX, events: EVENTS, majors: MAJORS, people: PEOPLE,
+  ending: {
+    awake: "綾的短魔杖再次亮了起來。這一次，光沒有消失。葵把一顆向日葵的種子放進他的包袱：「帶著吧，這是赤原的火。」",
+    already: "短魔杖安靜地亮著，像是早就醒了。",
+    half: "短魔杖閃了一下，又暗了下去。綾覺得，好像還差了一點什麼。"
+  }
+};
+
+// 澄湖試玩版事件資料（第二版：牌義優先，不照搬牌面畫面）
+const LILY_LINE = "臨走前，百合對綾說：「你走過這條路，已經不只一次了。」";
+
+const CHENGHU = {
+  id: "chenghu",
+  kicker: "第二章",
+  title: "澄湖",
+  lead: "感受可以滿溢，也可以淹沒人。",
+  theme: "water",
+  meter: "水位",
+  tool: "水袋",
+  storeKey: "tarot-chenghu-proto-v2",
+  startCode: "C01",
+  endCode: "C10",
+  openNarr: "澄湖的霧很輕。抽兩張牌：這段旅程的起點，與終點。",
+  cardOrder: ["C01", "C02", "C03", "C04", "C05", "C06", "C07", "C08", "C09", "C10"],
+  cardNames: {
+    C01: "聖杯王牌", C02: "聖杯二", C03: "聖杯三", C04: "聖杯四", C05: "聖杯五",
+    C06: "聖杯六", C07: "聖杯七", C08: "聖杯八", C09: "聖杯九", C10: "聖杯十",
+    M07: "戰車", M18: "月亮", M13: "死神"
+  },
+  chars: ["蓮", "羅蘭", "姑娘", "白浪"],
+  sequence: [
+    ["open"], ["ev", "C01", "起點"], ["slot", "A"], ["major", "M07"], ["slot", "B"],
+    ["major", "M18"], ["slot", "C"], ["major", "M13"], ["ev", "C10", "終點"], ["end"]
+  ],
+  slots: {
+    A: { name: "湖邊的日子", cards: ["C02", "C03", "C06"], pick: 2 },
+    B: { name: "等待", cards: ["C04", "C05", "C08"], pick: 2 },
+    C: { name: "霧中", cards: ["C07", "C09"], pick: 2 }
+  },
+  lastPrefix: {
+    dog: "毛球蹭著他的腳，好像在說：到了。",
+    song: "島上有人在哼那首歌，和蓮哼的一模一樣。",
+    count: "他在心裡數完最後一步，睜開眼，已經站在島上。"
+  },
+  ending: {
+    awake: "離開澄湖時，水袋自己生出水來，怎麼倒都倒不完。蓮從湖裡撈起一片魚鱗，放進他的包袱：「帶著吧，這是澄湖的水。」",
+    already: "水袋輕輕晃著，裡面的水一直是滿的。",
+    half: "水袋裡的水晃了一下，又慢慢退了下去。綾覺得，好像還有什麼沒有流出來。"
+  },
+  people: [
+    { name: "蓮", tag: "會跟魚說話的少年，澄湖的導遊", card: "聖杯侍者", intro: "愛做夢、心思細膩的少年，說自己聽得懂湖裡的魚說話。澄湖的導遊，也是綾在這裡的第一個朋友。" },
+    { name: "羅蘭", tag: "村裡的漁夫，浪漫又溫柔", card: "聖杯騎士", intro: "浪漫又溫柔，總在追一個理想。為了替心愛的人求一個願望，駕船駛進了霧裡。" },
+    { name: "百合", tag: "湖心島的守湖人", card: "聖杯王后", intro: "湖心島的守湖人，聽得見別人沒說出口的話。她知道綾失憶的一半真相。" },
+    { name: "白浪", tag: "湖上的擺渡人", card: "聖杯國王", intro: "湖上的擺渡人，沉穩、話少，心裡有浪卻從不表現。上他的船，得把一樣東西留在岸上。" }
+  ],
+  majors: {
+    M07: {
+      text: "村裡的老人說，滿月起霧的夜裡，湖上會浮出一條石堤，一路通到湖心島；走到底的人，守湖人會替他實現一個願望。只是從來沒有人回來過。霧季前夕，羅蘭說要去湖心島，替他喜歡的姑娘求一個願望。姑娘站在碼頭，沒有留他。羅蘭解開纜繩：「風往哪吹不重要，掌舵的人要往哪走才重要。」",
+      flagLine: { who: "羅蘭", good: "他回頭對綾說：「替我看著她。」", bad: "他頭也不回，連看都沒看岸上一眼。", other: "" },
+      reset: ["羅蘭", "姑娘"]
+    },
+    M18: {
+      text: "又過了幾天，羅蘭還是沒有回來。滿月那夜，霧從湖面爬上岸，那條石堤真的浮出來了。綾踏上去，身後村裡的狗叫個不停，霧濃得看不見自己的手，耳邊開始出現不該有的聲音：有人叫他，有人在哭，有人在笑。",
+      lineBefore: true,
+      flagLine: { who: "姑娘", good: "出發前，姑娘在村口塞給他一盞小燈：「你要回來。」", bad: "他想起姑娘這幾天的樣子，腳步不知不覺急了起來。", other: "" },
+      choice: [
+        { key: "dog", act: "跟著毛球的叫聲走。", res: "毛球一直往左邊叫。這一次，綾聽了牠的。" },
+        { key: "song", act: "跟著心裡蓮哼過的那首歌走。", res: "他一邊走一邊在心裡哼，那些怪聲音好像被歌聲推開了一點。" },
+        { key: "count", act: "閉上眼睛，數著步子走。", res: "一步、兩步……他數到三百，耳邊的聲音都安靜了。" }
+      ],
+      after: "霧越來越濃，聲音越來越近。",
+      end: "不知走了多久，前面亮起一點光。",
+      reset: ["姑娘"]
+    },
+    M13: {
+      text: "霧散的地方是一片窄窄的湖灘，擺渡人白浪坐在船上，像是等了很久。「到島上只剩這段水路。上了船，就得把一樣東西留在岸上。」綾想了很久，把「想知道自己是誰」放下了。對岸的天邊，透出了一點白。",
+      flagLine: { who: "白浪", good: "白浪多說了一句：「放下的東西，有時會自己游回來。」", bad: "白浪什麼也沒說，只是把船推離了岸。", other: "" },
+      reset: ["白浪"]
+    }
+  },
+  events: {
+    C01U: {
+      open: "綾在湖邊蹲下，用水袋舀水喝。",
+      body: "湖水很涼，舀得太滿，從他指縫間溢了出來。在赤原繃了很久的心忽然鬆開，他的眼眶有點熱。不遠處，一個少年坐在船頭，對著湖面喃喃自語。",
+      options: [
+        { act: "趕快擦掉眼淚，走過去問附近有沒有地方住。", att: "把感受收起來，急著辦正事", s: 0,
+          res: "少年指了指村子：「我叫蓮。」他看了綾一眼，又轉回去對著湖說話。" },
+        { act: "就讓眼淚流，坐在湖邊等它停。", att: "讓感受進來", s: 1,
+          res: "少年走過來，在他旁邊坐下：「魚說你很久沒哭了。我叫蓮。」", f: { 蓮: "good" } },
+        { act: "問少年：「你在跟誰說話？」", att: "用好奇心繞開自己的感受", s: 0,
+          res: "少年說他叫蓮，在跟魚說話，然後講了一整個下午魚的事。綾一直沒想起剛才為什麼眼眶熱。" }
+      ],
+      dejavu: "綾隱約記得，上次在湖邊，他急著把眼淚擦掉。"
+    },
+    C01R: {
+      open: "綾在湖邊用水袋舀水，水卻從袋底一直漏光。",
+      body: "他舀了一次又一次，什麼都留不住。坐在船頭的少年看了很久，終於開口：「你的心是關著的，水才留不住。」",
+      options: [
+        { act: "說：「是袋子破了。」翻過來找破洞。", att: "把問題推給外面", s: 0,
+          res: "袋子沒有破洞。少年聳聳肩：「我叫蓮。你很固執。」" },
+        { act: "坐下來說：「我好像很久沒有感覺了。」", att: "承認心關著", s: 1,
+          res: "少年在他旁邊坐下：「我叫蓮。那先坐著吧，水會等你。」", f: { 蓮: "good" } },
+        { act: "笑著說：「我很好啊，什麼事都沒有。」", att: "假裝沒事", s: 0,
+          res: "少年看了他很久：「我叫蓮。你笑得好用力。」" }
+      ],
+      dejavu: "綾隱約記得，上次水漏光的時候，他一直說自己沒事。"
+    },
+    C02U: {
+      open: "蓮告訴綾一個全村都知道的祕密：漁鋪家的姑娘和漁夫羅蘭互相喜歡。",
+      body: "羅蘭每天都找藉口去漁鋪幫忙，姑娘每天都多留一份飯。兩個人說話時都會臉紅，就是誰也不先開口。今天，羅蘭又在漁鋪門口站了半天。",
+      bridges: { 蓮: { good: "蓮神祕兮兮地拉著綾：「告訴你一個全村都知道的祕密。」漁鋪家的姑娘和漁夫羅蘭互相喜歡。", bad: "綾從別人那裡聽說了一個全村都知道的祕密：漁鋪家的姑娘和漁夫羅蘭互相喜歡。" } },
+      options: [
+        { act: "走過去對羅蘭說：「你就直接跟她說嘛！」", att: "替別人的心做決定", s: 0,
+          res: "羅蘭的臉一下子漲紅，轉身就走。姑娘在店裡聽見了，好幾天不肯出門。", f: { 羅蘭: "bad" } },
+        { act: "拉著蓮走開，讓他們自己慢慢來。", att: "尊重兩顆心之間的時間", s: 1,
+          res: "傍晚經過漁鋪時，綾看見姑娘替羅蘭倒了一杯茶，羅蘭也替她倒了一杯。兩個人誰也沒說話，卻都在笑。", f: { 羅蘭: "good" } },
+        { act: "跟蓮躲在對街，看誰會先開口。", att: "把別人的心事當熱鬧看", s: 0,
+          res: "等到太陽下山，誰也沒開口。蓮說：「看吧，我就說。」" }
+      ],
+      dejavu: "綾隱約記得，上次在漁鋪門口，他太想替別人把話說出來。"
+    },
+    C02R: {
+      open: "漁夫羅蘭和漁鋪家的姑娘互相喜歡，全村都知道，就是誰也不先開口。好不容易，羅蘭約漁鋪家的姑娘去看湖燈，卻遲到了。",
+      body: "姑娘氣得關了店門，要綾去告訴羅蘭她不等了。羅蘭在碼頭急得團團轉，也要綾帶話回去。",
+      options: [
+        { act: "兩邊都說好話，把話改得好聽一點。", att: "替別人修飾感受，讓誤會更深", s: 0,
+          res: "兩邊都以為對方沒那麼生氣，第二天吵得更兇。", f: { 姑娘: "bad" } },
+        { act: "跟兩個人說「這些話你們自己去說」，把羅蘭帶到漁鋪門口。", att: "不當傳話筒，讓他們面對面", s: 1,
+          res: "門緊閉了很長一段時間，終於開了一條縫。綾悄悄走開了。", f: { 姑娘: "good", 羅蘭: "good" } },
+        { act: "說「這不關我的事」，兩邊都不傳。", att: "逃開", s: 0,
+          res: "那晚的湖燈都滅了，兩個人誰也沒去。" }
+      ],
+      dejavu: "綾隱約記得，上次他夾在中間，把兩邊的話都改了。"
+    },
+    C03U: {
+      open: "漁季開始了，村裡辦了慶典。",
+      body: "碼頭上擺滿烤魚和米酒，大家圍著火堆唱歌，漁家三姊妹舉著碗唱得最大聲。蓮拉著綾擠進人群，一個大嬸把一碗酒塞進他手裡。",
+      bridges: { 蓮: { good: "漁季開始了，蓮一大早就來敲門，要綾陪他去慶典。", bad: "漁季開始了，村裡辦了慶典。慶典上，蓮在人群裡看到綾，猶豫了一下才走過來。" } },
+      options: [
+        { act: "跟大家一起唱，唱錯了也不停。", att: "和大家一起歡喜", s: 1,
+          res: "蓮笑得比誰都大聲。那晚綾學會了第一首澄湖的歌。", f: { 蓮: "good" } },
+        { act: "找個安靜的角落，把這熱鬧的一幕畫下來。", att: "用旁觀者的角色參加", s: 0,
+          res: "畫畫得很好，大家搶著看。只是畫裡沒有他。" },
+        { act: "端著酒去找羅蘭，問他要不要趁今天跟姑娘告白。", att: "把熱鬧變成任務", s: 0,
+          res: "羅蘭笑著搖頭。綾回頭時，唱歌的圈子已經散到別處去了。" }
+      ],
+      dejavu: "綾隱約記得，上次的慶典，他好像一直在圈子外面做別的事。"
+    },
+    C03R: {
+      open: "漁季開始了，村裡辦了慶典。大家喝到半夜，越鬧越瘋。",
+      body: "有人從碼頭掉進了水裡，岸上的人還在笑，以為是在鬧著玩。只有蓮感覺到不對。",
+      options: [
+        { act: "跟著大家笑，以為那是在玩。", att: "被熱鬧淹沒", s: 0,
+          res: "過了好一會兒，才有人發現水裡的人沒有浮上來。蓮自己跳了下去。", f: { 蓮: "bad" } },
+        { act: "丟下碗，跟蓮一起跳下去拉人。", att: "在熱鬧裡保持清醒", s: 1,
+          res: "落水的是個小孩，拉上來時嗆得直咳。碼頭安靜下來，有人拍了拍綾的肩。", f: { 蓮: "good" } },
+        { act: "大聲罵大家都喝瘋了。", att: "用指責代替行動", s: 0,
+          res: "大家愣住了。水裡的孩子，最後是蓮拉上來的。" }
+      ],
+      dejavu: "綾隱約記得，上次的慶典上，有一聲落水聲被笑聲蓋過去了。"
+    },
+    C06U: {
+      open: "蓮端來一碗他奶奶煮的蓮子湯。",
+      body: "綾喝了一口，愣住了。很小的時候，好像有人餵他喝湯，一口一口吹涼。那個人的臉，他想不起來。",
+      bridges: { 蓮: { good: "蓮笑嘻嘻地端來一碗他奶奶煮的蓮子湯。", bad: "蓮把一碗蓮子湯放在綾門口，什麼也沒說就走了。" } },
+      options: [
+        { act: "慢慢把湯喝完，讓那段記憶自己浮上來。", att: "收下善意，不強求記憶", s: 1,
+          res: "那天晚上，綾夢見一雙很小的手，捧著一朵白花遞給他。醒來時，嘴裡好像還有湯的甜味。", f: { 蓮: "good" } },
+        { act: "抓著蓮一直問：「這是誰教你奶奶煮的？你們是不是認識我？」", att: "急著從善意裡挖答案", s: 0,
+          res: "蓮被問得手足無措：「我只是覺得你會喜歡。」", f: { 蓮: "bad" } },
+        { act: "喝完立刻想要回禮，免得欠他。", att: "不敢只是接受", s: 0,
+          res: "蓮把錢推回來，笑得有點勉強。兩個人好像客氣了起來。" }
+      ],
+      dejavu: "綾隱約記得，上次那碗湯，他想要的比湯更多。"
+    },
+    C06R: {
+      open: "蓮端來一碗他奶奶煮的蓮子湯。喝了湯之後，綾想起了一點點過去。",
+      body: "他在湖邊坐了一整天，什麼都不想做，只想再想起更多。蓮來叫他吃飯，叫了三次。",
+      options: [
+        { act: "說：「再一下，我快想起來了。」", att: "困在過去", s: 0,
+          res: "天黑了，什麼都沒想起來，飯也涼了。", f: { 蓮: "bad" } },
+        { act: "站起來，跟蓮回去吃飯。", att: "回到眼前的人", s: 1,
+          res: "飯桌上蓮講了一個很爛的笑話。綾笑出來的那一刻，好像又想起了一點點。", f: { 蓮: "good" } },
+        { act: "說：「想不起來就算了。」從此不再提。", att: "從一個極端跳到另一個極端", s: 0,
+          res: "他嘴上說算了，那晚卻翻來覆去睡不著。" }
+      ],
+      dejavu: "綾隱約記得，上次他陷在過去裡，忘了身邊還有人在等。"
+    },
+    C04U: {
+      open: "羅蘭走後，村子安靜了下來。",
+      body: "大家都在等某個人回來，只有綾不知道自己在等誰。他在湖邊的樹下一坐就是一整天。蓮來找他去收網。",
+      bridges: { 蓮: { good: "羅蘭走後，村子安靜了下來。蓮每天都來找綾。", bad: "羅蘭走後，村子安靜了下來。蓮好幾天沒來找綾了。" } },
+      options: [
+        { act: "跟蓮去碼頭收網，忙一點就不會亂想。", att: "用忙碌蓋住空虛", s: 0,
+          res: "忙了一整天。晚上躺下時，那種空空的感覺又回來了。" },
+        { act: "不去也不走，跟蓮說：「我現在什麼都想不起來，好難過。」", att: "承認心裡的空", s: 1,
+          res: "蓮在他旁邊坐下，一句話也沒說，一直陪他坐到天黑。", f: { 蓮: "good" } },
+        { act: "謝謝蓮，說想一個人到處走走，起身離開。", att: "還沒感受完就急著走", s: 0,
+          res: "他繞著湖走了一圈，又回到同一棵樹下。" }
+      ],
+      dejavu: "綾隱約記得，上次坐在樹下，他一直想找點事做。"
+    },
+    C04R: {
+      open: "羅蘭走後，村子安靜了下來。大家都在等他回來，只有綾不知道自己在等誰。綾在湖邊的樹下坐了三天。",
+      body: "第四天早上他才發現，每天都有人替他留一份飯，是漁鋪家的姑娘。她自己也在等，卻還記得他。",
+      bridges: { 姑娘: { good: "羅蘭走後，村子安靜了下來。大家都在等他回來，只有綾不知道自己在等誰。綾在湖邊的樹下坐了三天。第四天早上，姑娘端著飯蹲在他面前。", bad: "羅蘭走後，村子安靜了下來。大家都在等他回來，只有綾不知道自己在等誰。綾在湖邊的樹下坐了三天。第四天早上，他看見姑娘放下飯就走，眼睛紅紅的。" } },
+      options: [
+        { act: "把飯吃得一乾二淨，說：「我沒事了！」", att: "假裝一下子就好了", s: 0,
+          res: "姑娘看了他一眼：「別逞強。」" },
+        { act: "端著碗去漁鋪找姑娘，問她：「那妳呢？妳還好嗎？」", att: "從自己的空裡醒來，看見別人", s: 1,
+          res: "姑娘愣了很久，眼淚掉了下來：「從來沒有人問過我。」", f: { 姑娘: "good" } },
+        { act: "覺得不好意思，以後換個地方坐。", att: "躲開別人的好意", s: 0,
+          res: "第五天早上，新的地方也放著一份飯。" }
+      ],
+      dejavu: "綾隱約記得，上次有人每天替他留飯，他卻沒問過那個人好不好。"
+    },
+    C05U: {
+      open: "漁鋪家的姑娘坐在碼頭邊哭。",
+      body: "羅蘭已經走了半個月，一點消息也沒有。她一直望著湖，沒看見身後漁鋪的燈還亮著，大嬸和蓮都在等她回去吃飯。綾走過去，不知道該說什麼。",
+      bridges: { 姑娘: { good: "漁鋪家的姑娘坐在碼頭邊哭。看到綾來，她把頭轉開，卻沒有叫他走。", bad: "漁鋪家的姑娘坐在碼頭邊哭。看到綾來，她吼著要他走開。" } },
+      options: [
+        { act: "安慰她：「至少你們有過那麼多美好的回憶啊。」", att: "急著要她看光明面", s: 0,
+          res: "姑娘哭得更大聲了：「你懂什麼！」", f: { 姑娘: "bad" } },
+        { act: "在她旁邊坐下，什麼都不說，等她哭完。", att: "陪著悲傷，不急著修好", s: 1,
+          res: "姑娘哭到累了，靠著他的肩睡著了。", f: { 姑娘: "good" } },
+        { act: "說：「我去把羅蘭找回來！」轉身就跑。", att: "用行動逃開眼前的難受", s: 0,
+          res: "跑到碼頭才發現沒有船。回頭時，姑娘已經不在了。" }
+      ],
+      dejavu: "綾隱約記得，上次他太急著讓她別哭了。"
+    },
+    C05R: {
+      open: "羅蘭走了半個月，一點消息也沒有，漁鋪家的姑娘在碼頭邊哭了好幾天。今天，她照常開店了，說她不哭了。",
+      body: "可是夜裡，綾看見她一個人站在湖邊，一直望著霧的方向。",
+      options: [
+        { act: "衝過去把她拉回來：「太危險了！」", att: "替她做決定", s: 0,
+          res: "她甩開他的手：「我只是想看看。」", f: { 姑娘: "bad" } },
+        { act: "走到她身邊一起看霧，問她：「妳想去嗎？」", att: "陪她看清自己的心", s: 1,
+          res: "她想了很久，搖搖頭：「我想等。但我想好好地等。」", f: { 姑娘: "good" } },
+        { act: "假裝沒看見，回去睡覺。", att: "不敢面對", s: 0,
+          res: "第二天，她的眼睛又是紅的。" }
+      ],
+      dejavu: "綾隱約記得，上次在湖邊，他沒問她自己想怎麼做。"
+    },
+    C08U: {
+      open: "一個起霧的夜裡，綾決定自己去霧裡找答案。",
+      body: "月亮被雲遮了一角。他房裡堆著大家送的東西：蓮給的魚乾、大嬸織的圍巾、姑娘縫好的包袱。湖邊，擺渡人白浪正在繫船，看著他。",
+      bridges: { 蓮: { good: "一個起霧的夜裡，綾決定自己去霧裡找答案。蓮站在屋簷下，沒有攔他。", bad: "一個起霧的夜裡，綾決定自己去霧裡找答案。蓮的窗是暗的。" } },
+      options: [
+        { act: "把每樣東西都塞進包袱，怕路上用得到。", att: "什麼都捨不得放下", s: 0,
+          res: "包袱重得走不動。白浪搖搖頭：「帶這麼多，霧會把你拖下去。」", f: { 白浪: "bad" } },
+        { act: "把東西整齊放在床上，留一張謝謝大家的字條，空著手出發。", att: "帶著感謝離開", s: 1,
+          res: "白浪點點頭，把一盞船燈掛在他要走的那條路上。", f: { 白浪: "good" } },
+        { act: "叫醒蓮，要他陪自己一起去。", att: "不敢一個人走", s: 0,
+          res: "蓮揉著眼睛跟出來，走到村口又被霧嚇了回去。綾也停下了腳步。" }
+      ],
+      dejavu: "綾隱約記得，上次出發時，他什麼都想帶走。"
+    },
+    C08R: {
+      open: "一個起霧的夜裡，綾決定自己去霧裡找答案。他收好包袱走到村口，卻又折了回來。",
+      body: "一連三晚都是這樣。第三晚，擺渡人白浪坐在湖邊抽煙斗：「你在等什麼？」",
+      options: [
+        { act: "說：「我在等霧小一點。」", att: "用理由拖延", s: 0,
+          res: "白浪吐了口煙：「霧不會小的。」", f: { 白浪: "bad" } },
+        { act: "說：「我怕走了，就再也回不來這裡了。」", att: "承認自己捨不得", s: 1,
+          res: "白浪沉默了很久：「怕也可以走。帶著怕走就好。」", f: { 白浪: "good" } },
+        { act: "說：「我不打算去了。」把包袱丟回屋裡。", att: "用放棄逃開害怕", s: 0,
+          res: "那晚他睡得很沉，醒來卻覺得胸口空了一塊。" }
+      ],
+      dejavu: "綾隱約記得，上次他在村口來回了好幾晚，一直沒說出自己在怕什麼。"
+    },
+    C07U: {
+      open: "霧裡的聲音越來越多。",
+      body: "每一個都說知道他是誰：一個說他是走失的王子，一個說他欠了很多人的債，一個說有個家正點著燈在等他。每個聲音都要他往不同的方向走。",
+      options: [
+        { act: "往那個說有家在等他的聲音走去。", att: "被渴望帶走", s: 0,
+          res: "燈光一碰就散了。他在湖邊醒來，原來是一場夢。" },
+        { act: "停下來一個一個聽，想弄清楚哪個是真的。", att: "在選項裡打轉", s: 0,
+          res: "聲音越聽越多，越聽越像真的。等他回過神，已經分不清自己是從哪裡來的。" },
+        { act: "不回答任何一個，只看著腳下的石堤往前走。", att: "不被幻象帶走", s: 1,
+          res: "聲音一個接一個淡了下去。腳下的路，清楚了一點。" }
+      ],
+      dejavu: "綾隱約記得，霧裡那些聲音，上次他跟著走了。"
+    },
+    C07R: {
+      open: "霧裡的聲音一個接一個，每一個都說知道綾是誰，要他往不同的方向走。忽然，聲音全停了。",
+      body: "綾這才發現，剛才那些說知道他是誰的，全是他自己的聲音。他反而慌了：如果都是假的，那什麼是真的？",
+      options: [
+        { act: "蹲在地上，不敢再走。", att: "被懷疑淹沒", s: 0,
+          res: "霧從四面圍上來，他在原地坐到天亮。" },
+        { act: "對著霧大喊：「騙子！都是騙人的！」", att: "用憤怒蓋住不安", s: 0,
+          res: "喊聲在霧裡迴盪了很久，什麼也沒改變。" },
+        { act: "按著胸口，跟著自己的心跳一步一步往前走。", att: "抓住真實的感受", s: 1,
+          res: "心跳是真的，腳下的石頭也是真的。他繼續往前走。" }
+      ],
+      dejavu: "綾隱約記得，上次那些聲音停下來以後，他就不知道該相信什麼了。"
+    },
+    C09U: {
+      open: "霧裡出現一間溫暖的屋子。",
+      body: "屋裡的每個人都記得他，都叫得出他的名字，桌上擺滿他愛吃的菜。他只要坐下來，就什麼都有了。",
+      options: [
+        { act: "坐下來，就待一下。", att: "被滿足留住", s: 0,
+          res: "一下變成一天，一天變成一年。他醒來時，渾身都是霧水。" },
+        { act: "問屋子裡的人：「那我叫什麼名字？」", att: "用一個真問題戳破幻象", s: 1,
+          res: "每個人都張開嘴，卻沒有一點聲音。屋子像墨水一樣化開了。" },
+        { act: "把桌上的菜全打包帶走，想留著慢慢吃。", att: "想把滿足佔為己有", s: 0,
+          res: "包袱越來越重，打開一看，裡面全是霧。" }
+      ],
+      dejavu: "綾隱約記得，上次那間屋子太溫暖了，他差點忘了要問一件事。"
+    },
+    C09R: {
+      open: "霧裡出現一桌豐盛的宴席，沒有別人，只有他。",
+      body: "綾一口一口吃，越吃越餓，吃完一桌還是不夠。",
+      options: [
+        { act: "再要一桌，相信下一桌就會飽。", att: "填不滿的渴望", s: 0,
+          res: "菜又擺滿了，他又吃光了。霧裡傳來笑聲。" },
+        { act: "放下筷子：「我要的不是這些。」", att: "看見空虛真正的來源", s: 1,
+          res: "宴席安靜了。他想起湖邊那個每天替他留飯的人。" },
+        { act: "把桌子掀了，怪這片霧在捉弄他。", att: "怪罪外在", s: 0,
+          res: "盤子碎了一地，他還是餓。" }
+      ],
+      dejavu: "綾隱約記得，上次吃了一整桌，他還是沒弄懂自己餓的是什麼。"
+    },
+    C10U: {
+      open: "湖心島上，守湖人百合問他的願望。",
+      body: "綾已經在岸上放下了「想知道自己是誰」。他想起碼頭邊那個一直在等的姑娘。",
+      options: [
+        { act: "說：「讓羅蘭回家。」", att: "把願望給真正需要的人", s: 1,
+          res: "百合從霧裡帶回了迷路的羅蘭。回到村裡，姑娘抱住羅蘭哭了好久，全村替他們辦了一場婚宴。那天雨剛停，湖上掛著一道淡淡的彩虹，孩子們在碼頭上跳來跳去。綾知道這不是他的家，但他是真心為他們開心。" + LILY_LINE },
+        { act: "說：「讓我想起自己是誰。」", att: "又把放下的東西撿了回來", s: 0,
+          res: "百合看了他很久：「你已經把它留在岸上了。」她什麼也沒給。羅蘭後來自己划著破船回來，全身是傷。" + LILY_LINE },
+        { act: "說：「讓這座湖永遠不再起霧。」", att: "想一次抹掉所有人的痛", s: 0,
+          res: "百合搖搖頭：「沒有霧，就沒有人會走這條路。」羅蘭還是回來了，只是村裡的人望著湖，都有點失落。" + LILY_LINE }
+      ],
+      dejavu: "綾隱約記得，上次在島上，他的願望好像沒有許給對的人。"
+    },
+    C10R: {
+      open: "羅蘭回來了，村裡替他和漁鋪家的姑娘辦了婚宴。",
+      body: "可是兩個人坐在一起，始終沒有正眼看對方，像中間還隔著一層霧。全村的人都在等他們笑。守湖人百合坐在角落，看著綾。",
+      options: [
+        { act: "帶頭敬酒起鬨，想把氣氛炒熱。", att: "硬要大家圓滿", s: 0,
+          res: "笑聲稀稀落落。姑娘藉口累了，先離席了。" + LILY_LINE },
+        { act: "把羅蘭和姑娘帶到沒人的船屋，讓他們自己說。", att: "讓真實的感受有地方說出來", s: 1,
+          res: "船屋裡傳出很久的哭聲，後來是笑聲。兩個人走出來時，手牽在一起。" + LILY_LINE },
+        { act: "覺得自己白忙一場，一個人離開宴席。", att: "以為不完美就是失敗", s: 0,
+          res: "走到湖邊，他回頭看，船屋那邊的燈還亮著。" + LILY_LINE }
+      ],
+      dejavu: "綾隱約記得，上次那場婚宴，他太想讓一切看起來圓滿。"
+    }
+  }
+};
+
+// 風城試玩版事件資料（草稿）
+const FENGCHENG = {
+  id: "fengcheng",
+  kicker: "第三章",
+  title: "風城",
+  lead: "真話會痛，但謊言和恐懼會痛到心裡。",
+  theme: "air",
+  meter: "清明",
+  tool: "匕首",
+  storeKey: "tarot-fengcheng-proto-v1",
+  startCode: "S01",
+  endCode: "S10",
+  openNarr: "風城的風很銳利。抽兩張牌：這段旅程的起點，與終點。",
+  cardOrder: ["S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08", "S09", "S10"],
+  cardNames: {
+    S01: "寶劍王牌", S02: "寶劍二", S03: "寶劍三", S04: "寶劍四", S05: "寶劍五",
+    S06: "寶劍六", S07: "寶劍七", S08: "寶劍八", S09: "寶劍九", S10: "寶劍十",
+    M06: "戀人", M11: "正義", M17: "星星"
+  },
+  chars: ["青鳶", "疾矢", "蝶", "衡主"],
+  sequence: [
+    ["open"], ["ev", "S01", "起點"], ["slot", "A"], ["major", "M06"], ["slot", "B"],
+    ["major", "M11"], ["slot", "C"], ["major", "M17"], ["ev", "S10", "終點"], ["end"]
+  ],
+  slots: {
+    A: { name: "辯論之城", cards: ["S02", "S05", "S07"], pick: 2 },
+    B: { name: "牢裡", cards: ["S03", "S08", "S09"], pick: 2 },
+    C: { name: "審判之後", cards: ["S04", "S06"], pick: 2 }
+  },
+  lastPrefix: {
+    fact: "那場審判之後，綾說話變慢了，每一句都想清楚才說。",
+    defend: "綾還記得法庭上那些打呵欠的人。",
+    plead: "聽說青鳶的刑罰減了一半，是因為綾那句話。"
+  },
+  ending: {
+    awake: "綾腰間的匕首亮了起來，光很冷，卻很乾淨。蝶又折了一隻紙蝴蝶，這一次沒有放進風裡，而是放進他的包袱：「帶著吧，這是風城的風。」",
+    already: "匕首安靜地掛在腰間，刀鋒一直是亮的。",
+    half: "匕首亮了一下，又暗了。綾覺得，還有一句真話卡在喉嚨裡。"
+  },
+  people: [
+    { name: "青鳶", tag: "靠賣消息過活的孤兒", card: "寶劍侍者", intro: "機靈、嘴巴很快的孤兒，靠賣消息過活。風城的事問他就對了，只是他到底站在哪一邊，誰也說不準。" },
+    { name: "疾矢", tag: "風城的騎士，驕傲又衝動", card: "寶劍騎士", intro: "果決、驕傲的騎士，習慣先衝再說。在辯論場上輸給綾之後，就把他當成了敵人。" },
+    { name: "蝶", tag: "法庭的書記官，只說真話", card: "寶劍王后", intro: "法庭的書記官，失去過很多，從此只說真話。青鳶是她從小照顧長大的孩子。" },
+    { name: "衡主", tag: "風城的法官", card: "寶劍國王", intro: "風城的法官，理性、公正，有時冷得像他桌上那座銅天平。" }
+  ],
+  majors: {
+    M06: {
+      text: "風城的人越來越討厭這個從赤原來的少年。那天夜裡，疾矢把一袋錢推到青鳶面前：「讓他身敗名裂。」青鳶猶豫了很久，還是收下了。他偷走綾的匕首，放進一間剛被搶的商鋪。這一切，都被法庭的書記官蝶看見了。她站在巷口，左邊是法庭，右邊是青鳶住的閣樓。青鳶是她從小照顧長大的孩子：說出來，就是親手把他送進牢裡；不說，就是看著一個無辜的人被定罪。",
+      flagLine: { who: "青鳶", good: "青鳶放下匕首時手在抖，嘴裡小聲說了句對不起。", bad: "青鳶放下匕首時，嘴角帶著笑。", other: "" },
+      reset: ["青鳶", "疾矢"]
+    },
+    M11: {
+      text: "衡主開庭。他桌上擺著一座銅天平，是風城建城時留下來的。蝶走上證人席，看了青鳶很久，把那夜看見的一切都說了出來。輪到綾說話。",
+      lineBefore: true,
+      flagLine: { who: "蝶", good: "她的聲音很穩，只有手在發抖。", bad: "她說完就低下頭，再也沒看綾一眼。", other: "" },
+      choice: [
+        { key: "fact", act: "只說事實，不替自己辯解。", res: "綾一件一件說：赤原、鄰谷、匕首，沒有多一句。" },
+        { key: "defend", act: "細數自己做過的好事，證明自己是好人。", res: "他說了很多，旁聽席上有人開始打呵欠。" },
+        { key: "plead", act: "說完事實，替青鳶求情：「他是被逼的。」", res: "法庭一陣騷動。青鳶抬起頭，第一次正眼看他。" }
+      ],
+      after: "衡主聽完所有人的話，沉默了很久。",
+      end: "「綾，無罪。青鳶與疾矢，依法受罰。」錘子落下時，綾的心反而沉了下去。",
+      reset: ["蝶", "青鳶", "疾矢", "衡主"]
+    },
+    M17: {
+      text: "回到風城的那天夜裡，雨停了，天上的星星多得嚇人。蝶坐在屋頂上，把一張紙折成蝴蝶。她說她年輕時失去了丈夫和孩子，從此只說真話，因為謊言救不了任何人。「可是今天，我好像又能相信一點什麼了。」她把紙蝴蝶放進風裡，看著它飛遠。",
+      flagLine: { who: "蝶", good: "她又折了一隻，放進綾手裡：「這隻給你。」", bad: "說完，她很久都沒再開口。", other: "" },
+      reset: ["蝶"]
+    }
+  },
+  events: {
+    S01U: {
+      open: "一走進風城，強風就把山上的霧吹散了。",
+      body: "整座城一覽無遺：高牆、廣場，還有正中央那座圓形的辯論場。綾的腦袋也跟著清楚起來，赤原和澄湖的事，第一次一件件浮了上來。",
+      options: [
+        { act: "趁腦袋清楚，在城門口把一路上的事一件件想明白。", att: "讓清晰帶自己看見真相", s: 1,
+          res: "他在城門口站了很久。想通的那一刻，腰間的匕首好像輕輕震了一下。一個少年從城牆上跳下來：「想好了嗎？我叫青鳶，風城的事問我就對了。」", f: { 青鳶: "good" } },
+        { act: "直接衝進辯論場，看看這裡的人在吵什麼。", att: "被熱鬧帶走", s: 0,
+          res: "辯論場裡人聲鼎沸，他聽了一下午，什麼也沒記住。一個少年擠到他旁邊：「新來的？我叫青鳶。」" },
+        { act: "覺得想那麼多也沒用，找間旅店先睡。", att: "逃開清醒", s: 0,
+          res: "他一覺睡到傍晚，醒來時腦袋又是一團霧。旅店門口坐著一個少年：「我叫青鳶，等你很久了。」" }
+      ],
+      dejavu: "綾隱約記得，上次風把霧吹散的時候，他沒有停下來想。"
+    },
+    S01R: {
+      open: "一走進風城，強風吹得綾睜不開眼。",
+      body: "他腦子裡的念頭卻停不下來：赤原的人是不是在罵他？澄湖的事是不是做錯了？一個少年從城牆上跳下來，笑他：「你的臉色比要上辯論場的人還難看。」",
+      options: [
+        { act: "拉著少年，把心裡的念頭一條條講出來，要他評評理。", att: "被念頭牽著走", s: 0,
+          res: "少年聽得頭都昏了：「我叫青鳶，可是我不是法官啊。」" },
+        { act: "停下來深呼吸，先只想一件事：今晚住哪裡。", att: "讓混亂的念頭落地", s: 1,
+          res: "少年笑了：「這個我知道。我叫青鳶，跟我來。」腦子裡的念頭一個個安靜了下來。", f: { 青鳶: "good" } },
+        { act: "慌忙地說「我沒事」，繞過他進城。", att: "用冷硬擋住混亂", s: 0,
+          res: "少年在背後喊：「我叫青鳶！你會需要我的！」" }
+      ],
+      dejavu: "綾隱約記得，上次一進城，他就被自己的念頭追著跑。"
+    },
+    S02U: {
+      open: "青鳶早就聽說了鄰谷的事。",
+      body: "他在辯論場上當眾問綾：「赤原到底有沒有錯？」說有，對不起赤原的朋友；說沒有，對不起鄰谷的牧羊人。全場都在等他開口。",
+      bridges: { 青鳶: { good: "青鳶早就聽說了鄰谷的事。青鳶把綾拉上辯論場，一臉興奮，說要讓大家見識赤原來的人。", bad: "青鳶早就聽說了鄰谷的事，看綾的眼神帶著一點挑釁。" } },
+      options: [
+        { act: "說：「赤原沒錯，他們只是想活下去。」", att: "為了站穩一邊，把另一邊抹掉", s: 0,
+          res: "鄰谷來的商人當場離席。綾知道，自己只說了一半的真話。" },
+        { act: "說：「我不知道。兩邊都有道理，我到現在還沒想清楚。」", att: "誠實面對兩難", s: 1,
+          res: "全場嘩然，有人罵他沒種。青鳶卻愣住了：「在風城，你是第一個敢說不知道的人。」", f: { 青鳶: "good" } },
+        { act: "反問青鳶：「那你覺得呢？」", att: "用技巧閃開問題", s: 0,
+          res: "全場大笑，青鳶的臉紅了。綾贏了這一回合，卻一點也不痛快。", f: { 青鳶: "bad" } }
+      ],
+      dejavu: "綾隱約記得，上次在辯論場上，他太想給出一個漂亮的答案。"
+    },
+    S02R: {
+      open: "青鳶早就聽說了鄰谷的事。",
+      body: "他在辯論場上當眾問綾：「赤原到底有沒有錯？」說有，對不起赤原的朋友；說沒有，對不起鄰谷的牧羊人。全場都在等他開口。綾逃離現場，拖了三天沒回答。第四天全城的人都來了。青鳶把兩疊信攤在台上：一疊是赤原的人寫來罵鄰谷的，一疊是鄰谷的人寫來罵赤原的。「今天一定要說。」",
+      options: [
+        { act: "隨便挑一邊，說完就走。", att: "用草率結束煎熬", s: 0,
+          res: "說完他就後悔了，但已經收不回來。" },
+        { act: "兩疊信各念一封，再說出自己的想法，和還想不通的地方。", att: "在壓力下誠實地做出選擇", s: 1,
+          res: "辯論場安靜了很久。最後有人鼓掌，是青鳶。", f: { 青鳶: "good" } },
+        { act: "說自己身體不舒服，請大家改天再來。", att: "繼續逃避", s: 0,
+          res: "噓聲一路追著他回到旅店。", f: { 青鳶: "bad" } }
+      ],
+      dejavu: "綾隱約記得，上次那個問題，他拖到最後才隨便回答。"
+    },
+    S05U: {
+      open: "騎士疾矢在辯論場上笑綾是懦夫：「赤原來的人，也配上台？」",
+      body: "綾一時氣不過，跟他辯了起來，越辯越順，把疾矢駁得啞口無言。觀眾大笑，疾矢紅著臉轉身離場。",
+      options: [
+        { act: "乘勝追擊，對著他的背影再補一句。", att: "把勝利變成羞辱", s: 0,
+          res: "全場笑得更大聲。疾矢在門口停了一下，沒有回頭。", f: { 疾矢: "bad" } },
+        { act: "收下歡呼，告訴自己：「這就是風城的規矩。」", att: "用規則合理化空虛", s: 0,
+          res: "那晚他睡得很不安穩，耳邊一直是那陣笑聲。" },
+        { act: "散場後去找疾矢，承認自己剛才是在洩憤。", att: "看見贏來的東西有多空", s: 1,
+          res: "疾矢冷冷地看著他：「你是來施捨我的？」可是他離開時，腳步慢了一點。" }
+      ],
+      dejavu: "綾隱約記得，上次贏了那場辯論，他沒有回頭看輸的人。"
+    },
+    S05R: {
+      open: "騎士疾矢在辯論場上笑綾是懦夫：「赤原來的人，也配上台？」綾一時氣不過，跟他辯了起來，越辯越順，把疾矢駁得啞口無言。觀眾大笑，疾矢紅著臉轉身離場。疾矢事後在酒館當眾挑釁，要綾再跟他辯一場。",
+      body: "上次輸了以後，他到處說綾是赤原派來的探子。酒館裡的人都轉過頭來看熱鬧。",
+      options: [
+        { act: "答應，這次要讓他輸得更難看。", att: "被報復心牽著走", s: 0,
+          res: "綾又贏了。疾矢摔門而去，酒館裡沒有人笑。", f: { 疾矢: "bad" } },
+        { act: "說：「我不想跟你辯了。我們能不能好好談一次？」", att: "結束爭執", s: 1,
+          res: "疾矢愣住了，半天說不出話。最後他坐了下來，雖然還是一句話也沒說。", f: { 疾矢: "good" } },
+        { act: "不理他，轉身走出酒館。", att: "用冷漠代替結束", s: 0,
+          res: "身後傳來疾矢的笑聲：「看吧，懦夫。」" }
+      ],
+      dejavu: "綾隱約記得，上次在酒館，他差點又讓那場爭執繼續下去。"
+    },
+    S07U: {
+      open: "綾在巷子裡撞見青鳶在收錢。",
+      body: "給錢的是明天辯論場上的兩方：青鳶把甲方的講稿賣給乙方，又把乙方的講稿賣給甲方。他看見綾，笑了笑：「風城就是這樣活的。」",
+      options: [
+        { act: "假裝沒看見，自己也偷偷記下兩邊的講稿，說不定用得到。", att: "跟著暗中行事", s: 0,
+          res: "第二天的辯論場一團亂，每個人都在猜是誰洩了密。綾心裡發虛。" },
+        { act: "去告訴兩方的人，讓他們找青鳶算帳。", att: "用揭發代替面對本人", s: 0,
+          res: "青鳶被打了一頓，兩天沒出門。", f: { 青鳶: "bad" } },
+        { act: "直接問青鳶：「你自己覺得，這樣活得好嗎？」", att: "把暗處的事攤到光下說", s: 1,
+          res: "青鳶的笑僵在臉上。過了很久，他小聲說：「從來沒有人問過我想怎麼活。」", f: { 青鳶: "good" } }
+      ],
+      dejavu: "綾隱約記得，上次在巷子裡，他沒有直接開口問。"
+    },
+    S07R: {
+      open: "綾在辯論場上用了一點小手段。",
+      body: "他事先偷聽到對手的論點，搶在前面說，贏得很漂亮。散場後，青鳶在門口攔住他：「我看到了喔。」",
+      options: [
+        { act: "塞給青鳶一點錢：「別說出去。」", att: "用更多暗事掩蓋", s: 0,
+          res: "青鳶收了錢，笑得很開心。綾第一次覺得，自己跟他是同一種人。" },
+        { act: "去找那個對手，承認自己偷聽，把輸贏讓回去。", att: "自己把暗事攤開", s: 1,
+          res: "對手愣了很久，最後跟他握了手。青鳶在一旁看著，若有所思。", f: { 青鳶: "good" } },
+        { act: "說：「在風城，大家都這樣。」", att: "用環境合理化", s: 0,
+          res: "青鳶點點頭：「對啊。」不知道為什麼，這句話讓綾很不舒服。" }
+      ],
+      dejavu: "綾隱約記得，上次贏得很漂亮，卻是偷來的。"
+    },
+    S03U: {
+      open: "隔天，全城都在傳「赤原來的強盜」。",
+      body: "綾被抓進了牢裡。那天下著大雨。傍晚，獄卒送來一封信，是丈寫的：赤原有人說綾在鄰谷選了外人，是叛徒。",
+      options: [
+        { act: "把信撕掉，罵赤原的人忘恩負義。", att: "用憤怒擋住心痛", s: 0,
+          res: "撕碎的信泡在牢房的積水裡。他罵完，胸口更痛了。" },
+        { act: "抱著信坐在牆角，讓自己好好難過一場。", att: "承認被傷害的痛", s: 1,
+          res: "他哭了很久。哭完以後，他把信又讀了一遍，這才看見最後一行丈寫的：「但我不信。」" },
+        { act: "立刻寫十封信回去，一條一條解釋。", att: "急著被理解", s: 0,
+          res: "信寫到半夜，墨水用完了，他心裡還是空的。" }
+      ],
+      dejavu: "綾隱約記得，上次收到那封信，他沒有讀到最後一行。"
+    },
+    S03R: {
+      open: "隔天，全城都在傳「赤原來的強盜」。綾被抓進牢裡過了三天。",
+      body: "外面的流言還在傳，他卻覺得心麻了，什麼感覺也沒有。隔壁牢房的老人隔著牆問他：「你不難過嗎？」",
+      options: [
+        { act: "說：「不難過，習慣了。」", att: "把痛壓下去", s: 0,
+          res: "老人嘆了口氣：「傷口不痛，不代表好了。」" },
+        { act: "說：「我不知道。好像難過太久，已經麻了。」", att: "誠實說出自己的麻木", s: 1,
+          res: "老人隔著牆，跟他說了一整晚自己的事。天亮時，綾發現自己哭過了。" },
+        { act: "換個話題，問老人是怎麼進來的。", att: "繞開自己", s: 0,
+          res: "老人講了一個很長的故事。綾聽得很專心，好像這樣就不用想自己的事。" }
+      ],
+      dejavu: "綾隱約記得，上次在牢裡，他說自己已經不難過了。"
+    },
+    S08U: {
+      open: "綾被當成強盜關進了牢裡。獄卒說，牢裡的人白天可以到院子裡走走。",
+      body: "綾一次也沒去。他覺得反正沒有人會相信他，出去被看見只是更丟臉。他就這樣在牢房裡坐了好幾天。",
+      options: [
+        { act: "繼續待著，等有人來救他。", att: "被想像的牆困住", s: 0,
+          res: "沒有人來。牢房好像一天比一天小。" },
+        { act: "推開門走到院子裡，抬頭看天。", att: "走出自己設下的限制", s: 1,
+          res: "院子裡的風很大，他深深吸了一口氣。原來那扇門一直沒鎖。" },
+        { act: "寫信給衡主，要求立刻放人。", att: "用要求別人代替自己動", s: 0,
+          res: "信沒有回音。他更確定自己什麼也做不了。" }
+      ],
+      dejavu: "綾隱約記得，上次在牢裡，那扇門他一直沒去推。"
+    },
+    S08R: {
+      open: "綾被關進牢裡以後，青鳶偷偷來探監，隔著鐵欄不敢看他。",
+      body: "他沒說自己做了什麼，只說：「我除了傳消息什麼都不會，也離不開風城。」說完就哭了。",
+      options: [
+        { act: "說：「那你就繼續傳吧。」", att: "認同他給自己的限制", s: 0,
+          res: "青鳶點點頭走了，背影縮得很小。", f: { 青鳶: "bad" } },
+        { act: "問他：「這是誰說的？」", att: "讓他看見限制是自己設的", s: 1,
+          res: "青鳶想了很久，答不出來。離開的時候，他的背挺直了一點。", f: { 青鳶: "good" } },
+        { act: "安慰他：「你很厲害，什麼都能做。」", att: "用空話跳過他的困境", s: 0,
+          res: "青鳶苦笑：「你又不認識我。」" }
+      ],
+      dejavu: "綾隱約記得，上次青鳶說自己走不了，他沒問那是誰說的。"
+    },
+    S09U: {
+      open: "被關進牢裡以後，綾的夜變得很長。",
+      body: "綾一閉上眼，就夢見赤原和風城的人一起指著他。他驚醒過來，坐在床上，雙手捂著臉，再也睡不著。",
+      options: [
+        { act: "逼自己躺下，繼續睡。", att: "硬把恐懼壓下去", s: 0,
+          res: "他又夢見了，這次指著他的人更多。" },
+        { act: "一個一個想：夢裡那些人，有誰真的這樣說過他？", att: "讓恐懼對上事實", s: 1,
+          res: "他想了很久，真的說過的只有一個。窗外的天，慢慢亮了。" },
+        { act: "整夜不睡，一直想最壞會怎樣。", att: "被恐懼牽著走", s: 0,
+          res: "天亮時他眼睛紅腫，最壞的事一件也沒發生。" }
+      ],
+      dejavu: "綾隱約記得，上次的惡夢，他沒有分清楚哪些是真的。"
+    },
+    S09R: {
+      open: "綾在牢裡夜夜做惡夢，夢見赤原和風城的人一起指著他，已經連續三晚了。",
+      body: "綾不敢睡，也不敢跟任何人說。今晚，隔壁牢房的老人敲了敲牆：「做惡夢了吧？」",
+      options: [
+        { act: "說「沒有」，翻身裝睡。", att: "一個人扛著", s: 0,
+          res: "那晚，他又夢見了。" },
+        { act: "把夢裡的事，一五一十說給老人聽。", att: "把恐懼說出來", s: 1,
+          res: "老人聽完笑了：「我年輕時也夢過。說出來，它就小了一半。」那晚綾睡得很沉。" },
+        { act: "叫獄卒拿酒來，想喝醉了就睡得著。", att: "麻痺自己", s: 0,
+          res: "酒沒有來，夢來了。" }
+      ],
+      dejavu: "綾隱約記得，上次有人敲牆問他，他沒有回答。"
+    },
+    S04U: {
+      open: "出獄那天，城邊有一間安靜的小屋等著他。",
+      body: "屋裡什麼聲音都沒有。綾躺在床上，雙手交疊在胸前，卻怎麼也閉不上眼。",
+      bridges: { 蝶: { good: "出獄那天，蝶在牢門外等他，替他在城邊找了一間安靜的小屋：「先睡吧，其他的明天再說。」", bad: "出獄那天沒有人來接他。他自己在城邊租了一間安靜的小屋。" } },
+      options: [
+        { act: "起身去辯論場，想趁熱替自己再說清楚。", att: "不肯讓自己停下來", s: 0,
+          res: "辯論場上的人看到他，紛紛走開。他累得差點站不住。" },
+        { act: "什麼都不做，睡了整整兩天。", att: "允許自己停下來", s: 1,
+          res: "醒來時窗外剛下過雨，空氣很乾淨。他覺得自己又能想事情了。", f: { 蝶: "good" } },
+        { act: "拿出紙筆，把整件事從頭寫下來，怕自己忘了。", att: "用整理代替休息", s: 0,
+          res: "他寫了一整夜，越寫越氣，天亮時一個字都不想再看。" }
+      ],
+      dejavu: "綾隱約記得，上次出獄以後，他一刻也沒讓自己停下來。"
+    },
+    S04R: {
+      open: "出獄以後，綾在城邊租了一間安靜的小屋，一躺就是七天。",
+      body: "身體早就養好了，他卻不想出門，什麼人都不想見。蝶來敲門，敲了很久。",
+      options: [
+        { act: "隔著門說：「我還沒準備好。」", att: "用休息躲開世界", s: 0,
+          res: "敲門聲停了。屋裡又安靜下來，靜得讓他害怕。", f: { 蝶: "bad" } },
+        { act: "開門讓她進來：「我好像躺太久了。」", att: "承認該起身了", s: 1,
+          res: "蝶笑了，把窗戶推開：「那就從曬太陽開始。」", f: { 蝶: "good" } },
+        { act: "開門說自己很好，明天就離開風城。", att: "從一個極端跳到另一個極端", s: 0,
+          res: "蝶看了他很久：「你連鞋都沒穿。」" }
+      ],
+      dejavu: "綾隱約記得，上次那扇門，他讓人敲了很久才開。"
+    },
+    S06U: {
+      open: "青鳶的刑罰，是離開風城一年，到下游的村子做工。",
+      body: "蝶划船送他，也叫綾一起上船。身後那段河水很急，往前漸漸平了下來。青鳶抱著膝蓋，一路都沒說話。",
+      options: [
+        { act: "一路勸青鳶：「到了那邊，要好好重新做人。」", att: "用說教代替陪伴", s: 0,
+          res: "青鳶把頭埋得更低了。", f: { 青鳶: "bad" } },
+        { act: "接過船槳讓蝶歇一歇，三個人就這樣安靜地往前划。", att: "陪著一起往平靜的地方去", s: 1,
+          res: "船靠岸時，青鳶小聲說了句謝謝。蝶看了綾一眼，沒說話，眼睛卻紅了。", f: { 青鳶: "good", 蝶: "good" } },
+        { act: "指著身後的急流說：「還好我們都過來了。」", att: "一直回頭看", s: 0,
+          res: "大家都回頭看了一眼。那段急流，好像又追了上來。" }
+      ],
+      dejavu: "綾隱約記得，上次在船上，他話說得太多了。"
+    },
+    S06R: {
+      open: "青鳶的刑罰，是離開風城一年，到下游的村子做工。蝶划船送他，也叫綾一起上船。船划到一半，青鳶突然說他不去了。",
+      body: "他抓著船舷，說下游沒有人認識他，他寧願回牢裡。蝶停下槳，看著綾。",
+      options: [
+        { act: "說：「好吧，那我們回去。」", att: "順著恐懼掉頭", s: 0,
+          res: "船掉頭了。急流打上來，三個人都濕透了。" },
+        { act: "把他的手從船舷上一根根扳開。", att: "替他做決定", s: 0,
+          res: "青鳶大哭，蝶也哭了。船還是往前，可是沒有人覺得好過。", f: { 青鳶: "bad" } },
+        { act: "坐到他旁邊：「我在澄湖也是這樣，走到村口又折回來好幾次。」", att: "陪他面對過渡的害怕", s: 1,
+          res: "青鳶愣了一下，慢慢鬆開了手。船又往前了。", f: { 青鳶: "good" } }
+      ],
+      dejavu: "綾隱約記得，上次在船上，青鳶的手一直沒有鬆開。"
+    },
+    S10U: {
+      open: "審判之後，疾矢失去了一切。",
+      body: "騎士的頭銜被收回，朋友都不再理他。天剛亮，綾在城門口看見他一個人倒在地上，渾身酒味，旁邊扔著折斷的劍。",
+      options: [
+        { act: "繞過他，告訴自己這是他應得的。", att: "用正義感關上心", s: 0,
+          res: "走出很遠，綾還是回頭看了一眼。疾矢一動也沒動。" },
+        { act: "蹲下來把他扶起來：「你做錯了事，也付了代價。最壞的已經過去了。」", att: "說出會痛的真話，也伸出手", s: 1,
+          res: "疾矢甩開他的手，又抓住了。兩個人在城門口一直坐到太陽升起。" },
+        { act: "安慰他：「不是你的錯，是風城的規矩害了你。」", att: "用好聽的話迴避真相", s: 0,
+          res: "疾矢冷笑：「你也開始說謊了。」" }
+      ],
+      dejavu: "綾隱約記得，上次在城門口，他沒有把真話說出口。"
+    },
+    S10R: {
+      open: "審判之後，疾矢失去了一切，卻還不肯認輸。",
+      body: "他在城門口攔下每個路人，要他們評評理，說自己是被陷害的。看到綾，他衝過來揪住他的衣領。",
+      options: [
+        { act: "用力推開他：「你自找的。」", att: "以牙還牙", s: 0,
+          res: "疾矢跌坐在地上，眼神更恨了。" },
+        { act: "讓他揪著，說：「我知道你不甘心。可是結束了，疾矢。」", att: "溫和而堅定地說出結束", s: 1,
+          res: "疾矢的手慢慢鬆開。他蹲下來，第一次哭了。" },
+        { act: "掏出錢塞給他：「拿去吧，別再鬧了。」", att: "用東西打發別人的痛", s: 0,
+          res: "疾矢把錢摔在地上：「連你也看不起我。」" }
+      ],
+      dejavu: "綾隱約記得，上次疾矢揪住他的時候，他沒有說出那句「結束了」。"
+    }
+  }
+};
+
+// 金穗谷試玩版事件資料（草稿）
+const JINSUI = {
+  id: "jinsui",
+  kicker: "第四章",
+  title: "金穗谷",
+  lead: "真正的豐足，是耕耘出來、也分得出去的。",
+  theme: "earth",
+  meter: "收成",
+  tool: "古金幣",
+  storeKey: "tarot-jinsui-proto-v1",
+  startCode: "P01",
+  endCode: "P10",
+  openNarr: "金穗谷的土很厚。抽兩張牌：這段旅程的起點，與終點。",
+  cardOrder: ["P01", "P02", "P03", "P04", "P05", "P06", "P07", "P08", "P09", "P10"],
+  cardNames: {
+    P01: "錢幣王牌", P02: "錢幣二", P03: "錢幣三", P04: "錢幣四", P05: "錢幣五",
+    P06: "錢幣六", P07: "錢幣七", P08: "錢幣八", P09: "錢幣九", P10: "錢幣十",
+    M05: "教皇", M15: "惡魔", M09: "隱者"
+  },
+  chars: ["穗兒", "巴農", "桑娘", "豐谷"],
+  sequence: [
+    ["open"], ["ev", "P01", "起點"], ["slot", "A"], ["major", "M05"], ["slot", "B"],
+    ["major", "M15"], ["slot", "C"], ["major", "M09"], ["ev", "P10", "終點"], ["end"]
+  ],
+  slots: {
+    A: { name: "落腳的日子", cards: ["P02", "P03", "P07"], pick: 2 },
+    B: { name: "入冬", cards: ["P04", "P05", "P08"], pick: 2 },
+    C: { name: "雪停之後", cards: ["P06", "P09"], pick: 2 }
+  },
+  lastPrefix: {
+    silence: "從雪山下來以後，綾的話變少了，眼睛卻更亮了。",
+    ask: "綾心裡還有很多問題，但他已經不急著問了。",
+    write: "山頂那面寫滿字的牆，綾一直記在心裡。"
+  },
+  ending: {
+    awake: "口袋裡的古金幣亮了起來，越來越燙。綾攤開老婆婆給的地圖，四塊土地的中央，浮現出一條回到懸崖的路。穗兒把一束自己種的麥穗塞進他的包袱：「帶著吧，這是金穗谷的土。」",
+    already: "古金幣在口袋裡暖暖的，地圖上那條回到懸崖的路還在。",
+    half: "古金幣熱了一下，又慢慢涼了。地圖上，回到懸崖的路只浮出了一半。"
+  },
+  people: [
+    { name: "穗兒", tag: "工匠行會的學徒", card: "錢幣侍者", intro: "認真、愛學的學徒，做什麼都一步一步來。和綾一起拜師，刻得比他慢，卻比他穩。" },
+    { name: "巴農", tag: "種田的農人，話很少", card: "錢幣騎士", intro: "慢、穩、話很少的農人。教綾種田，也教了他一個字：等。" },
+    { name: "桑娘", tag: "金穗谷的農家婦人，園子裡養著兔子", card: "錢幣王后", intro: "務實、會照顧人，園子裡養著兔子。是她收留了綾，讓他第一次有了家的感覺。" },
+    { name: "豐谷", tag: "金穗谷的地主", card: "錢幣國王", intro: "金穗谷的地主，富足，卻很怕失去。一場大雪之後，他學會了把產業交給下一代。" }
+  ],
+  majors: {
+    M05: {
+      text: "秋天，桑娘帶綾去見谷裡工匠行會的老祖師。綾和另一個學徒穗兒並肩跪在老祖師面前，行了拜師禮。起身時，綾忍不住問：「為什麼一定要照老方法做？」老祖師說：「先學會，再問要不要改。」",
+      flagLine: { who: "桑娘", good: "桑娘站在門口，偷偷擦了擦眼角。", bad: "桑娘把他送到門口就走了，頭也沒回。", other: "" },
+      reset: ["桑娘", "穗兒"]
+    },
+    M15: {
+      text: "大雪封了山，谷裡的存糧一天天少下去。地主豐谷卻用鐵鍊把穀倉鎖上，誰來借糧都不開門。他坐在穀倉前守著那把鎖，一夜一夜不睡。他不是壞人，只是太怕失去。那天深夜，積雪壓垮了穀倉的屋頂，一半的糧食都埋進了雪裡。豐谷跪在雪地上，手裡還握著那把鑰匙。",
+      flagLine: { who: "桑娘", good: "桑娘第一個趕到，二話不說，幫他從雪裡搶出糧袋。", bad: "全谷的人都站在遠處看著，沒有人上前。", other: "" },
+      reset: ["豐谷", "桑娘"]
+    },
+    M09: {
+      text: "開春後，山上的雪還沒化，綾一個人爬上了雪山。山頂的小屋裡，一個提著燈的老人什麼也沒問，就讓他住下了。",
+      lineBefore: true,
+      flagLine: { who: "巴農", good: "出發前，巴農默默陪他走到山腳，塞給他一捆柴。", bad: "", other: "" },
+      choice: [
+        { key: "silence", act: "陪老人一起沉默，什麼也不問。", res: "第三天夜裡，燈芯劈啪響了一聲，綾忽然想起第二塊記憶：他曾經抱著一個很重的包袱，站在懸崖邊。" },
+        { key: "ask", act: "一直問老人：你是誰？這裡是哪裡？我又是誰？", res: "老人只是笑。第三天夜裡，綾問累了，睡著時夢見自己抱著一個很重的包袱，站在懸崖邊。" },
+        { key: "write", act: "把一路上的事，一件件寫在小屋的牆上。", res: "寫到第三天，牆寫滿了。他退後一步，那些字遠遠看去，像一個人抱著包袱站在懸崖邊。" }
+      ],
+      after: "下山時，老人把燈遞給他：",
+      end: "「路很長，燈只照得到腳下。這樣就夠了。」",
+      reset: ["巴農"]
+    }
+  },
+  events: {
+    P01U: {
+      open: "綾走進金穗谷，口袋裡的古金幣微微發熱。",
+      body: "田裡的麥子快熟了，到處都缺人手。一個繫著圍裙的婦人上下打量他：「會做事嗎？包吃包住，一天一個銅板。」她叫桑娘。",
+      options: [
+        { act: "說：「我什麼都會！」先把工作拿到手再說。", att: "誇大自己", s: 0,
+          res: "桑娘讓他先挑水。他挑到第三擔就扭了腰。" },
+        { act: "老實說：「我不太會，但我願意學。」", att: "從真實的起點開始", s: 1,
+          res: "桑娘笑了：「會說實話，就學得會做事。」她遞給他一把鋤頭。", f: { 桑娘: "good" } },
+        { act: "問：「一個銅板？能不能多一點？」", att: "還沒開始就先算計", s: 0,
+          res: "桑娘挑了挑眉：「做了再說。」" }
+      ],
+      dejavu: "綾隱約記得，上次到金穗谷，他把自己說得太厲害了。"
+    },
+    P01R: {
+      open: "綾走進金穗谷，口袋裡的古金幣冰冰涼涼的。",
+      body: "到處都在找人手，他卻覺得種田太慢、太累，不是他要做的事。一個繫著圍裙的婦人叫住他：「缺工嗎？」她叫桑娘。",
+      options: [
+        { act: "說：「我只是路過。」繼續往前走。", att: "看不起眼前的機會", s: 0,
+          res: "他走了一整天，沒有一個地方留他。天黑時，他又走回了桑娘的門口。" },
+        { act: "說：「我其實不知道自己想做什麼。可以先從簡單的開始嗎？」", att: "承認自己沒有根，願意落地", s: 1,
+          res: "桑娘點點頭：「那就先餵雞。」口袋裡的古金幣好像暖了一點。", f: { 桑娘: "good" } },
+        { act: "問她有沒有更輕鬆、賺得更多的活。", att: "只想要快的", s: 0,
+          res: "桑娘指了指山上的礦場：「那裡賺得多，也死得快。」" }
+      ],
+      dejavu: "綾隱約記得，上次桑娘叫住他，他差一點就走過去了。"
+    },
+    P02U: {
+      open: "麥收時節，綾一個人要做三個人的事。",
+      body: "早上餵雞，中午挑水，下午還要趕去市集賣菜。他兩手都不夠用，扁擔兩頭的水桶晃來晃去。",
+      bridges: { 桑娘: { good: "麥收時節，桑娘放心地把三個人的事都交給綾。", bad: "麥收時節，桑娘一句話也沒多說，就把三個人的事丟給了綾。" } },
+      options: [
+        { act: "每件事都做快一點，用跑的做。", att: "用蠻力對抗忙亂", s: 0,
+          res: "水灑了一半，菜也忘了帶。他累倒在田埂上。" },
+        { act: "先停下來排好順序，順路的事一起做。", att: "在忙亂中找到節奏", s: 1,
+          res: "挑水的時候順便把菜帶去市集。傍晚收工時，他居然還有力氣哼歌。", f: { 桑娘: "good" } },
+        { act: "跟桑娘說：「太多了，我做不來。」", att: "一亂就放手", s: 0,
+          res: "桑娘拍拍他：「每個人第一年都這樣。」她把挑水的事交給了別人。" }
+      ],
+      dejavu: "綾隱約記得，上次麥收時，他什麼事都用跑的。"
+    },
+    P02R: {
+      open: "麥收時節，綾同時答應了三個人幫忙。",
+      body: "桑娘要他修籬笆，種田的巴農要他下田，市集的大叔要他送貨。現在三邊都在等，他一件也沒做完。",
+      options: [
+        { act: "三邊都跑一點，誰也不得罪。", att: "怕拒絕，把自己撕成三片", s: 0,
+          res: "三件事都只做了一半，三個人都不太高興。" },
+        { act: "去跟其中兩邊說：「對不起，我答應太多了，今天只能做一件。」", att: "承認失衡，重新取捨", s: 1,
+          res: "巴農點點頭：「早說嘛。」大叔也只是聳聳肩。那天的籬笆修得特別好。", f: { 巴農: "good" } },
+        { act: "躲到穀倉後面睡覺，等事情自己過去。", att: "逃避", s: 0,
+          res: "醒來時天已經黑了，三個人都在找他。" }
+      ],
+      dejavu: "綾隱約記得，上次他誰都不敢拒絕。"
+    },
+    P03U: {
+      open: "村裡要修穀倉的拱門。",
+      body: "木匠、石匠和管帳的老先生各有意見，吵了一整個早上。綾和學徒穗兒在旁邊遞工具，誰也沒問過他們的想法。",
+      options: [
+        { act: "跳出來說出自己的辦法，要大家照做。", att: "搶著當主角", s: 0,
+          res: "三個人一起瞪他。穗兒拉了拉他的袖子。" },
+        { act: "先把三個人的意見記下來，找出他們都同意的地方，再小聲提出來。", att: "讓每個人的手藝都放得進去", s: 1,
+          res: "三個人想了想，居然點了頭。拱門完成那天，木匠拍拍綾的肩：「小子，手藝不錯。」", f: { 穗兒: "good" } },
+        { act: "繼續遞工具，反正輪不到他說話。", att: "看輕自己能做的", s: 0,
+          res: "拱門修好了，跟他沒什麼關係。穗兒倒是被誇了一句。" }
+      ],
+      dejavu: "綾隱約記得，上次修拱門，他不是搶話就是不說話。"
+    },
+    P03R: {
+      open: "村裡要修穀倉的拱門，修到一半，三個師傅吵翻了。",
+      body: "木匠收拾工具要走，石匠說不幹了。管帳的老先生轉頭問綾：「你說，該聽誰的？」",
+      options: [
+        { act: "挑一個最有道理的人支持。", att: "加入一邊，讓分裂更深", s: 0,
+          res: "另外兩個人都走了。拱門就這樣停在一半。" },
+        { act: "說：「先別管聽誰的。拱門塌了，大家都沒有穀倉。今天能做的先做完。」", att: "把大家拉回共同的目標", s: 1,
+          res: "三個人互看一眼，悶悶地拿起工具。傍晚，拱門又多砌了三層。" },
+        { act: "說：「我只是來幫忙的，你們自己決定。」", att: "撇清自己", s: 0,
+          res: "那天沒有人動工。" }
+      ],
+      dejavu: "綾隱約記得，上次拱門停在一半，他沒有把大家拉回來。"
+    },
+    P07U: {
+      open: "種田的巴農帶綾下田插秧。",
+      body: "秧苗長得很慢，一個月過去才到膝蓋。綾每天跑去看三次，急得睡不著。巴農拄著鋤頭站在田邊，一句話也沒說。",
+      options: [
+        { act: "偷偷多下了兩倍的肥料，想讓它長快一點。", att: "用急躁催促", s: 0,
+          res: "第三天，有一片秧苗黃了。巴農蹲下去看了很久，什麼也沒說。", f: { 巴農: "bad" } },
+        { act: "問巴農：「我能做什麼？」然後照他說的，每天只拔草、顧水。", att: "投入，然後等", s: 1,
+          res: "巴農只說了一個字：「等。」到了月底，秧苗整整齊齊長到了腰。", f: { 巴農: "good" } },
+        { act: "覺得種田太慢，跑去市集幫忙賣東西。", att: "等不了就換", s: 0,
+          res: "秋收時大家都在笑，他卻不知道那片田是怎麼長成的。" }
+      ],
+      dejavu: "綾隱約記得，上次那片秧苗，他等不及了。"
+    },
+    P07R: {
+      open: "種田的巴農帶綾下田插秧，綾種的那一小塊田，收成比別人少了一半。",
+      body: "他跟巴農一樣早起、一樣拔草，結果還是這樣。巴農蹲在田邊，抓起一把土聞了聞。",
+      options: [
+        { act: "說：「我不適合種田。」把鋤頭丟在田邊。", att: "用結果否定自己", s: 0,
+          res: "巴農撿起鋤頭，靠在他門口，一句話也沒說。" },
+        { act: "蹲下來問巴農：「是哪裡出了問題？」", att: "誠實檢討，不放棄也不硬撐", s: 1,
+          res: "巴農指著土：「這塊地太酸，明年先養地。」這是他第一次一口氣說這麼多話。", f: { 巴農: "good" } },
+        { act: "晚上偷偷從別人的田裡移幾株過來。", att: "用捷徑掩蓋結果", s: 0,
+          res: "隔天，大家都看出那幾株長得不一樣。" }
+      ],
+      dejavu: "綾隱約記得，上次收成不好，他沒問原因就放棄了。"
+    },
+    P04U: {
+      open: "綾領到了第一季的工錢。",
+      body: "冬天快到了，他把錢縫進枕頭裡，一個銅板也捨不得花。他的鞋已經破了洞，冬衣也只有一件。",
+      options: [
+        { act: "繼續存，存夠了再說。", att: "被不安綁住", s: 0,
+          res: "初雪那天，他的腳凍傷了，看大夫花掉的錢比一雙鞋還多。" },
+        { act: "拿出一部分買了雙鞋和冬衣，剩下的照樣存起來。", att: "守得住，也用得出去", s: 1,
+          res: "新鞋很暖。桑娘看了一眼：「這才像會過日子的人。」", f: { 桑娘: "good" } },
+        { act: "把錢全拿出來，請學徒穗兒吃一頓好的。", att: "從一個極端跳到另一個極端", s: 0,
+          res: "那頓飯很好吃。三天後，他連買鹽的錢都沒有了。" }
+      ],
+      dejavu: "綾隱約記得，上次領到工錢，他抓得太緊了。"
+    },
+    P04R: {
+      open: "綾領到了第一季的工錢。冬天快到了，他把錢縫進枕頭裡，一個銅板也捨不得花。",
+      body: "縫在枕頭裡的錢不見了。他翻遍了屋子，越找越慌，開始懷疑每一個進過他房間的人。",
+      options: [
+        { act: "去質問學徒穗兒，因為只有他來過。", att: "被失去的恐懼吞掉", s: 0,
+          res: "穗兒的臉都白了。後來錢在床縫裡找到了，穗兒好幾天沒跟他說話。", f: { 穗兒: "bad" } },
+        { act: "坐下來承認自己慌了，然後慢慢地重新找一遍。", att: "鬆開對失去的恐懼", s: 1,
+          res: "錢就在床縫裡，只是掉下去了。他把錢拿出來，放進一個普通的陶罐。" },
+        { act: "告訴自己：錢沒了就沒了，以後什麼都不存。", att: "從死抓跳到放棄", s: 0,
+          res: "後來錢在床縫裡找到了，他卻真的再也沒存過一個銅板。" }
+      ],
+      dejavu: "綾隱約記得，上次錢不見的時候，他先懷疑了身邊的人。"
+    },
+    P05U: {
+      open: "第一場暴風雪來了。",
+      body: "綾送貨的路上，看見幾戶窮人家縮在雪裡。地主的穀倉和行會的大廳都亮著燈，他們卻進不去。",
+      options: [
+        { act: "把他們帶回桑娘的屋子，先烤火再說。", att: "不讓人在門外凍著", s: 1,
+          res: "桑娘什麼也沒問，往鍋裡多加了水。那晚屋裡擠滿了人，很暖。", f: { 桑娘: "good" } },
+        { act: "告訴他們行會的大廳在哪裡，讓他們自己去敲門。", att: "用指路代替伸手", s: 0,
+          res: "第二天，綾聽說他們在大廳門口等了一夜。" },
+        { act: "心裡難過，但送貨要緊，先繞過去。", att: "看見了，卻走開", s: 0,
+          res: "貨送到了。回程時，雪地上只剩幾個空空的腳印。" }
+      ],
+      dejavu: "綾隱約記得，上次在暴風雪裡，他沒有直接把人帶回家。"
+    },
+    P05R: {
+      open: "第一場暴風雪來了。那幾天，綾自己凍病了。",
+      body: "他燒得渾身發抖，卻不想麻煩任何人，一個人縮在穀倉的角落。門外有人在喊他的名字。",
+      options: [
+        { act: "不出聲，等病自己好。", att: "寧可受苦也不求助", s: 0,
+          res: "喊聲走遠了。那一夜特別長。" },
+        { act: "喊了一聲：「我在這裡。」", att: "讓別人進來", s: 1,
+          res: "門被推開，是穗兒和巴農。他們什麼也沒說，一左一右把他扛了回去。", f: { 穗兒: "good", 巴農: "good" } },
+        { act: "撐著站起來，說自己沒事，還能工作。", att: "逞強", s: 0,
+          res: "他走了三步就倒了。" }
+      ],
+      dejavu: "綾隱約記得，上次生病時，有人在門外喊他，他沒有出聲。"
+    },
+    P08U: {
+      open: "拜師之後，老祖師要綾和穗兒每天在作坊刻同一個花紋。",
+      body: "刻壞了就重來。一個月過去，綾的手指上全是傷。穗兒刻得比他慢，卻比他穩。",
+      bridges: { 穗兒: { good: "拜師之後，綾和穗兒每天並肩坐在作坊裡，刻同一個花紋。", bad: "拜師之後，綾和穗兒每天在作坊刻同一個花紋，卻一句話也不說。" } },
+      options: [
+        { act: "偷偷換一個簡單一點的花紋，反正老祖師不會發現。", att: "想跳過磨練", s: 0,
+          res: "老祖師看了一眼，只說：「重來。」" },
+        { act: "學穗兒放慢，一刀一刀，只求刻對。", att: "專注在眼前這一刀", s: 1,
+          res: "第三十二天，他刻出了第一個沒有歪的花紋。老祖師點了點頭。", f: { 穗兒: "good" } },
+        { act: "拚命加快，一天刻一百個。", att: "用數量代替用心", s: 0,
+          res: "他刻了一百個，沒有一個能用。" }
+      ],
+      dejavu: "綾隱約記得，上次在作坊，他總想快一點。"
+    },
+    P08R: {
+      open: "拜師之後，老祖師要綾和穗兒每天在作坊刻同一個花紋。這天，綾刻了一整天，一個也不敢交出去。",
+      body: "每個都有一點點歪，他就一直重來。穗兒已經交了五個。",
+      options: [
+        { act: "繼續重來，直到完美為止。", att: "被完美綁住", s: 0,
+          res: "天黑了，他手上只有一堆木屑。" },
+        { act: "挑一個最好的交出去，請老祖師指出哪裡不好。", att: "把作品交出去，讓磨練繼續", s: 1,
+          res: "老祖師指著一個角：「這裡。其他都對了。」綾鬆了一口氣，原來沒有那麼糟。" },
+        { act: "乾脆不刻了，說自己沒有天分。", att: "放棄", s: 0,
+          res: "穗兒把一塊木頭放回他手裡：「我也刻歪過啊。」" }
+      ],
+      dejavu: "綾隱約記得，上次在作坊，他刻了一整天，什麼也沒交出去。"
+    },
+    P06U: {
+      open: "雪停了，從雪裡搶救出來的糧食要分給大家。",
+      body: "桑娘把這件事交給綾。她拿出一桿秤：「一戶一戶秤，誰也不能多，誰也不能少。」窮人家排在最後面，不敢上前。",
+      options: [
+        { act: "每戶都秤一樣多，規矩就是規矩。", att: "只看規矩，不看人", s: 0,
+          res: "人多的人家不夠吃，人少的人家吃不完。" },
+        { act: "照每戶的人數來秤，讓排在最後的人先領。", att: "讓給予真正公平", s: 1,
+          res: "排在最後的老婦人接過糧袋，握著他的手很久沒放。", f: { 桑娘: "good" } },
+        { act: "先秤給認識的人，他們平常對自己好。", att: "用分配換人情", s: 0,
+          res: "輪到最後的人家時，只剩下一點點了。" }
+      ],
+      dejavu: "綾隱約記得，上次分糧時，他沒有先看看排在最後的人。"
+    },
+    P06R: {
+      open: "雪停了，從雪裡搶救出來的糧食分給了大家。綾把自己的那份也全分了出去。",
+      body: "他覺得自己應該多付出一點。可是過了幾天，他餓得頭昏，大家要分給他吃，他都推掉了。",
+      options: [
+        { act: "繼續推：「我沒關係，你們先吃。」", att: "只肯給，不肯收", s: 0,
+          res: "他在田埂上暈倒了，被人抬了回去。" },
+        { act: "收下一碗粥：「謝謝，我真的餓了。」", att: "讓給予也能流回自己", s: 1,
+          res: "送粥的是那個老婦人。她笑得好開心：「終於輪到我幫你了。」" },
+        { act: "去跟地主豐谷借糧，免得欠大家人情。", att: "寧可欠有錢人，也不受鄰居的情", s: 0,
+          res: "豐谷借了，卻記下了一筆很重的帳。", f: { 豐谷: "bad" } }
+      ],
+      dejavu: "綾隱約記得，上次大家要分給他吃，他都推掉了。"
+    },
+    P09U: {
+      open: "開春了，桑娘的園子是全谷最早冒芽的。",
+      body: "她一個人顧著菜園、果樹和兔子，什麼都不缺。地主豐谷提著空袋子，站在她的籬笆外，好半天開不了口。",
+      options: [
+        { act: "替桑娘出一口氣，對豐谷說：「現在知道要求人了？」", att: "把豐足變成報復", s: 0,
+          res: "豐谷轉身就走。桑娘看了綾一眼，什麼也沒說。", f: { 豐谷: "bad", 桑娘: "bad" } },
+        { act: "打開籬笆的門：「進來坐吧，桑娘剛泡了茶。」", att: "豐足到可以大方", s: 1,
+          res: "桑娘把糧食借給了豐谷，一點得意都沒有。她對綾說：「自己夠了，才分得出去。」", f: { 豐谷: "good", 桑娘: "good" } },
+        { act: "假裝沒看見，繼續幫桑娘鬆土。", att: "事不關己", s: 0,
+          res: "豐谷一直站到天黑才走。" }
+      ],
+      dejavu: "綾隱約記得，上次豐谷站在籬笆外，他沒有替他開門。"
+    },
+    P09R: {
+      open: "開春了，桑娘的園子是全谷最早冒芽的。綾在桑娘的園子裡也分到了一小塊地，收成很好。",
+      body: "他每天站在田邊看自己的菜，越看越得意，覺得自己什麼都不缺了。穗兒來問他，能不能分一點種子。",
+      options: [
+        { act: "說：「這是我自己種的。」把種子收好。", att: "把豐足關起來", s: 0,
+          res: "穗兒點點頭走了。那年冬天，綾的菜吃不完，爛了一半。", f: { 穗兒: "bad" } },
+        { act: "把最好的種子分一半給穗兒，還教他怎麼種。", att: "讓豐足流動", s: 1,
+          res: "隔年春天，穗兒的田長得比他還好。綾比自己豐收還高興。", f: { 穗兒: "good" } },
+        { act: "說：「好啊，全部拿去吧。」連自己的也不留。", att: "用全給證明自己不小氣", s: 0,
+          res: "隔年春天，他自己的田空了一半。" }
+      ],
+      dejavu: "綾隱約記得，上次收成好的時候，他捨不得分出去。"
+    },
+    P10U: {
+      open: "秋收那天，地主豐谷把全谷的人叫到曬穀場。",
+      body: "他把地契交給穗兒和村人共同經營。三代人圍著長桌吃飯，孩子跑來跑去。門邊坐著一個白髮旅人，摸著腳邊的兩隻灰狗，長得有點像老了的綾。豐谷舉起杯子，要綾也說幾句話。",
+      bridges: { 豐谷: { good: "秋收那天，豐谷紅著眼眶，把全谷的人叫到曬穀場。", bad: "秋收那天，豐谷板著臉把全谷的人叫到曬穀場，像是下了很大的決心。" } },
+      options: [
+        { act: "說：「這片地是大家一起救回來的，我很榮幸能有一份。」", att: "把一點功勞往自己身上攬", s: 0,
+          res: "大家鼓掌，有人說要把他的名字刻在穀倉上。綾心裡卻有一點不踏實。" },
+        { act: "說：「我只是路過的人。這片地，要留給以後的孩子。」", att: "不佔有，讓豐足傳下去", s: 1,
+          res: "大家安靜了一下，然後一起舉杯。門邊的白髮旅人對他點了點頭，起身走了。" },
+        { act: "推說自己不會講話，坐回角落。", att: "不敢站上屬於自己的位置", s: 0,
+          res: "豐谷嘆了口氣，自己把話說完。綾一直盯著門邊那個白髮旅人看。" }
+      ],
+      dejavu: "綾隱約記得，上次在曬穀場，他說的話好像不是自己真正想說的。"
+    },
+    P10R: {
+      open: "秋收那天，地主豐谷把全谷的人叫到曬穀場。豐谷說要把地契交出去，全谷卻吵了起來。",
+      body: "他的兒子不肯，穗兒不敢收，村人各說各的。長桌邊，一個白髮旅人摸著腳邊的兩隻灰狗，靜靜看著。豐谷轉頭問綾：「你說，該怎麼辦？」",
+      options: [
+        { act: "說：「給穗兒，他最認真。」", att: "替別人家做決定", s: 0,
+          res: "豐谷的兒子摔了杯子走了。" },
+        { act: "說：「我不能替你們決定。但地是大家的，先讓每個人把話說完。」", att: "讓傳承在對話裡完成", s: 1,
+          res: "那頓飯吃到深夜。最後地契上簽了很多人的名字，豐谷的兒子也簽了。" },
+        { act: "說：「這是你們家的事。」起身離開。", att: "撇清自己", s: 0,
+          res: "身後的爭吵聲一直持續到很晚。門邊的白髮旅人也走了。" }
+      ],
+      dejavu: "綾隱約記得，上次在曬穀場，他替別人做了不該他做的決定。"
+    }
+  }
+};
+
+// 終章試玩版（草稿）
+const FINALE = {
+  id: "finale",
+  type: "finale",
+  kicker: "終章",
+  title: "回到懸崖",
+  lead: "放下你找到的，才能再出發一次。",
+  theme: "cliff",
+  storeKey: "tarot-finale-proto-v1",
+  cardNames: { M10: "命運之輪", M16: "塔", M12: "吊人", M03: "皇后", M19: "太陽", M20: "審判", M21: "世界" },
+  tools: [
+    { ch: "chiyuan", tool: "短魔杖", land: "赤原" },
+    { ch: "chenghu", tool: "水袋", land: "澄湖" },
+    { ch: "fengcheng", tool: "匕首", land: "風城" },
+    { ch: "jinsui", tool: "古金幣", land: "金穗谷" }
+  ],
+  // 每塊土地沒有可用回憶時的預設感悟
+  fallback: {
+    chiyuan: "在最害怕的時候，還是站出來",
+    chenghu: "感受，而不被淹沒",
+    fengcheng: "真話會痛，但恐懼會一直痛",
+    jinsui: "等，而且分出去"
+  },
+  wheel: {
+    code: "M10",
+    text: "四塊土地走完，綾又回到了懸崖旁的山中小屋。屋外那架老水車還在轉，吱呀、吱呀，和他第一次醒來時一模一樣。老人正在煮飯，連鍋裡的菜都一樣。綾把包袱裡的東西一樣一樣擺上桌：短魔杖、水袋、匕首、古金幣。",
+    all: "四樣東西同時亮了起來。老人放下鍋勺，看了很久，只說了兩個字：「千年了。」",
+    some: "亮起來的只有{lit}。老人嘆了口氣，替他盛了一碗飯：「還不是這一次。」綾吃著吃著就睡著了。",
+    none: "四樣東西都沒有亮。老人嘆了口氣，替他盛了一碗飯：「還不是這一次。」綾吃著吃著就睡著了。",
+    loop: "醒來時，他躺在懸崖邊的小屋裡，什麼都不記得，一團白色的毛球睡在他旁邊。屋外的水車，又轉了一圈。"
+  },
+  scenes: [
+    {
+      code: "M16",
+      text: "隔天，老婆婆帶綾走到神廟後的高塔下，什麼也沒說。綾一階一階往上爬，越爬心裡越篤定：走過四塊土地、點亮了四樣工具，他終於知道自己是誰了——他就是那個覺醒者。爬到塔頂，他看見一頂王冠靜靜地放在那裡，像是等了他很久。",
+      choice: [
+        { act: "伸手去拿王冠。", res: "指尖碰到王冠的那一刻，" },
+        { act: "停在塔頂，回頭看一路爬上來的階梯。", res: "他回頭的那一刻，" },
+        { act: "對著山谷大喊：「我做到了！」", res: "喊聲還在山谷裡迴盪，" }
+      ],
+      after: "一道閃電劈中了塔頂。石塔從中間裂開，王冠飛了出去，綾跟著碎石一起往下掉。包袱破了，四樣東西散進了黑夜裡。原來他以為的「終於知道自己是誰」，只是另一個要人戴上的名字。"
+    },
+    {
+      code: "M12",
+      text: "他沒有摔到底。一條從崖壁長出來的樹根勾住了他的腳，他就這樣倒掛在懸崖邊，上不去，也下不來。夜很長。倒過來看，懸崖下面不再是深淵，而是一整片發著微光的雲。",
+      choice: [
+        { act: "拚命扭身，想抓住樹根爬上去。", res: "他越掙扎，樹根纏得越緊。累到最後，他終於不動了。" },
+        { act: "大聲喊老人和老婆婆。", res: "沒有人回答，只有風。他喊到聲音沙啞，終於安靜了下來。" },
+        { act: "不再掙扎，就這樣掛著，看那片雲。", res: "他第一次不急著去哪裡。心跳慢慢慢了下來。" }
+      ],
+      after: "天快亮的時候，他忽然想：也許從懸崖跳下去，從來就不是掉下去。"
+    },
+    {
+      code: "M03",
+      text: "天亮後，老人和老婆婆用繩子把他拉了上來。回到小屋，老婆婆煮了一碗湯，一口一口吹涼了餵給他喝。那個味道一入口，一路上的記憶碎片突然拼在一起：澄湖的蓮子湯、夢裡的白花、那雙很小的手。原本的世界裡，也有一個人這樣照顧過他——是外婆。她在騎樓下擺攤賣花，教他翻第一副塔羅牌，常說：「牌是用來照路的，不是用來嚇人的。」"
+    },
+    {
+      code: "M19",
+      text: "綾走到石塔倒下的地方。碎石堆裡長出了一大片向日葵，是赤原帶來的那顆種子，一夜之間開滿了。毛球在花叢裡鑽來鑽去，叼回了短魔杖，又鑽進去叼回水袋。綾像個孩子一樣笑出聲，跟著牠在花裡找，找回了匕首和古金幣。"
+    }
+  ],
+  judgement: {
+    code: "M20",
+    text: "老婆婆在懸崖邊吟唱一首古老的歌謠，是沒聽過的語言，綾聽不懂歌詞，但四塊土地的事，一件一件回到綾的心裡。",
+    prompt: "在每一塊土地，綾學會了什麼？",
+    reveal: "四句話串成了一條線：牌不是用來替別人找答案的，是一個人把日子真正活過一遍的地圖。他想起了自己真正的名字，也想起了原本的世界：他在夜市騎樓下替人抽牌解牌，天天告訴別人該怎麼活，自己卻過得渾渾噩噩。這就是他被帶到這裡的原因。"
+  },
+  world: {
+    code: "M21",
+    text: "懸崖邊，老人和老婆婆並肩站著。綾把四樣東西交給他們：「留給下一個醒來的人吧。」老人笑了：「我們等的覺醒者，從來不是戴王冠的人，是願意空著手出發的人。」老婆婆向他笑著點了點頭，千年的等待，終於可以結束了。綾空著手，像跳舞一樣，踏出了懸崖。",
+    epilogue: "早晨的夜市騎樓還沒開張。他把攤子擺好，第一位客人坐下來：「你幫我看看，我該怎麼辦？」他把牌放到一邊，笑了笑：「我們先不抽牌，你先說說，你最近過得怎麼樣？」"
+  }
+};
+
+</script>
+<script>
+// 試玩版引擎（多章節）
+// 序章：三張大牌，選擇不計分，但記在 progress.choices
+const PROLOGUE = {
+  id: "prologue", type: "prologue", kicker: "序章", title: "懸崖",
+  lead: "忘了自己是誰，好像也是一種輕鬆。", theme: "cliff", storeKey: "tarot-prologue-proto-v1",
+  quote: "日子像一副洗了太多次的牌，邊角都軟了，翻開來永遠是同一張。直到那天晚上，一陣怪風把其中一張吹走了。",
+  cardNames: { M00: "愚人", M01: "魔術師", M02: "女祭司" },
+  scenes: [
+    {
+      code: "M00",
+      text: ["先是有東西在舔他的臉。一團白色的毛球生物蹲在他胸口，尾巴搖得像要飛起來。",
+        "他在懸崖邊的小屋醒來，窗外是雲海，屋外一架老水車吱呀、吱呀地轉。名字、家、昨天，什麼都想不起來；床尾的包袱打開來，空空的。奇怪的是，他一點也不怕，反而覺得肩上輕了。",
+        "他走到懸崖最邊邊，雲在腳底下慢慢流。"],
+      choice: [
+        { key: "jump", act: "抬起一隻腳，想試試看會不會飛起來。", res: "毛球「嗚」了一聲，咬住他的褲管。「開玩笑的啦。」他把腳收回來。可是那一瞬間，他是真的覺得自己會飛。" },
+        { key: "ask", act: "蹲下來問毛球：「你知道我是誰嗎？」", res: "毛球歪著頭，舔了舔他的手。他笑了：「好吧，那我們兩個都不知道。」" },
+        { key: "back", act: "往後退兩步，離懸崖遠一點。", res: "毛球跑過來蹭他的腳。他的心還在跳，卻有點捨不得剛才站在邊邊的感覺。" }
+      ],
+      after: "屋子另一頭，飄來一陣煮湯的香味。",
+      dejavu: "綾隱約覺得，這片雲海，他好像看過很多次。"
+    },
+    {
+      code: "M01",
+      text: ["廚房裡，一個白髮老人在煮湯，灶裡的火只有一小撮，鍋子卻滾得很旺。桌上擺著四樣東西：短魔杖、水袋、匕首、古金幣。「這是你的，你帶來的。」老人把湯推給他，「先吃。肚子餓的人，什麼都想不起來。」",
+        "老人替他取了名字，叫「綾」：一種素素的、還沒繡上花樣的絲布。他緩緩地說：「我在這座懸崖上等了一千年，等一個能把它們喚醒的『覺醒者』。」",
+        "洗碗聲裡，綾無意識地把四樣東西攤開、翻看、收起，熟練得讓他胃裡一陣不舒服。「我不知道這些東西有什麼關聯……」"],
+      dejavu: "綾隱約覺得，這碗湯的味道，他喝過不只一次。"
+    },
+    {
+      code: "M02",
+      text: ["第二天，綾沿著山路往下走，走到路斷掉的地方，有一座小小的石頭神廟。門口立著兩根柱子，廟後連著一座高塔。",
+        "神廟中緩緩走出一位老婆婆，攤開一卷地圖：赤原、澄湖、風城、金穗谷，四塊土地繞著懸崖。「這是你要去的地方。去那裡生活，跟那裡的人一起笑、一起吵、一起受傷。時機到了，你會再回到這裡。」"],
+      hint: "臨走前，綾回頭問了一句。",
+      choice: [
+        { key: "tower", act: "「廟後那座塔，是做什麼用的？」", res: "老婆婆抬頭看了塔一眼：「等你回來，自己爬上去看。」" },
+        { key: "past", act: "「我以前是什麼樣的人？」", res: "「一個很會回答問題的人。」老婆婆說，「現在，換你問了。」" },
+        { key: "again", act: "「如果我一直回不來呢？」", res: "「那你就再走一次。」老婆婆說，「我們等得起。」" }
+      ],
+      after: "老婆婆隱入廟裡。天邊有一抹紅，毛球在他腳邊轉圈。綾把地圖收進包袱，對毛球說：「走吧，先去看看。」毛球汪了一聲，像是在笑。",
+      dejavu: "綾隱約覺得，老婆婆好像在等他問另一個問題。"
+    }
+  ],
+  closing: "他們往紅色的那一邊走去。",
+  wedge: [
+    "晚上十一點，夜市收得差不多了。騎樓下那張折疊桌還亮著一盞小燈，紫色桌巾的邊角磨出了毛，桌上壓著一張護貝過的價目表：「塔羅占卜　一問三百」。",
+    "最後一位客人是個哭花了妝的女孩，問前男友會不會回來。他洗牌、切牌、攤開三張，嘴巴比腦袋先動：「這張是聖杯五。妳現在只看得見打翻的杯子，可是妳身後還有兩個沒倒。」女孩點點頭，又哭了一陣，付了錢走了。",
+    "他把三百塊折好，塞進鐵盒。鐵盒裡的錢不夠下個月的房租。剛剛那句話說得真好聽，可是他自己，已經多久沒回頭看過身後那兩個杯子了？日子像一副洗了太多次的牌，邊角都軟了，翻開來永遠是同一張。",
+    "收攤的時候起了一陣怪風，一張牌從桌上被吹落，翻滾著飛進黑暗裡。他追過騎樓、追過紅綠燈，追上一段他不記得夜市附近有過的斜坡。那張牌停在坡頂，正面朝上：0 愚人。"
+  ],
+  wedgeEnd: "他蹲下去撿。後來的事，他就不記得了。"
+};
+
+const CHAPTERS = [CHIYUAN, CHENGHU, FENGCHENG, JINSUI];
+const MENU = [PROLOGUE, ...CHAPTERS, FINALE];
+let C = null;            // 目前章節
+let progress = null;     // 目前章節的進度
+let run = null;
+let queue = [];
+let showFlags = false;
+const memStores = {};
+
+function blankProgress() { return { runs: 0, heat: 0, solved: {}, seen: {}, awake: false, met: {} }; }
+function loadProgress(ch) {
+  let p = null;
+  try { const raw = localStorage.getItem(ch.storeKey); if (raw) p = JSON.parse(raw); } catch (e) { p = memStores[ch.id]; }
+  p = p || blankProgress();
+  p.met = p.met || {};
+  return p;
+}
+function saveProgress() {
+  memStores[C.id] = progress;
+  try { localStorage.setItem(C.storeKey, JSON.stringify(progress)); } catch (e) {}
+}
+
+const $ = (s) => document.querySelector(s);
+const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const drawUp = () => Math.random() < 2 / 3;
+
+function setChapter(ch) {
+  C = ch;
+  progress = ch ? loadProgress(ch) : null;
+  document.body.dataset.theme = ch ? ch.theme : "fire";
+}
+
+function updateHud() {
+  const hud = $("#hud");
+  hud.style.visibility = C ? "visible" : "hidden";
+  hud.classList.toggle("finale", !!(C && C.type));
+  if (!C || C.type) return;
+  const pct = Math.min(progress.heat / THRESHOLD, 1) * 100;
+  $("#meter-name").textContent = C.meter;
+  $("#heat-fill").style.width = pct + "%";
+  $("#heat-num").textContent = `${progress.heat} / ${THRESHOLD}`;
+  $("#run-num").textContent = run ? `第 ${progress.runs + 1} 輪` : `已走 ${progress.runs} 輪`;
+  $("#wand").textContent = `${C.tool}：${progress.awake ? "醒" : "沉睡"}`;
+  $("#wand").classList.toggle("awake", progress.awake);
+  const fb = $("#flags");
+  fb.style.display = showFlags && run ? "flex" : "none";
+  if (run) fb.innerHTML = C.chars.map(c => `<span class="flag ${run.flags[c]}">${c}：${({ good: "好", bad: "壞", normal: "普通" })[run.flags[c]]}</span>`).join("");
+}
+
+function markMet(text, box) {
+  C.people.forEach(pp => {
+    if (text.includes(pp.name) && !progress.met[pp.name]) {
+      progress.met[pp.name] = true; saveProgress();
+      if (box) box.appendChild(el("div", "meet", `<span class="meet-label">人物登場</span><b>${pp.name}</b>　${pp.tag}`));
+      const t = $("#toast"); t.textContent = `新人物：${pp.name}`; t.classList.remove("show"); void t.offsetWidth; t.classList.add("show");
+    }
+  });
+}
+
+function stage() { const s = $("#stage"); s.innerHTML = ""; window.scrollTo(0, 0); return s; }
+
+function cardFace(code, up) {
+  const major = code.startsWith("M");
+  const c = el("div", "card face" + (up ? "" : " reversed") + (major ? " major" : ""));
+  const name = C.cardNames[code] || "";
+  c.classList.add("art"); c.title = name;
+  c.innerHTML = `<div class="card-art"><img src="img/cards/${code}.jpg" alt="${name}" draggable="false"></div>`;
+  c.appendChild(el("div", "card-cap", major ? name : `${name}・<span class="o">${up ? "正位" : "逆位"}</span>`));
+  return c;
+}
+function cardBack() { return el("div", "card back", `<div class="back-pattern"></div>`); }
+function continueBtn(text = "繼續", fn = next) { const b = el("button", "btn primary", text); b.onclick = fn; return b; }
+function next() { const step = queue.shift(); updateHud(); if (step) step(); }
+
+// ---------- 章節選單 ----------
+// 封面副標（可自行改寫）
+const TAGLINE = "翻開牌之後，你會……？";
+
+function showHome() {
+  run = null; queue = [];
+  setChapter(null);
+  updateHud();
+  const s = stage();
+  if (DEMO) s.appendChild(el("div", "chapter-kicker", "試玩版"));
+  s.appendChild(el("h1", "home-title", "我來異世界可不想再成為塔羅師"));
+  const unlocked = DEMO || hasCleared();
+  s.appendChild(el("p", "lead", TAGLINE));
+  const jr = el("div", "btn-row journey-box");
+  jr.appendChild(continueBtn("踏上旅程", startJourney));
+  const saved = loadJourney();
+  if (saved && saved.idx > 0 && saved.idx < journeyOrder().length) {
+    const rb = el("button", "btn ghost", `繼續上次的旅程（${journeyOrder()[saved.idx].title}）`); rb.onclick = resumeJourney; jr.appendChild(rb);
+  }
+  s.appendChild(jr);
+  if (!unlocked) {
+    const foot0 = el("div", "home-foot");
+    if (hasEnded()) foot0.appendChild(btnGhost("回憶牆", showWall, "small"));
+    if (hasEnded() && FEEDBACK_PAGE) foot0.appendChild(btnGhost("給作者回饋", () => showFeedback(showHome), "small"));
+    foot0.appendChild(btnGhost("隱私說明", () => showPrivacy(showHome), "small"));
+    s.appendChild(foot0);
+    return;
+  }
+  s.appendChild(el("div", "step-label", "章節選單"));
+  const list = el("div", "chapters");
+  MENU.forEach(ch => {
+    const p = loadProgress(ch);
+    const b = el("button", "chapter-card theme-" + ch.theme);
+    const meta = ch.type === "prologue"
+      ? (p.runs ? `已走 ${p.runs} 次` : "從這裡開始")
+      : ch.type === "finale"
+      ? "四樣工具：" + toolStatus().map(t => `${t.tool}${t.awake ? "醒" : "睡"}`).join("・")
+      : `${ch.meter} ${p.heat} / ${THRESHOLD}・${ch.tool}${p.awake ? "已醒" : "沉睡"}・圖鑑 ${collectN(ch, p)}`;
+    b.innerHTML = (coverSrc(ch) ? `<img class="cc-cover" src="${coverSrc(ch)}" alt="" loading="lazy">` : "") + `<div class="cc-kicker">${ch.kicker}</div><div class="cc-title">${ch.title}</div><div class="cc-lead">${ch.lead}</div>
+      <div class="cc-meta">${meta}</div>`;
+    b.onclick = () => { setChapter(ch); showTitle(); };
+    list.appendChild(b);
+  });
+  s.appendChild(list);
+  const foot = el("div", "home-foot");
+  if (hasEnded()) foot.appendChild(btnGhost("回憶牆", showWall, "small"));
+  if (hasEnded() && FEEDBACK_PAGE) foot.appendChild(btnGhost("給作者回饋", () => showFeedback(showHome), "small"));
+  foot.appendChild(btnGhost("隱私說明", () => showPrivacy(showHome), "small"));
+  s.appendChild(foot);
+}
+
+// 圖鑑收集數：遇見的人物 + 已懂的事件
+function collectN(ch, p) {
+  const got = ch.people.filter(pp => p.met[pp.name]).length + Object.keys(p.solved || {}).length;
+  const all = ch.people.length + Object.keys(ch.events).length;
+  return `${got} / ${all}`;
+}
+
+function showTitle() {
+  if (C.type === "finale") return showFinaleTitle();
+  if (C.type === "prologue") return showPrologueTitle();
+  run = null;
+  updateHud();
+  const s = stage();
+  landHero(s, C);
+  const row = el("div", "btn-row");
+  row.appendChild(continueBtn(progress.runs ? `再走一次${C.title}` : `走進${C.title}`, startRun));
+  if (progress.runs) { const r = el("button", "btn ghost", "查看圖鑑"); r.onclick = () => showCollection(showTitle); row.appendChild(r); }
+  const h = el("button", "btn ghost", "回到章節選單"); h.onclick = showHome; row.appendChild(h);
+  s.appendChild(row);
+}
+
+function startRun() {
+  run = { flags: Object.fromEntries(C.chars.map(c => [c, "normal"])), orient: { [C.startCode]: drawUp(), [C.endCode]: drawUp() }, choice: null, log: [], trail: [] };
+  queue = C.sequence.map(st => {
+    if (st[0] === "open") return showOpening;
+    if (st[0] === "ev") return () => showEvent(st[1], run.orient[st[1]], st[2]);
+    if (st[0] === "slot") return () => showSlot(st[1]);
+    if (st[0] === "major") return () => showMajor(st[1]);
+    return showEnding;
+  });
+  next();
+}
+
+// 洗牌、攤成扇形、抽 need 張；pool 依抽出順序發牌
+function deckDraw(s, pool, need, labels, onDone) {
+  const hint = el("p", "narr center", "洗牌中……");
+  s.appendChild(hint);
+  const DECK = 12;
+  const table = el("div", "deck-table");
+  const fanCards = [];
+  for (let i = 0; i < DECK; i++) {
+    const b = cardBack();
+    b.classList.add("deck-card");
+    b.style.zIndex = i;
+    table.appendChild(b);
+    fanCards.push(b);
+  }
+  s.appendChild(table);
+  const picked = el("div", "card-row picked-row");
+  s.appendChild(picked);
+  const btnWrap = el("div", "btn-row");
+  s.appendChild(btnWrap);
+  fanCards.forEach((b, i) => {
+    b.style.setProperty("--dx", (i % 2 ? 46 : -46) + "px");
+    b.style.animationDelay = (i * 0.04) + "s";
+    b.classList.add("shuffling");
+  });
+  const chosen = [];
+  setTimeout(() => {
+    hint.textContent = `抽 ${need} 張牌`;
+    const w = Math.min(table.clientWidth, 640);
+    const span = Math.min(w - 120, 520);
+    fanCards.forEach((b, i) => {
+      b.classList.remove("shuffling");
+      const t = i / (DECK - 1) - 0.5;
+      b.style.transform = `translateX(${t * span}px) translateY(${Math.abs(t) * 34}px) rotate(${t * 34}deg)`;
+      b.classList.add("clickable", "fanned");
+      b.onclick = () => {
+        if (chosen.length >= need || b.classList.contains("taken")) return;
+        const card = pool[chosen.length];
+        const lab = labels && labels[chosen.length];
+        chosen.push(card);
+        b.classList.add("taken");
+        const holder = el("div", "card-slot");
+        const f = cardFace(card.code, card.up);
+        f.classList.add("flip-in");
+        holder.appendChild(f);
+        if (lab) holder.appendChild(el("div", "slot-cap", lab));
+        picked.appendChild(holder);
+        if (chosen.length === need) {
+          fanCards.forEach(x => { if (!x.classList.contains("taken")) x.classList.add("dim"); });
+          hint.textContent = "命運已經翻開。";
+          onDone(chosen, btnWrap);
+        }
+      };
+    });
+  }, 1500);
+}
+
+function showOpening() {
+  const s = stage();
+  s.appendChild(el("div", "step-label", "開局"));
+  s.appendChild(el("p", "narr", C.openNarr));
+  const pool = [{ code: C.startCode, up: run.orient[C.startCode] }, { code: C.endCode, up: run.orient[C.endCode] }];
+  deckDraw(s, pool, 2, ["起點", "終點"], (chosen, btnWrap) => btnWrap.appendChild(continueBtn("出發")));
+}
+
+function showSlot(key) {
+  const slot = C.slots[key];
+  const s = stage();
+  s.appendChild(el("div", "step-label", `第 ${({ A: 1, B: 2, C: 3 })[key]} 段路・${slot.name}`));
+  const pool = shuffle(slot.cards).map(code => ({ code, up: drawUp() }));
+  deckDraw(s, pool, slot.pick, null, (chosen, btnWrap) => {
+    const ordered = chosen.slice().sort((a, b2) => a.code.localeCompare(b2.code));
+    queue.unshift(...ordered.map(c => () => showEvent(c.code, c.up, slot.name)));
+    btnWrap.appendChild(continueBtn());
+  });
+}
+
+function pickOpen(ev) {
+  if (!ev.bridges) return ev.open;
+  for (const who of Object.keys(ev.bridges)) {
+    const fl = run.flags[who];
+    if (fl === "good" || fl === "bad") return ev.bridges[who][fl];
+  }
+  return ev.open;
+}
+
+function showEvent(code, up, where) {
+  const id = code + (up ? "U" : "R");
+  const ev = C.events[id];
+  if (run.trail) run.trail.push({ code, up });
+  const s = stage();
+  s.appendChild(el("div", "step-label", where));
+  const wrap = el("div", "event");
+  wrap.appendChild(cardFace(code, up));
+  const txt = el("div", "event-text");
+  let opening = pickOpen(ev);
+  if (code === C.endCode && run.choice && C.lastPrefix[run.choice]) opening = C.lastPrefix[run.choice] + opening;
+  txt.appendChild(el("p", "narr", opening + ev.body));
+  markMet(opening + ev.body, txt);
+  const solved = !!progress.solved[id];
+  if (solved) txt.appendChild(el("p", "dejavu", "（這件事，綾已經懂了。）"));
+  else if (progress.seen[id]) txt.appendChild(el("p", "dejavu", ev.dejavu));
+  wrap.appendChild(txt);
+  s.appendChild(wrap);
+
+  const opts = el("div", "options");
+  const out = el("div", "outcome");
+  shuffle(ev.options).forEach(o => {
+    const b = el("button", "option", o.act);
+    b.onclick = () => {
+      opts.querySelectorAll("button").forEach(x => { x.disabled = true; if (x !== b) x.classList.add("faded"); });
+      b.classList.add("picked");
+      let gain = 0;
+      if (o.s === 1 && !progress.solved[id]) { gain = 1; progress.solved[id] = true; progress.heat += 1; }
+      progress.seen[id] = true;
+      if (o.f) Object.entries(o.f).forEach(([k, v]) => { run.flags[k] = v; });
+      run.log.push({ code, up, att: o.att, s: o.s, gain, already: o.s === 1 && !gain });
+      saveProgress();
+      out.appendChild(el("p", "narr", o.res));
+      markMet(o.res, out);
+      if (gain) out.appendChild(el("div", "gain", `${C.meter} +1`));
+      else if (o.s === 1) out.appendChild(el("div", "gain muted", "已經懂了，不再加分"));
+      out.appendChild(el("div", "btn-row")).appendChild(continueBtn());
+      updateHud();
+      out.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    };
+    opts.appendChild(b);
+  });
+  s.appendChild(opts);
+  s.appendChild(out);
+}
+
+function majorLine(m) {
+  const fl = run.flags[m.flagLine.who];
+  return fl !== "normal" && m.flagLine[fl] ? m.flagLine[fl] : (m.flagLine.other || "");
+}
+
+function showMajor(code) {
+  const m = C.majors[code];
+  if (run.trail) run.trail.push({ code, up: true });
+  const s = stage();
+  s.appendChild(el("div", "step-label major-label", "主線"));
+  const wrap = el("div", "event");
+  wrap.appendChild(cardFace(code, true));
+  const txt = el("div", "event-text");
+  txt.appendChild(el("p", "narr", m.text));
+  markMet(m.text, txt);
+  wrap.appendChild(txt);
+  s.appendChild(wrap);
+  const finish = () => { m.reset.forEach(c => run.flags[c] = "normal"); next(); };
+  const line = majorLine(m);
+
+  if (!m.choice || m.lineBefore) {
+    if (line) { txt.appendChild(el("p", "narr", line)); markMet(line, txt); }
+  }
+  if (!m.choice) {
+    s.appendChild(el("div", "btn-row")).appendChild(continueBtn("繼續", finish));
+    return;
+  }
+  const opts = el("div", "options");
+  const out = el("div", "outcome");
+  m.choice.forEach(o => {
+    const b = el("button", "option", o.act);
+    b.onclick = () => {
+      opts.querySelectorAll("button").forEach(x => { x.disabled = true; if (x !== b) x.classList.add("faded"); });
+      b.classList.add("picked");
+      run.choice = o.key;
+      const tail = m.after + (m.lineBefore ? "" : line) + m.end;
+      out.appendChild(el("p", "narr", o.res));
+      out.appendChild(el("p", "narr", tail));
+      markMet(o.res + tail, out);
+      out.appendChild(el("div", "btn-row")).appendChild(continueBtn("繼續", finish));
+    };
+    opts.appendChild(b);
+  });
+  s.appendChild(el("p", "hint", `大牌的選擇不影響${C.meter}，但會被記住。`));
+  s.appendChild(opts);
+  s.appendChild(out);
+}
+
+function showEnding() {
+  const s = stage();
+  s.appendChild(el("div", "step-label", "收尾"));
+  let text, cls;
+  const wasAwake = progress.awake;
+  if (wasAwake) { text = C.ending.already; cls = "awake"; }
+  else if (progress.heat >= THRESHOLD) { progress.awake = true; text = C.ending.awake; cls = "awake"; }
+  else { text = C.ending.half; cls = "half"; }
+  progress.runs += 1;
+  saveProgress();
+  const box = el("div", "ending " + cls);
+  box.appendChild(el("p", "narr", text));
+  box.appendChild(el("div", "ending-tag", wasAwake ? `${C.tool}：醒` : progress.awake ? `${C.tool}醒了` : `${C.tool}：半醒`));
+  s.appendChild(box);
+  s.appendChild(el("div", "btn-row")).appendChild(continueBtn("看這一輪的牌", showSummary));
+}
+
+function showSummary() {
+  const s = stage();
+  const lastLog = run.log;
+  if (journey) journeyRecord(run);
+  run = null;
+  updateHud();
+  s.appendChild(el("div", "step-label", `第 ${progress.runs} 輪的旅程・回憶`));
+  s.appendChild(el("p", "hint", "這一路上，每一次抉擇時，綾的心是這樣走的。"));
+  const list = el("div", "summary");
+  lastLog.forEach(l => {
+    const r = el("div", "sum-row");
+    const mark = l.gain ? `<span class="pt">+1</span>` : l.already ? `<span class="pt muted">已懂</span>` : `<span class="pt zero">0</span>`;
+    r.innerHTML = `<span class="sum-card">${miniArt(l.code, l.up)}<span>${C.cardNames[l.code]}・${l.up ? "正" : "逆"}</span></span><span class="sum-att">那時的心：${l.att}</span>${mark}`;
+    list.appendChild(r);
+  });
+  s.appendChild(list);
+  const solvedN = Object.keys(progress.solved).length;
+  const metN = C.people.filter(pp => progress.met[pp.name]).length;
+  s.appendChild(el("p", "lead small", `${C.meter} ${progress.heat} / ${THRESHOLD}・已懂的事件 ${solvedN} / ${Object.keys(C.events).length}・遇見的人物 ${metN} / ${C.people.length}`));
+  const row = el("div", "btn-row");
+  if (journey) { row.appendChild(continueBtn("繼續旅程", nextJourney)); s.appendChild(row); return; }
+  row.appendChild(continueBtn("再走一輪", startRun));
+  const c = el("button", "btn ghost", "圖鑑"); c.onclick = () => showCollection(showTitle); row.appendChild(c);
+  const h = el("button", "btn ghost", "章節選單"); h.onclick = showHome; row.appendChild(h);
+  s.appendChild(row);
+}
+
+function showCollection(back) {
+  const s = stage();
+  s.appendChild(el("div", "step-label", `${C.title}圖鑑`));
+  const metN = C.people.filter(pp => progress.met[pp.name]).length;
+  s.appendChild(el("h3", "sec", `人物 ${metN} / ${C.people.length}`));
+  const pg = el("div", "people");
+  C.people.forEach(pp => {
+    const met = progress.met[pp.name];
+    const c = el("div", "person " + (met ? "met" : "unmet"));
+    c.innerHTML = met
+      ? (PORTRAIT_FILE[pp.card] ? `<div class="portrait has-img"><img src="img/v1/portrait_${PORTRAIT_FILE[pp.card]}.jpg" alt="${pp.name}" loading="lazy"></div>` : `<div class="portrait"><span>${pp.name}</span><small>圖待生成</small></div>`) + `<div class="pinfo"><div class="pname">${pp.name}<span class="pcard">${pp.card}</span></div><p>${pp.intro}</p></div>`
+      : `<div class="portrait"><span>？</span></div><div class="pinfo"><div class="pname">？？？</div><p>還沒在旅途中遇見。</p></div>`;
+    pg.appendChild(c);
+  });
+  s.appendChild(pg);
+  s.appendChild(el("h3", "sec", `事件 ${Object.keys(progress.solved).length} / ${Object.keys(C.events).length}`));
+  s.appendChild(el("p", "hint", "亮起：已懂　淡色：遇過但還沒做對　問號：還沒遇過"));
+  const grid = el("div", "cgrid");
+  C.cardOrder.forEach(code => {
+    ["U", "R"].forEach(o => {
+      const id = code + o;
+      const st = progress.solved[id] ? "solved" : progress.seen[id] ? "seen" : "unseen";
+      grid.appendChild(el("div", "ccell " + st, st === "unseen"
+        ? `<span class="mini-art back">？</span><span>？？？</span><small>${o === "U" ? "正位" : "逆位"}</small>`
+        : `${miniArt(code, o === "U")}<span>${C.cardNames[code]}</span><small>${o === "U" ? "正位" : "逆位"}</small>`));
+    });
+  });
+  s.appendChild(grid);
+  const row = el("div", "btn-row");
+  row.appendChild(continueBtn("返回", back));
+  s.appendChild(row);
+}
+
+// ---------- 啟動 ----------
+document.addEventListener("DOMContentLoaded", () => {
+  if (!DEMO) { $("#toggle-flags").hidden = true; $("#reset").hidden = true; }
+  $("#toggle-flags").onclick = () => { showFlags = !showFlags; updateHud(); };
+  $("#home").onclick = showHome;
+  $("#reset").onclick = () => { $("#confirm-text").textContent = `清除${C.title}的${C.meter}、圖鑑和輪數，從頭開始？`; $("#confirm").style.display = "flex"; };
+  $("#confirm-yes").onclick = () => {
+    progress = blankProgress(); saveProgress(); $("#confirm").style.display = "none"; queue = []; showTitle();
+  };
+  $("#confirm-no").onclick = () => { $("#confirm").style.display = "none"; };
+  // 有圖片的畫面才顯示「圖片出處」小標
+  const tag = $("#credit-tag");
+  const syncTag = () => { tag.style.display = $("#stage").querySelector("img") ? "block" : "none"; };
+  new MutationObserver(syncTag).observe($("#stage"), { childList: true, subtree: true });
+  tag.onclick = () => { $("#credits").style.display = "flex"; };
+  $("#credits-close").onclick = () => { $("#credits").style.display = "none"; };
+  $("#credits").onclick = (e) => { if (e.target.id === "credits") $("#credits").style.display = "none"; };
+  showHome();
+});
+
+// ---------- 終章 ----------
+function toolStatus() {
+  return FINALE.tools.map(t => {
+    const ch = CHAPTERS.find(c => c.id === t.ch);
+    return { ...t, awake: !!loadProgress(ch).awake, chObj: ch };
+  });
+}
+
+function showFinaleTitle() {
+  run = null;
+  updateHud();
+  const s = stage();
+  s.appendChild(el("div", "chapter-kicker", C.kicker));
+  s.appendChild(el("h1", "chapter-title", C.title));
+  s.appendChild(el("p", "lead", C.lead));
+  const st = toolStatus();
+  const box = el("div", "panel");
+  box.innerHTML = `<p>四樣工具目前的狀態：</p><p>` +
+    st.map(t => `<span class="toolchip ${t.awake ? "on" : ""}">${t.land}・${t.tool}${t.awake ? "：醒" : "：沉睡"}</span>`).join(" ") + `</p>
+    <p>四樣都醒，才會走到真結局；沒全醒，就會在命運之輪輪迴。</p>`;
+  s.appendChild(box);
+  const row = el("div", "btn-row");
+  row.appendChild(continueBtn("照目前進度出發", () => startFinale(false)));
+  if (DEMO) { const t = el("button", "btn ghost", "測試：假設四樣都醒了"); t.onclick = () => startFinale(true); row.appendChild(t); }
+  const h = el("button", "btn ghost", "回到章節選單"); h.onclick = showHome; row.appendChild(h);
+  s.appendChild(row);
+}
+
+function majorScene(code, label) {
+  const s = stage();
+  s.appendChild(el("div", "step-label major-label", label || "終章"));
+  const wrap = el("div", "event");
+  wrap.appendChild(cardFace(code, true));
+  const txt = el("div", "event-text");
+  wrap.appendChild(txt);
+  s.appendChild(wrap);
+  return { s, txt };
+}
+
+function startFinale(testAll) {
+  const st = toolStatus();
+  const lit = testAll ? st : st.filter(t => t.awake);
+  run = { finale: true, testAll, judged: [] };
+  const all = lit.length === 4;
+  queue = [() => showWheel(lit, all)];
+  if (all) {
+    FINALE.scenes.forEach(sc => queue.push(() => showFinaleScene(sc)));
+    queue.push(showJudgement, showWorld);
+  } else {
+    queue.push(() => showLoop(st));
+  }
+  next();
+}
+
+function showWheel(lit, all) {
+  const w = FINALE.wheel;
+  const { s, txt } = majorScene(w.code, "回到懸崖");
+  txt.appendChild(el("p", "narr", w.text));
+  let line = all ? w.all : lit.length ? w.some.replace("{lit}", lit.map(t => t.tool).join("、")) : w.none;
+  txt.appendChild(el("p", "narr", line));
+  s.appendChild(el("div", "btn-row")).appendChild(continueBtn());
+}
+
+function showLoop(st) {
+  const { s, txt } = majorScene("M10", "輪迴");
+  txt.appendChild(el("p", "narr", FINALE.wheel.loop));
+  const box = el("div", "ending half");
+  box.appendChild(el("p", "narr", "還沒醒的土地：" + st.filter(t => !t.awake).map(t => `${t.land}（${t.tool}）`).join("、")));
+  box.appendChild(el("div", "ending-tag", "輪迴結局"));
+  s.appendChild(box);
+  if (journey) {
+    journey.finale = ["M10"]; journey.ending = "輪迴結局"; journey.judged = null; saveJourney();
+    s.appendChild(el("div", "btn-row")).appendChild(continueBtn("繼續", showSpread));
+    return;
+  }
+  const row = el("div", "btn-row");
+  row.appendChild(continueBtn("回到章節選單", showHome));
+  s.appendChild(row);
+}
+
+function showFinaleScene(sc) {
+  const { s, txt } = majorScene(sc.code);
+  txt.appendChild(el("p", "narr", sc.text));
+  if (!sc.choice) { s.appendChild(el("div", "btn-row")).appendChild(continueBtn()); return; }
+  const opts = el("div", "options");
+  const out = el("div", "outcome");
+  sc.choice.forEach(o => {
+    const b = el("button", "option", o.act);
+    b.onclick = () => {
+      opts.querySelectorAll("button").forEach(x => { x.disabled = true; if (x !== b) x.classList.add("faded"); });
+      b.classList.add("picked");
+      out.appendChild(el("p", "narr", o.res + (sc.after || "")));
+      out.appendChild(el("div", "btn-row")).appendChild(continueBtn());
+    };
+    opts.appendChild(b);
+  });
+  s.appendChild(opts);
+  s.appendChild(out);
+}
+
+// ---------- 序章 ----------
+function showPrologueTitle() {
+  run = null;
+  updateHud();
+  const s = stage();
+  s.appendChild(el("div", "chapter-kicker", C.kicker));
+  s.appendChild(el("h1", "chapter-title", C.title));
+  s.appendChild(el("p", "lead", C.lead));
+  s.appendChild(el("div", "panel", `<p>${C.quote}</p>`));
+  const row = el("div", "btn-row");
+  row.appendChild(continueBtn(progress.runs ? "再醒來一次" : "翻開第一張牌", () => startPrologue()));
+  if (progress.runs) { const w = el("button", "btn ghost", "重看楔子"); w.onclick = () => startPrologue(true); row.appendChild(w); }
+  const h = el("button", "btn ghost", "回到章節選單"); h.onclick = showHome; row.appendChild(h);
+  s.appendChild(row);
+}
+
+function startPrologue(withWedge) {
+  if (withWedge === undefined) withWedge = !progress.runs;
+  run = { prologue: true, picks: {} };
+  queue = [];
+  if (withWedge) C.wedge.forEach((t, i) => queue.push(() => showWedge(t, i === C.wedge.length - 1)));
+  C.scenes.forEach(sc => queue.push(() => showPrologueScene(sc)));
+  queue.push(showPrologueEnd);
+  next();
+}
+
+function showWedge(t, last) {
+  const s = stage();
+  s.appendChild(el("div", "step-label", "楔子"));
+  if (last) { const w = el("div", "event wedge-card"); w.appendChild(cardFace("M00", true)); s.appendChild(w); }
+  s.appendChild(el("p", "narr wedge", t));
+  if (last) s.appendChild(el("p", "narr wedge", C.wedgeEnd));
+  s.appendChild(el("div", "btn-row")).appendChild(continueBtn());
+}
+
+function showPrologueScene(sc) {
+  const { s, txt } = majorScene(sc.code, "序章");
+  sc.text.forEach(t => txt.appendChild(el("p", "narr", t)));
+  if (progress.runs && sc.dejavu) txt.appendChild(el("p", "dejavu", sc.dejavu));
+  if (!sc.choice) { s.appendChild(el("div", "btn-row")).appendChild(continueBtn()); return; }
+  if (sc.hint) s.appendChild(el("p", "narr center", sc.hint));
+  const opts = el("div", "options");
+  const out = el("div", "outcome");
+  sc.choice.forEach(o => {
+    const b = el("button", "option", o.act);
+    b.onclick = () => {
+      opts.querySelectorAll("button").forEach(x => { x.disabled = true; if (x !== b) x.classList.add("faded"); });
+      b.classList.add("picked");
+      run.picks[sc.code] = o.key;
+      out.appendChild(el("p", "narr", o.res));
+      if (sc.after) out.appendChild(el("p", "narr", sc.after));
+      out.appendChild(el("div", "btn-row")).appendChild(continueBtn());
+    };
+    opts.appendChild(b);
+  });
+  s.appendChild(el("p", "hint", "大牌的選擇不計分，但會被記住。"));
+  s.appendChild(opts);
+  s.appendChild(out);
+}
+
+function showPrologueEnd() {
+  progress.runs += 1;
+  progress.choices = run.picks;
+  if (journey) { journey.prologue = C.scenes.map(sc => sc.code); saveJourney(); }
+  saveProgress();
+  const s = stage();
+  s.appendChild(el("div", "step-label major-label", "序章結束"));
+  const cards = el("div", "card-row");
+  C.scenes.forEach(sc => cards.appendChild(cardFace(sc.code, true)));
+  s.appendChild(cards);
+  s.appendChild(el("p", "lead small", C.closing));
+  const row = el("div", "btn-row");
+  row.appendChild(continueBtn("前往第一章　赤原", journey ? nextJourney : () => { setChapter(CHIYUAN); showTitle(); }));
+  const h = el("button", "btn ghost", "回到章節選單"); h.onclick = showHome; row.appendChild(h);
+  s.appendChild(row);
+}
+
+// ---------- 完整旅程：序章 → 四塊土地 → 終章 ----------
+const JOURNEY_KEY = "tarot-journey-proto-v1";
+let journey = null;
+function journeyOrder() { return [PROLOGUE, ...CHAPTERS, FINALE]; }
+function saveJourney() { try { localStorage.setItem(JOURNEY_KEY, JSON.stringify(journey)); } catch (e) {} }
+function loadJourney() { try { return JSON.parse(localStorage.getItem(JOURNEY_KEY) || "null"); } catch (e) { return null; } }
+function clearJourney() { journey = null; try { localStorage.removeItem(JOURNEY_KEY); } catch (e) {} }
+function startJourney() { journey = { idx: 0, prologue: null, lands: [], finale: [], judged: null, ending: "" }; saveJourney(); goJourney(); }
+function resumeJourney() { journey = loadJourney(); if (!journey) return showHome(); goJourney(); }
+function nextJourney() { journey.idx += 1; saveJourney(); goJourney(); }
+function goJourney() {
+  const ch = journeyOrder()[journey.idx];
+  setChapter(ch);
+  if (ch.type === "prologue") return startPrologue(journeyCount() === 0);
+  if (ch.type === "finale") return startFinale(false);
+  showJourneyGate(ch);
+}
+function showJourneyGate(ch) {
+  run = null; queue = [];
+  updateHud();
+  const s = stage();
+  landHero(s, ch);
+  s.appendChild(el("div", "btn-row")).appendChild(continueBtn(`走進${ch.title}`, startRun));
+}
+function journeyRecord(r) {
+  journey.lands = journey.lands.filter(l => l.id !== C.id);
+  journey.lands.push({ id: C.id, title: C.title, tool: C.tool, awake: !!progress.awake, cards: r.trail || [], learned: (r.log || []).filter(l => l.s === 1).map(l => ({ code: l.code, up: l.up, att: l.att })) });
+  saveJourney();
+}
+function nameOf(code) {
+  for (const c of [PROLOGUE, ...CHAPTERS, FINALE]) if (c.cardNames && c.cardNames[code]) return c.cardNames[code];
+  return code;
+}
+function miniArt(code, up, cls) {
+  return `<span class="mini-art${up === false ? " rev" : ""}${cls ? " " + cls : ""}"><img src="img/cards/${code}.jpg" alt="${nameOf(code)}" loading="lazy"></span>`;
+}
+const PORTRAIT_FILE = { "權杖侍者": "W11_zhang", "權杖騎士": "W12_liefeng", "權杖王后": "W13_kui", "權杖國王": "W14_chicheng",
+  "聖杯侍者": "C11_lian", "聖杯騎士": "C12_luolan", "聖杯王后": "C13_baihe", "聖杯國王": "C14_bailang",
+  "寶劍侍者": "S11_qingyuan", "寶劍騎士": "S12_jishi", "寶劍王后": "S13_die", "寶劍國王": "S14_hengzhu",
+  "錢幣侍者": "P11_suier", "錢幣騎士": "P12_banong", "錢幣王后": "P13_sangniang", "錢幣國王": "P14_fenggu" };
+const COVER_IDS = ["chiyuan", "chenghu", "fengcheng", "jinsui"];
+const coverSrc = (ch) => ch && COVER_IDS.includes(ch.id) ? `img/v1/cover_${ch.id}.jpg` : null;
+// 地區封面：章節標在圖上方，地名與副標疊在圖裡
+function landHero(s, ch) {
+  s.appendChild(el("div", "chapter-kicker", ch.kicker));
+  const src = coverSrc(ch);
+  if (!src) { s.appendChild(el("h1", "chapter-title", ch.title)); s.appendChild(el("p", "lead", ch.lead)); return; }
+  const box = el("div", "cover-hero");
+  const i = el("img"); i.src = src; i.alt = ch.title; box.appendChild(i);
+  const ov = el("div", "cover-ov");
+  ov.appendChild(el("h1", "cover-title", ch.title));
+  ov.appendChild(el("p", "cover-lead", ch.lead));
+  box.appendChild(ov);
+  s.appendChild(box);
+  s.appendChild(rulesPanel(ch));
+}
+// 玩法說明：每塊土地封面下方
+function rulesPanel(ch) {
+  const info = el("div", "panel");
+  info.innerHTML = `<p>進入${ch.title}時，會先抽兩張牌：旅程的起點與終點。之後每段路都要從洗好的牌裡抽牌。</p>
+    <p>每件事有三種做法。選中符合這張牌牌意的那一種，<b>${ch.meter}</b>就會 +1。${ch.meter}跨輪累積，到 ${THRESHOLD}，${ch.tool}就會醒來。同一件事只在第一次做對時加分。</p>`;
+  return info;
+}
+function addCover(s, ch) { const src = coverSrc(ch); if (src) { const i = el("img", "cover-img"); i.src = src; i.alt = ch.title; s.appendChild(i); } }
+function miniCard_unused(code, up) {
+  const major = code.startsWith("M");
+  return el("div", "mini" + (major ? " major" : "") + (up ? "" : " rev"), `<b>${parseInt(code.slice(1), 10)}</b>${nameOf(code)}`);
+}
+// ---------- 共用小工具 ----------
+function btnGhost(text, fn, extra) { const b = el("button", "btn ghost" + (extra ? " " + extra : ""), text); b.onclick = fn; return b; }
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.remove("show"); void t.offsetWidth; t.classList.add("show"); }
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+// ---------- 旅程結束頁與紀念卡 ----------
+const WALL_KEY = "tarot-wall-v2";
+const COUNT_KEY = "tarot-journey-count-v1";
+const CLEARED_KEY = "tarot-cleared-v1";
+let memWall = [], memCount = 0, memCleared = false;
+function loadWall() {
+  try { const raw = localStorage.getItem(WALL_KEY); return raw ? JSON.parse(raw) : memWall; } catch (e) { return memWall; }
+}
+function saveToWall(rec) {
+  const w = loadWall().slice(); w.push(rec); memWall = w;
+  try { localStorage.setItem(WALL_KEY, JSON.stringify(w.slice(-60))); } catch (e) {}
+}
+function journeyCount() {
+  try { return parseInt(localStorage.getItem(COUNT_KEY) || "0", 10) || memCount; } catch (e) { return memCount; }
+}
+function bumpJourneyCount() {
+  const n = journeyCount() + 1; memCount = n;
+  try { localStorage.setItem(COUNT_KEY, String(n)); } catch (e) {}
+  return n;
+}
+const ENDED_KEY = "tarot-ended-v1"; let memEnded = false;
+// 走完過一次完整旅程（輪迴結局或真結局都算）：解鎖章節選單與回饋
+function hasEnded() {
+  try { return localStorage.getItem(ENDED_KEY) === "1" || memEnded || hasCleared(); } catch (e) { return memEnded || memCleared; }
+}
+function markEnded() {
+  memEnded = true;
+  try { localStorage.setItem(ENDED_KEY, "1"); } catch (e) {}
+}
+function hasCleared() {
+  try { return localStorage.getItem(CLEARED_KEY) === "1" || memCleared; } catch (e) { return memCleared; }
+}
+function markCleared() {
+  memCleared = true;
+  try { localStorage.setItem(CLEARED_KEY, "1"); } catch (e) {}
+}
+function dateStr() {
+  const d = new Date(), pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())}`;
+}
+const endDot = (t) => /[。！？」]$/.test(t) ? t : t + "。";
+
+// 每塊土地挑一張「懂了」的牌：優先用審判時選的那句話所屬的事件
+function pickUnderstood(ch, land, judgedLine) {
+  if (judgedLine) {
+    for (const [id, ev] of Object.entries(ch.events)) {
+      const o = ev.options.find(x => x.s === 1);
+      if (o && o.att === judgedLine) return { code: id.slice(0, 3), up: id.endsWith("U"), line: judgedLine };
+    }
+  }
+  const learned = (land && land.learned) || [];
+  const last = learned[learned.length - 1];
+  if (last && typeof last === "object") return { code: last.code, up: last.up, line: judgedLine || last.att };
+  const p = loadProgress(ch);
+  const id = Object.keys(p.solved || {}).pop();
+  if (id && ch.events[id]) {
+    const o = ch.events[id].options.find(x => x.s === 1);
+    return { code: id.slice(0, 3), up: id.endsWith("U"), line: judgedLine || (o ? o.att : "") };
+  }
+  return { code: ch.startCode, up: true, line: judgedLine || "" };
+}
+function buildRecord(n) {
+  const judged = journey.judged || [];
+  const ending = journey.ending || "輪迴結局";
+  const stats = journeyStats();
+  return {
+    v: 3, n, date: dateStr(), ending,
+    type: typeOf(stats),
+    stats: stats.map(s => ({ title: s.title, meter: s.meter, tool: s.tool, n: s.n, awake: s.awake })),
+    lands: CHAPTERS.map((ch, i) => {
+      const land = (journey.lands || []).find(x => x.id === ch.id);
+      const j = judged.find(x => x.land === ch.title);
+      const u = pickUnderstood(ch, land, j && j.line);
+      // 輪迴結局：這一趟在這塊土地沒做對任何事，就不寫「懂了」
+      const line = ending === "真結局" || stats[i].n ? u.line : "";
+      return { title: ch.title, tool: ch.tool, code: u.code, up: u.up, line };
+    })
+  };
+}
+
+function showSpread() {
+  setChapter(FINALE); run = null; queue = [];
+  updateHud();
+  try { localStorage.removeItem(JOURNEY_KEY); } catch (e) {}
+  if (!journey.counted) { journey.n = bumpJourneyCount(); journey.counted = true; }
+  markEnded();
+  const isTrue = journey.ending === "真結局";
+  if (isTrue && !DEMO && !hasCleared()) toast("章節選單已開放：可以回到各章補齊圖鑑");
+  if (isTrue) markCleared();
+  if (!journey.record) { journey.record = buildRecord(journey.n); saveToWall(journey.record); saveJourney(); }
+  showKeepsake(journey.record, true);
+}
+
+// ---------- 旅人原型：依這一趟在四塊土地做對的次數決定 ----------
+// 文字為草稿，可自行改寫。art：之後有專屬插圖時放在 img/types/<id>.jpg，沒有就用 card 的牌面。
+const TYPES = {
+  fire:  { name: "點火的人",   card: "W01", el: "火", quote: "先燒起來，路就看得見了。",
+           desc: "你相信行動比猶豫誠實。這一趟學會的不只是點火，還有怎麼讓火不燒到身邊的人。" },
+  water: { name: "盛水的人",   card: "C01", el: "水", quote: "滿了，就讓它流出去。",
+           desc: "你把感受當真。你知道杯子要先倒空一點，才裝得下別人。" },
+  air:   { name: "說真話的人", card: "S01", el: "風", quote: "看清楚，比看起來好更重要。",
+           desc: "你寧可痛一下，也不要模糊地過去。你學會把話說清楚，也學會什麼時候不說。" },
+  earth: { name: "播種的人",   card: "P01", el: "土", quote: "慢慢長出來的，才拿得走。",
+           desc: "你相信累積。一步一步耕下去，收成的時候，也記得分出去。" },
+  fool:  { name: "還在路上的人", card: "M00", el: "空", quote: "什麼都沒帶，所以什麼都裝得下。",
+           desc: "四塊土地你走得一樣深。你還沒決定自己是誰，這正是旅程最好的樣子。" }
+};
+const LAND_EL = { chiyuan: "fire", chenghu: "water", fengcheng: "air", jinsui: "earth" };
+
+function journeyStats() {
+  return CHAPTERS.map(ch => {
+    const land = (journey && journey.lands || []).find(x => x.id === ch.id);
+    return { id: ch.id, title: ch.title, meter: ch.meter, tool: ch.tool,
+      n: land ? (land.learned || []).length : 0, awake: land ? !!land.awake : !!loadProgress(ch).awake };
+  });
+}
+function typeOf(stats) {
+  const max = Math.max(...stats.map(s => s.n));
+  const top = stats.filter(s => s.n === max);
+  return max > 0 && top.length === 1 ? LAND_EL[top[0].id] : "fool";
+}
+function keepsakeLines(rec) {
+  return (rec.lands || []).filter(l => l.line).map(l => `在${l.title}，綾懂了：${endDot(l.line)}`);
+}
+function shareText(rec) {
+  const T = TYPES[rec.type || "fool"];
+  return `我在《我來異世界可不想再成為塔羅師》走完第 ${rec.n} 趟旅程，是「${T.name}」。\n「${T.quote}」\n你呢？ ${SHARE_URL}`;
+}
+
+async function showKeepsake(rec, fromJourney) {
+  if (!fromJourney) { setChapter(FINALE); run = null; queue = []; updateHud(); }
+  const T = TYPES[rec.type || "fool"];
+  const isTrue = (rec.ending || "真結局") === "真結局";
+  const s = stage();
+  s.appendChild(el("div", "step-label", fromJourney ? "旅程結束" : "回憶牆"));
+  s.appendChild(el("h2", "keep-title", `第 ${rec.n} 趟旅程・${isTrue ? "真結局" : "輪迴結局"}`));
+  if (fromJourney) s.appendChild(el("p", "keep-lead", isTrue ? "四塊土地上懂了的事，裱成了一張卡。" : "工具還沒全醒。不過這一趟走過的路，也是你的。"));
+  const holder = el("div", "keep-holder");
+  holder.appendChild(el("p", "hint", "卡片繪製中……"));
+  s.appendChild(holder);
+  const row = el("div", "btn-row");
+  s.appendChild(row);
+  const lines = keepsakeLines(rec);
+  if (lines.length) {
+    const box = el("div", "keep-lines");
+    lines.forEach(l => box.appendChild(el("p", null, esc(l))));
+    s.appendChild(box);
+  }
+  s.appendChild(el("p", "hint center", "手機上也可以長按圖片另存。"));
+  const row2 = el("div", "btn-row");
+  s.appendChild(row2);
+  if (fromJourney) {
+    row2.appendChild(continueBtn(isTrue ? "再走一次旅程" : "再出發一次", startJourney));
+    row2.appendChild(btnGhost("回憶牆", showWall));
+    if (FEEDBACK_PAGE) row2.appendChild(btnGhost("給作者回饋", () => showFeedback(() => showKeepsake(rec, true), rec)));
+    row2.appendChild(btnGhost("回到選單", () => { clearJourney(); showHome(); }));
+  } else {
+    row2.appendChild(btnGhost("回到回憶牆", showWall));
+  }
+  const cp = el("button", "btn ghost", "複製分享文字");
+  cp.onclick = async () => {
+    try { await navigator.clipboard.writeText(shareText(rec)); toast("已複製，貼到想分享的地方"); }
+    catch (e) { toast("沒辦法自動複製，請手動複製連結"); }
+  };
+  row.appendChild(cp);
+  let cv = null;
+  try {
+    cv = await drawKeepsake(rec);
+    const img = el("img", "keep-img");
+    img.src = cv.toDataURL("image/png");
+    img.alt = `第 ${rec.n} 趟旅程：${T.name}`;
+    holder.innerHTML = "";
+    holder.appendChild(img);
+  } catch (e) {
+    holder.innerHTML = "<p class='hint'>卡片畫不出來，請換個瀏覽器試試。</p>";
+  }
+  if (cv) {
+    const d = el("button", "btn primary", "下載圖片");
+    d.onclick = () => saveCard(cv, `愚人之旅-第${rec.n}趟-${T.name}.png`);
+    row.insertBefore(d, row.firstChild);
+  }
+}
+
+let _dl;
+function downloadsCap() {
+  if (_dl === undefined) {
+    _dl = (window.claude && typeof window.claude.use === "function")
+      ? Promise.resolve(window.claude.use("downloads")).catch(() => null)
+      : Promise.resolve(null);
+  }
+  return _dl;
+}
+async function saveCard(cv, filename) {
+  const blob = await new Promise(r => cv.toBlob(r, "image/png"));
+  const dl = await downloadsCap();
+  if (dl) {
+    try { await dl.save({ filename, data: blob }); toast("圖片已存好"); }
+    catch (e) { if (!e || e.code !== "declined") toast("這裡沒辦法直接下載，請長按圖片另存"); }
+    return;
+  }
+  try {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+  } catch (e) { toast("請長按圖片另存"); }
+}
+
+// ---------- 分享卡繪製：1080 × 1920 直式（適合限時動態） ----------
+function roundRect(g, x, y, w, h, r) {
+  g.beginPath(); g.moveTo(x + r, y);
+  g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r);
+  g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath();
+}
+function wrapText(g, text, maxW) {
+  const lines = []; let cur = "";
+  for (const ch of text) {
+    // 句讀不放行首：標點直接黏在上一行
+    if (cur && g.measureText(cur + ch).width > maxW) {
+      // 句讀不放行首：把上一行最後一個字一起帶下來
+      if ("，。、！？」』：；）".includes(ch) && cur.length > 1) { lines.push(cur.slice(0, -1)); cur = cur.slice(-1) + ch; }
+      else { lines.push(cur); cur = ch; }
+    } else cur += ch;
+  }
+  if (cur) lines.push(cur);
+  return lines;
+}
+function loadImg(src) {
+  return new Promise(res => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
+}
+let _qrLib;
+function qrLib() {
+  if (!_qrLib) _qrLib = new Promise(res => {
+    if (window.qrcode) return res(window.qrcode);
+    const sc = document.createElement("script");
+    sc.src = "lib/qrcode.min.js";
+    sc.onload = () => res(window.qrcode || null); sc.onerror = () => res(null);
+    document.head.appendChild(sc);
+    setTimeout(() => res(window.qrcode || null), 4000);
+  });
+  return _qrLib;
+}
+function drawQR(g, lib, text, x, y, size) {
+  const qr = lib(0, "M"); qr.addData(text); qr.make();
+  const n = qr.getModuleCount(), pad = 2, cell = size / (n + pad * 2);
+  g.fillStyle = "#f4ecdc"; roundRect(g, x, y, size, size, 10); g.fill();
+  g.fillStyle = "#1a1722";
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++)
+    if (qr.isDark(r, c)) g.fillRect(x + (c + pad) * cell, y + (r + pad) * cell, Math.ceil(cell), Math.ceil(cell));
+}
+function drawStar(g, cx, cy, r) {
+  g.beginPath();
+  for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4, rr = i % 2 ? r * .28 : r; g.lineTo(cx + Math.cos(a - Math.PI / 2) * rr, cy + Math.sin(a - Math.PI / 2) * rr); }
+  g.closePath(); g.fill();
+}
+const EL_COLOR = { fire: "#e0794a", water: "#5aa6c9", air: "#a8acd8", earth: "#a9b85a", fool: "#c9a774" };
+
+async function drawKeepsake(rec) {
+  const W = 1080, H = 1080, F = '"Iansui","Noto Serif TC","Songti TC",serif';
+  const typeId = rec.type || "fool", T = TYPES[typeId], accent = EL_COLOR[typeId];
+  const isTrue = (rec.ending || "真結局") === "真結局";
+  const stats = rec.stats || [];
+  // 卡片字型（芫荽）只載入卡上用到的字
+  const allText = `愚人之旅第趟旅程真結局輪迴這一，你是元素皆衡${rec.n}${rec.date}${T.name}${T.quote}${T.desc}${nameOf(T.card)}「」・醒睡我來異世界可不想再成為塔羅師也走看自己哪種` + stats.map(s => s.title + s.meter + s.tool).join("") + SHARE_URL;
+  try { if (document.fonts) { await document.fonts.load(`40px "Iansui"`, allText); await document.fonts.ready; } } catch (e) {}
+  const [art, cardImg, lib] = await Promise.all([loadImg(`img/types/${typeId}.jpg`), loadImg(`img/cards/${T.card}.jpg`), qrLib()]);
+  const cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+  const g = cv.getContext("2d");
+  const fit = (text, max, size, weight = "") => { let s = size; do { g.font = `${weight}${s}px ${F}`; s -= 2; } while (g.measureText(text).width > max && s > 20); };
+
+  // 背景：深紫夜空＋類型顏色光暈＋星點
+  const bg = g.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, "#2c2338"); bg.addColorStop(1, "#0d0b12");
+  g.fillStyle = bg; g.fillRect(0, 0, W, H);
+  const glow = g.createRadialGradient(270, 490, 30, 270, 490, 420);
+  glow.addColorStop(0, accent + "66"); glow.addColorStop(1, accent + "00");
+  g.fillStyle = glow; g.fillRect(0, 0, W, H);
+  let seed = rec.n * 97 + 13; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+  g.fillStyle = "rgba(240,234,219,.5)";
+  for (let i = 0; i < 55; i++) { const r = rnd() * 2 + .4; g.beginPath(); g.arc(rnd() * W, rnd() * 760, r, 0, Math.PI * 2); g.fill(); }
+  g.fillStyle = "#c9a774"; drawStar(g, 1000, 250, 10); drawStar(g, 1010, 700, 7); drawStar(g, 62, 760, 9);
+
+  // 雙框
+  g.strokeStyle = "#c9a774"; g.lineWidth = 3; g.strokeRect(28, 28, W - 56, H - 56);
+  g.lineWidth = 1; g.strokeRect(40, 40, W - 80, H - 80);
+
+  // 左：塔羅牌（有專屬插圖時改用插圖）
+  const cx = 290, top = 90, boxH = 640;
+  if (art) {
+    const s = 420, x = cx - s / 2, y = top + (boxH - s) / 2;
+    g.save(); roundRect(g, x, y, s, s, 20); g.clip(); g.drawImage(art, x, y, s, s); g.restore();
+    roundRect(g, x, y, s, s, 20); g.strokeStyle = "#c9a774"; g.lineWidth = 3; g.stroke();
+  } else if (cardImg) {
+    const h = boxH, w = Math.round(h * cardImg.width / cardImg.height), x = cx - w / 2;
+    g.save(); g.shadowColor = accent; g.shadowBlur = 46;
+    roundRect(g, x, top, w, h, 14); g.fillStyle = "#000"; g.fill(); g.restore();
+    g.save(); roundRect(g, x, top, w, h, 14); g.clip(); g.drawImage(cardImg, x, top, w, h); g.restore();
+    roundRect(g, x, top, w, h, 14); g.strokeStyle = "#c9a774"; g.lineWidth = 3; g.stroke();
+  }
+
+  // 右：遊戲標題、日期、結局、原型、語錄、描述
+  const rx = 540, rw = W - 90 - rx;
+  g.textAlign = "left";
+  g.fillStyle = "#c9a774"; fit("我來異世界可不想再成為塔羅師", rw, 32); g.fillText("我來異世界可不想再成為塔羅師", rx, 128);
+  g.fillStyle = "#c2b9a3"; g.font = `22px ${F}`; g.fillText(`第 ${rec.n} 趟旅程・${rec.date}`, rx, 168);
+  const tag = isTrue ? "真結局" : "輪迴結局";
+  g.font = `22px ${F}`; const tw = g.measureText(tag).width + 36;
+  roundRect(g, rx, 192, tw, 38, 19);
+  g.fillStyle = isTrue ? "#c9a774" : "rgba(255,255,255,.06)"; g.fill();
+  g.strokeStyle = "#c9a774"; g.lineWidth = 2; g.stroke();
+  g.fillStyle = isTrue ? "#1a1722" : "#c9a774"; g.fillText(tag, rx + 18, 219);
+  g.fillStyle = "#c2b9a3"; g.font = `30px ${F}`; g.fillText("這一趟，你是", rx, 318);
+  g.fillStyle = "#f6efe0"; fit(T.name, rw, 86); g.fillText(T.name, rx, 412);
+  g.fillStyle = accent; g.font = `24px ${F}`;
+  g.fillText(`${nameOf(T.card)}・${T.el === "空" ? "四元素皆衡" : T.el + "元素"}`, rx, 458);
+  g.fillStyle = "#e8c27a";
+  let y = 535;
+  const q = `「${T.quote}」`;
+  // 語錄稍微超出一行時縮小字級放成一行，太長才換行
+  g.font = `30px ${F}`;
+  if (g.measureText(q).width <= rw) { fit(q, rw, 36); g.fillText(q, rx, y); y += 52; }
+  else { g.font = `36px ${F}`; wrapText(g, q, rw).slice(0, 3).forEach(l => { g.fillText(l, rx, y); y += 52; }); }
+  g.fillStyle = "#d9d0bd"; g.font = `26px ${F}`; y += 14;
+  wrapText(g, T.desc, rw).slice(0, 4).forEach(l => { g.fillText(l, rx, y); y += 42; });
+
+  // 四塊土地：橫排四欄，標籤＋數字＋長條
+  const by = 812, colW = (W - 180) / 4;
+  g.strokeStyle = "rgba(201,167,116,.35)"; g.lineWidth = 1;
+  g.beginPath(); g.moveTo(90, by - 40); g.lineTo(W - 90, by - 40); g.stroke();
+  stats.forEach((st, i) => {
+    const x0 = 90 + i * colW, bw = colW - 30, elId = LAND_EL[CHAPTERS[i].id];
+    g.textAlign = "left"; g.fillStyle = "#c2b9a3"; g.font = `22px ${F}`;
+    g.fillText(`${st.title}・${st.meter}`, x0, by);
+    g.textAlign = "right"; g.fillStyle = st.n ? "#f0eadb" : "#857d6c";
+    g.fillText(`${st.n}/${THRESHOLD}`, x0 + bw, by);
+    roundRect(g, x0, by + 18, bw, 14, 7); g.fillStyle = "rgba(255,255,255,.08)"; g.fill();
+    const pct = Math.min(st.n / THRESHOLD, 1);
+    if (pct > 0) { roundRect(g, x0, by + 18, Math.max(bw * pct, 14), 14, 7); g.fillStyle = EL_COLOR[elId]; g.fill(); }
+  });
+
+  // 底部：一句邀請＋QR
+  const fy = 930;
+  g.beginPath(); g.moveTo(90, fy - 46); g.lineTo(W - 90, fy - 46); g.strokeStyle = "rgba(201,167,116,.35)"; g.stroke();
+  g.textAlign = "left"; g.fillStyle = "#c9a774"; g.font = `30px ${F}`;
+  g.fillText("你也來走一趟，看看自己是哪一種人", 90, fy + 40);
+  if (lib) { try { drawQR(g, lib, SHARE_URL, W - 90 - 110, fy - 28, 110); } catch (e) {} }
+  return cv;
+}
+
+// ---------- 回憶牆：每一趟旅程的卡 ----------
+function showWall() {
+  setChapter(FINALE); run = null; queue = [];
+  updateHud();
+  const s = stage();
+  s.appendChild(el("div", "chapter-kicker", "回憶牆"));
+  s.appendChild(el("p", "lead", "每一趟旅程，都在這裡留下一張卡。"));
+  const w = loadWall();
+  if (!w.length) s.appendChild(el("p", "hint", "還沒有卡片。"));
+  const grid = el("div", "wall");
+  w.slice().reverse().forEach(rec => {
+    const isTrue = (rec.ending || "真結局") === "真結局";
+    const T = TYPES[rec.type || "fool"];
+    const t = el("button", "wall-tile " + (isTrue ? "true" : "loop"));
+    t.innerHTML = `<div class="wt-n">第 ${rec.n} 趟</div><div class="wt-e">${isTrue ? "真結局" : "輪迴結局"}・${esc(T.name)}</div><div class="wt-cards">${miniArt(T.card, true)}</div><div class="wt-q">「${esc(T.quote)}」</div><div class="wt-d">${esc(rec.date)}</div>`;
+    t.onclick = () => showKeepsake(rec, false);
+    grid.appendChild(t);
+  });
+  s.appendChild(grid);
+  s.appendChild(el("div", "btn-row")).appendChild(continueBtn("回到選單", showHome));
+}
+
+// ---------- 回饋與問題：另開回饋表單頁 ----------
+const FEEDBACK_PAGE = "";
+function showFeedback(back, rec) {
+  run = null; queue = [];
+  const s = stage();
+  s.appendChild(el("div", "chapter-kicker", "回饋與問題"));
+  s.appendChild(el("p", "lead", "心得、建議、遇到的錯誤，都可以告訴作者。"));
+  const url = FEEDBACK_PAGE + (rec ? `?n=${rec.n}&ending=${encodeURIComponent(rec.ending)}` : "");
+  const a = el("a", "btn primary", "打開回饋表單");
+  a.href = url; a.target = "_blank"; a.rel = "noopener";
+  const row = el("div", "btn-row");
+  row.appendChild(a);
+  row.appendChild(btnGhost("返回", back || showHome));
+  s.appendChild(row);
+  s.appendChild(el("p", "hint", "回饋頁會在新分頁打開。"));
+}
+
+// ---------- 隱私說明 ----------
+function showPrivacy(back) {
+  run = null; queue = [];
+  const s = stage();
+  s.appendChild(el("div", "chapter-kicker", "隱私說明"));
+  const p = el("div", "panel privacy");
+  p.innerHTML = `
+    <p><b>不用註冊。</b>這個遊戲不會要你提供姓名、電話或 Email。</p>
+    <p><b>進度只存在你的瀏覽器。</b>各章進度、圖鑑、輪數、回憶牆和紀念卡，都存在你這台裝置的瀏覽器裡（localStorage），不會上傳。換裝置、用無痕視窗，或清除瀏覽器資料，這些紀錄就會消失。</p>
+    <p><b>你寫下的感悟只屬於你。</b>在審判牌自己寫的那句話，只存在你的瀏覽器裡，也只會出現在你自己的紀念卡上；要不要分享，由你決定。</p>
+    <p><b>遊戲本身不傳送任何資料。</b></p>
+    <p><b>字型、圖片都放在這個網站上。</b>遊戲不會連到其他網站載入字型或程式。</p>
+    <p><b>沒有廣告，也沒有追蹤或分析工具。</b></p>
+    <p><b>放遊戲的網站有自己的紀錄。</b>遊戲放在哪個網站上，那個網站本身可能留有連線紀錄，以該網站的隱私政策為準。</p>
+    <p class="hint">最後更新：2026 年 11 月 11 日</p>`;
+  s.appendChild(p);
+  const row = el("div", "btn-row");
+  row.appendChild(continueBtn("返回", back || showHome));
+  const clr = el("button", "btn ghost", "清除所有遊戲資料");
+  let armed = false;
+  clr.onclick = () => {
+    if (!armed) { armed = true; clr.textContent = "再按一次，確定清除"; return; }
+    try { Object.keys(localStorage).filter(k => k.startsWith("tarot-")).forEach(k => localStorage.removeItem(k)); } catch (e) {}
+    Object.keys(memStores).forEach(k => delete memStores[k]);
+    memWall = []; memCount = 0; memCleared = false; memEnded = false; journey = null;
+    toast("所有遊戲資料都清除了");
+    showHome();
+  };
+  row.appendChild(clr);
+  s.appendChild(row);
+}
+
+function memoriesFor(t) {
+  const p = loadProgress(t.chObj);
+  const atts = [];
+  Object.keys(p.solved || {}).forEach(id => {
+    const ev = t.chObj.events[id];
+    const o = ev && ev.options.find(x => x.s === 1);
+    if (o && !atts.includes(o.att)) atts.push(o.att);
+  });
+  const picks = shuffle(atts).slice(0, 3);
+  if (picks.length < 2) picks.push(FINALE.fallback[t.ch]);
+  return picks;
+}
+
+function showJudgement() {
+  const j = FINALE.judgement;
+  const { s, txt } = majorScene(j.code);
+  txt.appendChild(el("p", "narr", j.text));
+  s.appendChild(el("p", "hint", j.prompt + "（選一句，或自己寫）"));
+  const st = toolStatus();
+  const chosen = {};
+  const out = el("div", "outcome");
+  const finishBtnRow = el("div", "btn-row");
+  const check = () => {
+    if (Object.keys(chosen).length < 4 || finishBtnRow.childElementCount) return;
+    const b = continueBtn("讓四句話串起來", () => {
+      b.disabled = true;
+      const para = st.map(t => `在${t.land}，我學會了${chosen[t.ch]}。`).join("");
+      run.judged = st.map(t => ({ land: t.land, line: chosen[t.ch] }));
+      out.appendChild(el("p", "narr judged", para));
+      out.appendChild(el("p", "narr", j.reveal));
+      out.appendChild(el("div", "btn-row")).appendChild(continueBtn());
+    });
+    finishBtnRow.appendChild(b);
+  };
+  st.forEach(t => {
+    const block = el("div", "judge-block");
+    block.appendChild(el("div", "judge-land", `${t.land}`));
+    const opts = el("div", "options");
+    const pick = (text, btn) => {
+      chosen[t.ch] = text;
+      opts.querySelectorAll(".option").forEach(x => x.classList.toggle("picked", x === btn));
+      check();
+    };
+    memoriesFor(t).forEach(m => {
+      const b = el("button", "option", m);
+      b.onclick = () => pick(m, b);
+      opts.appendChild(b);
+    });
+    const own = el("div", "own");
+    const inp = el("input", "own-input"); inp.placeholder = "或者，自己寫一句……"; inp.maxLength = 30;
+    const ob = el("button", "btn ghost small", "用這句");
+    ob.onclick = () => { const v = inp.value.trim(); if (v) pick(v, null); };
+    own.appendChild(inp); own.appendChild(ob);
+    block.appendChild(opts); block.appendChild(own);
+    s.appendChild(block);
+  });
+  s.appendChild(finishBtnRow);
+  s.appendChild(out);
+}
+
+function showWorld() {
+  const w = FINALE.world;
+  const { s, txt } = majorScene(w.code);
+  txt.appendChild(el("p", "narr", w.text));
+  const box = el("div", "ending awake");
+  box.appendChild(el("div", "ending-tag", "尾聲"));
+  box.appendChild(el("p", "narr", w.epilogue));
+  s.appendChild(box);
+  s.appendChild(el("div", "step-label", "這一趟旅程的牌陣"));
+  const list = el("div", "summary");
+  (run.judged || []).forEach(j => {
+    list.appendChild(el("div", "sum-row", `<span class="sum-card">${j.land}</span><span class="sum-att">${j.line}</span>`));
+  });
+  s.appendChild(list);
+  s.appendChild(el("p", "lead small", "結局：真結局"));
+  if (journey) {
+    journey.finale = ["M10", "M16", "M12", "M03", "M19", "M20", "M21"]; journey.ending = "真結局"; journey.judged = run.judged; saveJourney();
+    s.appendChild(el("div", "btn-row")).appendChild(continueBtn("看這趟旅程的紀念卡", showSpread));
+    return;
+  }
+  const row = el("div", "btn-row");
+  row.appendChild(continueBtn("回到章節選單", showHome));
+  s.appendChild(row);
+}
+
+</script>
+<button id="credit-tag" type="button">© 圖片出處</button>
+<div id="credits"><div class="box">
+  <h3>圖片出處</h3>
+  <p><b>塔羅牌面</b>：Pamela Colman Smith 繪、A. E. Waite 設計，1909 年 Rider 版（Pam-A），公有領域；掃描修復 Steve P.（steve-p.org）。</p>
+  <p><b>區域封面、人物肖像</b>：作者自製。</p>
+  <div class="btn-row"><button class="btn ghost" id="credits-close">關閉</button></div>
+</div></div>
+</body>
+</html>
