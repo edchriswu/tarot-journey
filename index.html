@@ -261,6 +261,9 @@ body[data-theme="cliff"] .option.picked{background:rgba(184,145,63,.18)}
 .tilt-ends{display:grid;grid-template-columns:56px 1fr 160px;gap:10px;font-size:11px;color:var(--muted)}
 .tilt-ends span:nth-child(2){display:flex;justify-content:space-between}
 .tilt-word{color:var(--ink2);font-size:13px}
+.tilt-row small{display:block;font-size:11px;color:var(--muted)}
+.tilt-read{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);font-size:15px;line-height:1.85;color:var(--ink)}
+.tilt-read p{margin:0 0 8px}
 .tilt-mode{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);font-size:15px;line-height:1.8;color:var(--ink2)}
 .tilt-mode b{color:var(--ink);font-size:18px}
 .wedge-img{display:block;width:100%;max-width:760px;margin:6px auto 18px;border-radius:10px;border:1px solid var(--line);aspect-ratio:1299/833;object-fit:cover}
@@ -2727,6 +2730,41 @@ function journeyTilt() {
   const top = Object.entries(modes).sort((a, b) => b[1] - a[1]);
   return { lands, top: top.length ? { mode: top[0][0], n: top[0][1] } : null };
 }
+
+// 四塊土地＝四個面向。每個面向依這一趟的選擇落在四種狀態之一，各有一段固定的分析文字（可自行改寫）。
+const ASPECT = {
+  chiyuan:   { name: "行動", el: "火",
+    o:    "行動上，你容易衝在前面。火一點起來就想燒得更旺、更快，有時沒注意到身邊的人跟不跟得上。熱情是你的燃料，也記得留一點給等待。",
+    u:    "行動上，你比較會先停下來。心裡其實有火，卻常在等更好的時機，或先找一個不必出手的理由。火不用很大，先點著就好。",
+    both: "行動上，你時而衝、時而停。有時一口氣燒過頭，有時又把火收得太緊，節奏還在找。想衝的時候慢半拍，想退的時候往前半步。",
+    even: "行動上，你出手的時機抓得剛好。該點火的時候點火，該收的時候也收得住。這股火，是你可以信任的東西。" },
+  chenghu:   { name: "情感", el: "水",
+    o:    "情感上，你給得很滿。別人的情緒你很容易接住，也很容易一起陷進去，杯子常常滿到溢出來。照顧別人之前，記得也留一點位置給自己。",
+    u:    "情感上，你比較含蓄。感受來了，你習慣先收起來，說一句「沒事」，等它自己過去。那些沒說出口的，其實也值得被聽見。",
+    both: "情感上，你有時收得很緊，有時又一下子全倒出來，水位起伏比較大。慢慢練習在滿出來之前，先讓它流出去一點。",
+    even: "情感上，你願意感受，也守得住界線。不壓抑，也不被淹沒。這份柔軟，是身邊的人能靠近的地方。" },
+  fengcheng: { name: "思考", el: "風",
+    o:    "思考上，你看得很銳利，也說得很直。一眼看穿問題，卻常對人、對自己都太嚴格，話一出口就像刀。看清楚之後，也可以選擇怎麼說。",
+    u:    "思考上，你常常看懂了卻不說，或乾脆把判斷交給別人。怕說錯、怕傷人，於是站在一旁。你的看法也算數，說出來才知道。",
+    both: "思考上，你有時鋒利得傷人，有時又把話吞回去，這把刀還在找分寸。開口之前，先問自己：這句話是為了什麼。",
+    even: "思考上，你看得清楚，也說得適當。知道什麼時候該說真話，也知道什麼時候不說。這份清明，是你可以依靠的。" },
+  jinsui:    { name: "實踐", el: "土",
+    o:    "實踐上，你習慣一個人扛起來。計畫要周全、成果要確實，常常撐到很累也不肯放手。收成之前，也分一點時間給休息。",
+    u:    "實踐上，你比較容易覺得「反正也沒用」。種子拿在手上，卻遲遲沒放進土裡。慢慢來沒關係，種下去，它就會開始長。",
+    both: "實踐上，你有時撐過頭，有時又整個放下，踏實的節奏還在建立。試著每天只做一小步，不多也不少。",
+    even: "實踐上，你一步一步走得很穩。不急著收成，也不輕易放棄。這份耐心，會長出拿得走的東西。" }
+};
+function tiltState(l) {
+  if (!l.o && !l.u) return "even";
+  if (l.o === l.u) return "both";
+  return l.o > l.u ? "o" : "u";
+}
+function aspectText(i, l) {
+  const A = ASPECT[CHAPTERS[i].id];
+  if (!l || !l.played) return `這一趟沒走到${CHAPTERS[i].title}，${A.name}的部分還是空白。`;
+  return A[tiltState(l)];
+}
+
 function tiltWord(o, u) {
   if (!o && !u) return "剛好";
   if (o === u) return "兩邊都有";
@@ -2869,13 +2907,16 @@ function tiltPos(l) {
 }
 function tiltBox(t) {
   const box = el("div", "keep-tilt");
-  box.appendChild(el("h3", null, "這一趟，你在每塊土地的選擇"));
+  box.appendChild(el("h3", null, "這一趟的你：四個面向"));
   const ends = el("div", "tilt-ends"); ends.innerHTML = "<span></span><span><i>不足</i><i>剛好</i><i>過頭</i></span><span></span>"; box.appendChild(ends);
-  t.lands.forEach(l => {
+  t.lands.forEach((l, i) => {
     const row = el("div", "tilt-row");
-    row.innerHTML = `<span>${esc(l.title)}</span><span class="tilt-axis">${l.played ? `<i class="tilt-dot" style="left:${tiltPos(l)}%"></i>` : ""}</span><span class="tilt-word">${l.played ? `${tiltWord(l.o, l.u)}・對 ${l.r}／過 ${l.o}／缺 ${l.u}` : "沒走到"}</span>`;
+    row.innerHTML = `<span>${esc(l.title)}<small>${ASPECT[CHAPTERS[i].id].name}</small></span><span class="tilt-axis">${l.played ? `<i class="tilt-dot" style="left:${tiltPos(l)}%"></i>` : ""}</span><span class="tilt-word">${l.played ? `${tiltWord(l.o, l.u)}・對 ${l.r}／過 ${l.o}／缺 ${l.u}` : "沒走到"}</span>`;
     box.appendChild(row);
   });
+  const art = el("div", "tilt-read");
+  t.lands.forEach((l, i) => art.appendChild(el("p", null, esc(aspectText(i, l)))));
+  box.appendChild(art);
   const m = t.top && MODES[t.top.mode];
   const p = el("div", "tilt-mode");
   p.innerHTML = m
@@ -3013,14 +3054,25 @@ function drawStar(g, cx, cy, r) {
 }
 const EL_COLOR = { fire: "#e0794a", water: "#5aa6c9", air: "#a8acd8", earth: "#a9b85a", fool: "#c9a774" };
 
+// 換行時避免最後一行只剩一兩個字：從上一行借幾個字下來
+function wrapNice(g, text, max) {
+  const lines = wrapText(g, text, max);
+  const n = lines.length;
+  if (n > 1 && [...lines[n - 1]].length <= 3) {
+    const prev = [...lines[n - 2]], k = 4;
+    lines[n - 1] = prev.slice(-k).join("") + lines[n - 1];
+    lines[n - 2] = prev.slice(0, -k).join("");
+  }
+  return lines;
+}
 async function drawKeepsake(rec) {
-  const W = 1080, H = 1350, F = '"Iansui","Noto Serif TC","Songti TC",serif';
+  const W = 1080, H = 1620, F = '"Iansui","Noto Serif TC","Songti TC",serif';
   const typeId = rec.type || "fool", T = TYPES[typeId], accent = EL_COLOR[typeId];
   const isTrue = (rec.ending || "真結局") === "真結局";
   const tilt = rec.tilt;
   const M = tilt && tilt.top ? MODES[tilt.top.mode] : null;
   const allText = `愚人之旅第趟旅程真結局輪迴這一，你是元素皆衡${rec.n}${rec.date}${T.name}${T.quote}${nameOf(T.card)}「」・醒睡我來異世界可不想再成為塔羅師也走看自己哪種四塊土地上的選擇不足剛好過頭兩邊都有偏沒到對最常掉進去的給下一趟幾乎都在地方張卡畫分析加入之前次（）：，`
-    + (rec.lands || []).map(l => l.title + l.tool).join("") + (M ? tilt.top.mode + M.look + M.tip : "") + SHARE_URL;
+    + (rec.lands || []).map(l => l.title + l.tool).join("") + (M ? tilt.top.mode + M.look + M.tip : "") + Object.values(ASPECT).map(a => a.name + a.o + a.u + a.both + a.even).join("") + "沒走到部分還是空白面向" + SHARE_URL;
   try { if (document.fonts) { await document.fonts.load(`40px "Iansui"`, allText); await document.fonts.ready; } } catch (e) {}
   const [art, cardImg, lib] = await Promise.all([loadImg(`img/types/${typeId}.jpg`), loadImg(`img/cards/${T.card}.jpg`), qrLib()]);
   const cv = document.createElement("canvas"); cv.width = W; cv.height = H;
@@ -3078,25 +3130,25 @@ async function drawKeepsake(rec) {
   if (g.measureText(q).width <= rw) { g.fillText(q, rx, y); }
   else { wrapText(g, q, rw).slice(0, 3).forEach(l => { g.fillText(l, rx, y); y += 46; }); }
 
-  // 四塊土地上的選擇：不足 ← 剛好 → 過頭
-  const sy = 672;
+  // 四個面向：每塊土地一條軸線，下面是 2–3 句分析
+  const sy = 640;
   rule(sy - 20);
-  g.fillStyle = "#c9a774"; g.font = `26px ${F}`; g.textAlign = "left";
-  g.fillText("四塊土地上的選擇", 90, sy + 22);
-  const ax0 = 300, ax1 = 780, axc = (ax0 + ax1) / 2;
-  g.font = `18px ${F}`; g.fillStyle = "#857d6c";
-  g.textAlign = "left"; g.fillText("← 不足", ax0, sy + 66);
-  g.textAlign = "center"; g.fillText("剛好", axc, sy + 66);
-  g.textAlign = "right"; g.fillText("過頭 →", ax1, sy + 66);
+  g.fillStyle = "#c9a774"; g.font = `28px ${F}`; g.textAlign = "left";
+  g.fillText("這一趟的你：四個面向", 90, sy + 24);
+  const ax0 = 400, ax1 = 800, axc = (ax0 + ax1) / 2;
+  g.font = `17px ${F}`; g.fillStyle = "#857d6c";
+  g.textAlign = "left"; g.fillText("← 不足", ax0, sy + 24);
+  g.textAlign = "center"; g.fillText("剛好", axc, sy + 24);
+  g.textAlign = "right"; g.fillText("過頭 →", ax1, sy + 24);
   const lands = tilt ? tilt.lands : [];
+  let yy = sy + 76;
   (rec.lands || []).forEach((L, i) => {
-    const yy = sy + 112 + i * 56;
-    const elId = LAND_EL[CHAPTERS[i].id];
+    const elId = LAND_EL[CHAPTERS[i].id], col = EL_COLOR[elId], A = ASPECT[CHAPTERS[i].id];
     const st = (rec.stats || [])[i] || {};
-    g.textAlign = "left"; g.font = `24px ${F}`; g.fillStyle = "#e9e1cf";
-    g.fillText(L.title, 90, yy + 8);
-    g.font = `18px ${F}`; g.fillStyle = st.awake ? EL_COLOR[elId] : "#857d6c";
-    g.fillText(`${L.tool}${st.awake ? "醒" : "睡"}`, 188, yy + 8);
+    g.textAlign = "left"; g.font = `25px ${F}`; g.fillStyle = col;
+    g.fillText(`${A.name}・${A.el}`, 90, yy + 8);
+    g.font = `18px ${F}`; g.fillStyle = "#a99f8b";
+    g.fillText(`${L.title}・${L.tool}${st.awake ? "醒" : "睡"}`, 210, yy + 7);
     g.strokeStyle = "rgba(201,167,116,.4)"; g.lineWidth = 2;
     g.beginPath(); g.moveTo(ax0, yy); g.lineTo(ax1, yy); g.stroke();
     g.fillStyle = "#c9a774"; g.fillRect(axc - 1, yy - 9, 2, 18);
@@ -3104,28 +3156,32 @@ async function drawKeepsake(rec) {
     g.textAlign = "right"; g.font = `18px ${F}`;
     if (l && l.played) {
       const px = ax0 + (ax1 - ax0) * tiltPos(l) / 100;
-      g.save(); g.shadowColor = EL_COLOR[elId]; g.shadowBlur = 16;
-      g.beginPath(); g.arc(px, yy, 11, 0, Math.PI * 2); g.fillStyle = EL_COLOR[elId]; g.fill(); g.restore();
-      g.fillStyle = "#c2b9a3"; g.fillText(`${tiltWord(l.o, l.u)}・對 ${l.r}`, W - 90, yy + 7);
-    } else {
-      g.fillStyle = "#857d6c"; g.fillText(tilt ? "沒走到" : "", W - 90, yy + 7);
-    }
+      g.save(); g.shadowColor = col; g.shadowBlur = 16;
+      g.beginPath(); g.arc(px, yy, 10, 0, Math.PI * 2); g.fillStyle = col; g.fill(); g.restore();
+      g.fillStyle = "#c2b9a3"; g.fillText(tiltWord(l.o, l.u), W - 90, yy + 7);
+    } else if (tilt) { g.fillStyle = "#857d6c"; g.fillText("沒走到", W - 90, yy + 7); }
+    yy += 42;
+    if (tilt) {
+      g.textAlign = "left"; g.font = `22px ${F}`; g.fillStyle = "#ddd4c1";
+      wrapNice(g, aspectText(i, l), W - 180).slice(0, 3).forEach(t => { g.fillText(t, 90, yy); yy += 33; });
+      yy += 30;
+    } else yy += 20;
   });
-  if (!tilt) { g.textAlign = "center"; g.fillStyle = "#857d6c"; g.font = `20px ${F}`; g.fillText("這張卡畫在傾向分析加入之前，下一趟就會有了。", W / 2, sy + 112 + 4 * 56 + 80); }
+  if (!tilt) { g.textAlign = "center"; g.fillStyle = "#857d6c"; g.font = `22px ${F}`; g.fillText("這張卡畫在傾向分析加入之前，下一趟就會有了。", W / 2, yy + 30); yy += 60; }
 
   // 最常掉進去的樣態
-  const my = sy + 112 + 4 * 56 - 6;
+  const my = Math.max(yy - 10, H - 360);
   rule(my);
   g.textAlign = "left";
   if (M) {
-    g.fillStyle = "#c2b9a3"; g.font = `24px ${F}`; g.fillText("你最常掉進去的", 90, my + 52);
-    g.fillStyle = "#f6efe0"; g.font = `52px ${F}`; g.fillText(tilt.top.mode, 90, my + 118);
+    g.fillStyle = "#c2b9a3"; g.font = `24px ${F}`; g.fillText("你最常掉進去的", 90, my + 50);
+    g.fillStyle = "#f6efe0"; g.font = `52px ${F}`; g.fillText(tilt.top.mode, 90, my + 116);
     const nameW = g.measureText(tilt.top.mode).width;
     g.fillStyle = M.dir === "o" ? "#e0794a" : "#5aa6c9"; g.font = `22px ${F}`;
-    g.fillText(`${M.dir === "o" ? "過頭" : "不足"}・${tilt.top.n} 次`, 90 + nameW + 18, my + 116);
+    g.fillText(`${M.dir === "o" ? "過頭" : "不足"}・${tilt.top.n} 次`, 90 + nameW + 18, my + 114);
     const tx = 470, tw2 = W - 90 - tx;
     g.fillStyle = "#d9d0bd"; g.font = `24px ${F}`;
-    let ty = my + 60; wrapText(g, M.look, tw2).slice(0, 2).forEach(t => { g.fillText(t, tx, ty); ty += 36; });
+    let ty = my + 58; wrapText(g, M.look, tw2).slice(0, 2).forEach(t => { g.fillText(t, tx, ty); ty += 36; });
     g.fillStyle = "#e8c27a"; wrapText(g, `給下一趟的自己：${M.tip}`, tw2).slice(0, 2).forEach(t => { g.fillText(t, tx, ty + 6); ty += 36; });
   } else if (tilt) {
     g.fillStyle = "#e8c27a"; g.font = `30px ${F}`; g.fillText("這一趟，你幾乎都走在剛好的地方。", 90, my + 90);
