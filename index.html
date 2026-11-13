@@ -253,12 +253,12 @@ body[data-theme="cliff"] .option.picked{background:rgba(184,145,63,.18)}
 .narr.wedge{font-size:18px;line-height:2.1}
 .keep-tilt{color:var(--ink);max-width:640px;margin:18px auto 6px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03)}
 .keep-tilt h3{margin:0 0 10px;font-size:16px;letter-spacing:.12em;color:var(--gold)}
-.tilt-row{display:grid;grid-template-columns:56px 1fr 160px;gap:10px;align-items:center;margin:8px 0;font-size:14px}
+.tilt-row{display:grid;grid-template-columns:56px 1fr 80px;gap:10px;align-items:center;margin:8px 0;font-size:14px}
 .tilt-axis{position:relative;height:18px}
 .tilt-axis::before{content:"";position:absolute;left:0;right:0;top:8px;height:2px;background:var(--line)}
 .tilt-axis::after{content:"";position:absolute;left:50%;top:2px;width:2px;height:14px;background:var(--gold);transform:translateX(-1px)}
 .tilt-dot{position:absolute;top:2px;width:14px;height:14px;border-radius:50%;background:var(--ember2);transform:translateX(-7px);box-shadow:0 0 8px rgba(232,194,122,.5)}
-.tilt-ends{display:grid;grid-template-columns:56px 1fr 160px;gap:10px;font-size:11px;color:var(--muted)}
+.tilt-ends{display:grid;grid-template-columns:56px 1fr 80px;gap:10px;font-size:11px;color:var(--muted)}
 .tilt-ends span:nth-child(2){display:flex;justify-content:space-between}
 .tilt-word{color:var(--ink2);font-size:13px}
 .tilt-row small{display:block;font-size:11px;color:var(--muted)}
@@ -2754,10 +2754,21 @@ const ASPECT = {
     both: "實踐上，你有時撐過頭，有時又整個放下，踏實的節奏還在建立。試著每天只做一小步，不多也不少。",
     even: "實踐上，你一步一步走得很穩。不急著收成，也不輕易放棄。這份耐心，會長出拿得走的東西。" }
 };
+// 評分法（不顯示給玩家）：
+//   lean = (過頭 − 不足) ÷ 這塊土地的總選擇數，介於 −1 到 1
+//   miss = (過頭 + 不足) ÷ 總選擇數，選錯的比例
+//   |lean| ≥ TILT_LEAN           → 偏過頭／偏不足
+//   兩邊都有，且 miss ≥ TILT_MISS → 兩邊都有
+//   其餘                          → 剛好（偶爾選錯一兩次，仍在剛好的區間裡）
+const TILT_LEAN = 0.25, TILT_MISS = 0.4;
 function tiltState(l) {
-  if (!l.o && !l.u) return "even";
-  if (l.o === l.u) return "both";
-  return l.o > l.u ? "o" : "u";
+  const tot = l.r + l.o + l.u;
+  if (!tot) return "even";
+  const lean = (l.o - l.u) / tot, miss = (l.o + l.u) / tot;
+  if (lean >= TILT_LEAN) return "o";
+  if (lean <= -TILT_LEAN) return "u";
+  if (l.o && l.u && miss >= TILT_MISS) return "both";
+  return "even";
 }
 function aspectText(i, l) {
   const A = ASPECT[CHAPTERS[i].id];
@@ -2765,10 +2776,8 @@ function aspectText(i, l) {
   return A[tiltState(l)];
 }
 
-function tiltWord(o, u) {
-  if (!o && !u) return "剛好";
-  if (o === u) return "兩邊都有";
-  return o > u ? "偏過頭" : "偏不足";
+function tiltWord(l) {
+  return { o: "偏過頭", u: "偏不足", both: "兩邊都有", even: "剛好" }[tiltState(l)];
 }
 
 // ---------- 旅程結束頁與紀念卡 ----------
@@ -2903,7 +2912,10 @@ function shareText(rec) {
 
 function tiltPos(l) {
   const tot = l.r + l.o + l.u;
-  return tot ? 50 + (l.o - l.u) / tot * 50 : 50;
+  const lean = tot ? (l.o - l.u) / tot : 0;
+  const st = tiltState(l);
+  if (st === "even" || st === "both") return 50 + lean * 20;          // 剛好區間：留在中線附近
+  return 50 + Math.sign(lean) * (18 + (Math.abs(lean) - TILT_LEAN) / (1 - TILT_LEAN) * 32);  // 偏：從區間外緣往兩端
 }
 function tiltBox(t) {
   const box = el("div", "keep-tilt");
@@ -2911,7 +2923,7 @@ function tiltBox(t) {
   const ends = el("div", "tilt-ends"); ends.innerHTML = "<span></span><span><i>不足</i><i>剛好</i><i>過頭</i></span><span></span>"; box.appendChild(ends);
   t.lands.forEach((l, i) => {
     const row = el("div", "tilt-row");
-    row.innerHTML = `<span>${esc(l.title)}<small>${ASPECT[CHAPTERS[i].id].name}</small></span><span class="tilt-axis">${l.played ? `<i class="tilt-dot" style="left:${tiltPos(l)}%"></i>` : ""}</span><span class="tilt-word">${l.played ? `${tiltWord(l.o, l.u)}・對 ${l.r}／過 ${l.o}／缺 ${l.u}` : "沒走到"}</span>`;
+    row.innerHTML = `<span>${esc(l.title)}<small>${ASPECT[CHAPTERS[i].id].name}</small></span><span class="tilt-axis">${l.played ? `<i class="tilt-dot" style="left:${tiltPos(l)}%"></i>` : ""}</span><span class="tilt-word">${l.played ? tiltWord(l) : "沒走到"}</span>`;
     box.appendChild(row);
   });
   const art = el("div", "tilt-read");
@@ -3158,7 +3170,7 @@ async function drawKeepsake(rec) {
       const px = ax0 + (ax1 - ax0) * tiltPos(l) / 100;
       g.save(); g.shadowColor = col; g.shadowBlur = 16;
       g.beginPath(); g.arc(px, yy, 10, 0, Math.PI * 2); g.fillStyle = col; g.fill(); g.restore();
-      g.fillStyle = "#c2b9a3"; g.fillText(tiltWord(l.o, l.u), W - 90, yy + 7);
+      g.fillStyle = "#c2b9a3"; g.fillText(tiltWord(l), W - 90, yy + 7);
     } else if (tilt) { g.fillStyle = "#857d6c"; g.fillText("沒走到", W - 90, yy + 7); }
     yy += 42;
     if (tilt) {
