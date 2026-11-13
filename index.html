@@ -251,6 +251,18 @@ body[data-theme="cliff"] .option.picked{background:rgba(184,145,63,.18)}
 .mini.rev{transform:rotate(180deg)}
 .spread-quotes p{margin:4px 0;color:var(--ink);font-size:16px}
 .narr.wedge{font-size:18px;line-height:2.1}
+.keep-tilt{color:var(--ink);max-width:640px;margin:18px auto 6px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03)}
+.keep-tilt h3{margin:0 0 10px;font-size:16px;letter-spacing:.12em;color:var(--gold)}
+.tilt-row{display:grid;grid-template-columns:56px 1fr 160px;gap:10px;align-items:center;margin:8px 0;font-size:14px}
+.tilt-axis{position:relative;height:18px}
+.tilt-axis::before{content:"";position:absolute;left:0;right:0;top:8px;height:2px;background:var(--line)}
+.tilt-axis::after{content:"";position:absolute;left:50%;top:2px;width:2px;height:14px;background:var(--gold);transform:translateX(-1px)}
+.tilt-dot{position:absolute;top:2px;width:14px;height:14px;border-radius:50%;background:var(--ember2);transform:translateX(-7px);box-shadow:0 0 8px rgba(232,194,122,.5)}
+.tilt-ends{display:grid;grid-template-columns:56px 1fr 160px;gap:10px;font-size:11px;color:var(--muted)}
+.tilt-ends span:nth-child(2){display:flex;justify-content:space-between}
+.tilt-word{color:var(--ink2);font-size:13px}
+.tilt-mode{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);font-size:15px;line-height:1.8;color:var(--ink2)}
+.tilt-mode b{color:var(--ink);font-size:18px}
 .wedge-img{display:block;width:100%;max-width:760px;margin:6px auto 18px;border-radius:10px;border:1px solid var(--line);aspect-ratio:1299/833;object-fit:cover}
 .atlas-btn{position:relative}
 .atlas-btn.fresh{border-color:var(--gold);color:var(--gold);box-shadow:0 0 0 0 rgba(232,194,122,.6);animation:atlasPulse 1.8s ease-out infinite}
@@ -2625,7 +2637,7 @@ function showJourneyGate(ch) {
 }
 function journeyRecord(r) {
   journey.lands = journey.lands.filter(l => l.id !== C.id);
-  journey.lands.push({ id: C.id, title: C.title, tool: C.tool, awake: !!progress.awake, cards: r.trail || [], learned: (r.log || []).filter(l => l.s === 1).map(l => ({ code: l.code, up: l.up, att: l.att })), missed: (r.log || []).filter(l => l.s === 0).map(l => ({ code: l.code, up: l.up })) });
+  journey.lands.push({ id: C.id, title: C.title, tool: C.tool, awake: !!progress.awake, cards: r.trail || [], learned: (r.log || []).filter(l => l.s === 1).map(l => ({ code: l.code, up: l.up, att: l.att })), missed: (r.log || []).filter(l => l.s === 0).map(l => ({ code: l.code, up: l.up, att: l.att })) });
   saveJourney();
 }
 function nameOf(code) {
@@ -2673,6 +2685,53 @@ function miniCard_unused(code, up) {
 function btnGhost(text, fn, extra) { const b = el("button", "btn ghost" + (extra ? " " + extra : ""), text); b.onclick = fn; return b; }
 function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.remove("show"); void t.offsetWidth; t.classList.add("show"); }
 const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+
+// ---------- 選擇傾向：每個事件的兩個錯誤選項，一個「過頭」(o)、一個「不足」(u)，各有一種樣態 ----------
+const TILT = {"W01U": {"怕麻煩，把火花壓下去": "u壓抑", "急著抓住火花，要它照自己的意思": "o掌控"}, "W01R": {"顧面子，不承認害怕": "u壓抑", "跳過感受，急著變強": "o急於證明"}, "W02U": {"不願投入，怕被綁住": "u逃避", "急著一口氣把路全定死": "o掌控"}, "W02R": {"用理由掩蓋害怕": "u壓抑", "硬逼自己馬上出發，證明自己不怕": "o急於證明"}, "W04U": {"用幫忙換位置，不敢只是被歡迎": "o急於證明", "旁觀，不讓自己真正加入": "u冷眼"}, "W04R": {"先拒絕別人，免得被拒絕": "o反擊", "用做事掩飾不自在": "u逃避"}, "W05U": {"想證明自己、怕輸": "o急於證明", "逃避較量": "u逃避"}, "W05R": {"不甘心，把較量變成私怨": "o反擊", "逃開，並把錯推給場面": "u逃避"}, "W03U": {"只看怎麼贏，沒看見對方": "o不自覺", "不願看，把判斷交出去": "u交出"}, "W03R": {"被急躁帶著跑": "o急於證明", "逃避": "u逃避"}, "W07U": {"衝動逞強，讓場面更糟": "o不自覺", "用私下補償代替站出來": "u逃避"}, "W07R": {"替退縮找理由": "u無力", "用衝動掩蓋羞愧": "o急於證明"}, "W08U": {"想掌控，反而拖慢": "o掌控", "被速度壓垮就放手": "u無力"}, "W08R": {"忙著指責，讓混亂繼續": "o反擊", "看清楚誰錯了，卻站在一旁等別人收拾": "u冷眼"}, "W06U": {"享受勝利，卻拿來壓自己人": "o不自覺", "不敢接受肯定": "u無力"}, "W06R": {"急著要被理解": "o急於證明", "用輕視保護自己": "u冷眼"}, "W09U": {"硬撐，把自己耗盡": "o硬撐", "一累就放手": "u無力"}, "W09R": {"把錯推給別人": "o反擊", "道了歉，卻不肯面對自己的狀態": "u壓抑"}, "W10U": {"逞強": "o硬撐", "用理由卸下責任": "u逃避"}, "W10R": {"不肯放下": "o硬撐", "從一個極端跳到另一個極端": "u無力"}, "C01U": {"把感受收起來，急著辦正事": "u壓抑", "被感受淹過去，越哭越停不下來": "o放大"}, "C01R": {"把問題推給外面": "o不自覺", "假裝沒事": "u壓抑"}, "C02U": {"替別人的心做決定": "o掌控", "把別人的心事當熱鬧看": "u冷眼"}, "C02R": {"替別人修飾感受，讓誤會更深": "o掌控", "逃開": "u逃避"}, "C03U": {"用旁觀者的角色參加": "u冷眼", "把熱鬧變成任務": "o掌控"}, "C03R": {"被熱鬧淹沒": "o放大", "站在外面數落，自己不下場": "u冷眼"}, "C06U": {"急著從善意裡挖答案": "o掌控", "不敢只是接受": "u無力"}, "C06R": {"困在過去": "u逃避", "一口氣把過去全丟掉，硬要大家往前看": "o掌控"}, "C04U": {"用忙碌蓋住空虛": "u逃避", "把空虛放大成一切都沒意義": "o放大"}, "C04R": {"急著把每份好意都還清": "o急於證明", "躲開別人的好意": "u逃避"}, "C05U": {"急著要她看光明面": "o拯救", "用行動逃開眼前的難受": "u逃避"}, "C05R": {"替她做決定": "o掌控", "不敢面對": "u逃避"}, "C08U": {"什麼都捨不得放下": "o掌控", "不敢一個人走": "u交出"}, "C08R": {"用理由拖延": "u猶豫", "死抓著不走，要別人留住自己": "o掌控"}, "C07U": {"被渴望帶走": "o不自覺", "在選項裡打轉": "u猶豫"}, "C07R": {"被懷疑淹沒": "u無力", "用憤怒蓋住不安": "o反擊"}, "C09U": {"被滿足留住": "u逃避", "想把滿足佔為己有": "o掌控"}, "C09R": {"填不滿的渴望": "o放大", "乾脆什麼都不要了": "u無力"}, "C10U": {"想來想去，願望一直沒說出口": "u猶豫", "想一次抹掉所有人的痛": "o拯救"}, "C10R": {"硬要大家圓滿": "o掌控", "怕破壞氣氛，什麼都不說": "u壓抑"}, "S01U": {"被熱鬧帶走": "o不自覺", "逃開清醒": "u逃避"}, "S01R": {"被念頭牽著走": "o放大", "用冷硬擋住混亂": "u壓抑"}, "S02U": {"為了站穩一邊，把另一邊抹掉": "o急於證明", "用技巧閃開問題": "u逃避"}, "S02R": {"用草率結束煎熬": "o不自覺", "繼續逃避": "u逃避"}, "S05U": {"把勝利變成羞辱": "o反擊", "用規則合理化空虛": "u壓抑"}, "S05R": {"被報復心牽著走": "o反擊", "用冷漠代替結束": "u冷眼"}, "S07U": {"跟著暗中行事": "u交出", "用揭發代替面對本人": "o反擊"}, "S07R": {"用更多暗事掩蓋": "o掌控", "用環境合理化": "u交出"}, "S03U": {"用憤怒擋住心痛": "o反擊", "裝作不在意": "u壓抑"}, "S03R": {"硬逼自己哭出來，證明還有感覺": "o急於證明", "繞開自己": "u冷眼"}, "S08U": {"被想像的牆困住": "u無力", "不看路就亂衝，撞得更傷": "o不自覺"}, "S08R": {"認同他給自己的限制": "u無力", "用空話跳過他的困境": "o不自覺"}, "S09U": {"硬把恐懼壓下去": "u壓抑", "被恐懼牽著走": "o放大"}, "S09R": {"一個人扛著": "o硬撐", "麻痺自己": "u逃避"}, "S04U": {"不肯讓自己停下來": "o硬撐", "一停下來，就再也不想起來": "u無力"}, "S04R": {"用休息躲開世界": "u逃避", "從一個極端跳到另一個極端": "o硬撐"}, "S06U": {"用說教代替陪伴": "o掌控", "一直回頭看": "u猶豫"}, "S06R": {"順著恐懼掉頭": "u交出", "替他做決定": "o掌控"}, "S10U": {"用正義感關上心": "o反擊", "用好聽的話迴避真相": "u逃避"}, "S10R": {"以牙還牙": "o反擊", "用東西打發別人的痛": "u逃避"}, "P01U": {"誇大自己": "o急於證明", "說自己什麼都不會，不敢接": "u無力"}, "P01R": {"說是路過，其實是不敢扎根": "u逃避", "只想要快的": "o不自覺"}, "P02U": {"用蠻力對抗忙亂": "o硬撐", "一亂就放手": "u無力"}, "P02R": {"怕拒絕，把自己撕成三片": "o拯救", "逃避": "u逃避"}, "P03U": {"搶著當主角": "o急於證明", "看輕自己能做的": "u無力"}, "P03R": {"加入一邊，讓分裂更深": "o不自覺", "撇清自己": "u冷眼"}, "P07U": {"用急躁催促": "o掌控", "等不了就換": "u逃避"}, "P07R": {"用結果否定自己": "u無力", "用捷徑掩蓋結果": "o急於證明"}, "P04U": {"被不安綁住": "o掌控", "從一個極端跳到另一個極端": "u無力"}, "P04R": {"被失去的恐懼吞掉": "o放大", "從死抓跳到放棄": "u無力"}, "P05U": {"用指路代替伸手": "u冷眼", "把全部家當塞出去，自己也凍著": "o拯救"}, "P05R": {"寧可受苦也不求助": "u壓抑", "逞強": "o硬撐"}, "P08U": {"想跳過磨練": "u逃避", "用數量代替用心": "o急於證明"}, "P08R": {"被完美綁住": "o掌控", "放棄": "u無力"}, "P06U": {"只看規矩，不看人": "u交出", "用分配換人情": "o不自覺"}, "P06R": {"只當給的人，證明自己不需要人": "o急於證明", "覺得自己不配親近的人對他好": "u無力"}, "P09U": {"把豐足變成報復": "o反擊", "事不關己": "u冷眼"}, "P09R": {"把豐足關起來": "u冷眼", "用全給證明自己不小氣": "o急於證明"}, "P10U": {"把一點功勞往自己身上攬": "o急於證明", "不敢站上屬於自己的位置": "u無力"}, "P10R": {"替別人家做決定": "o掌控", "撇清自己": "u冷眼"}};
+const MODES = {
+  "猶豫":   { dir: "u", look: "想動，卻一直在等更好的時機。", tip: "時機很少完美，先走一小步。" },
+  "逃避":   { dir: "u", look: "轉身去做別的事，繞開眼前那一件。", tip: "留下來，看一眼就好。" },
+  "壓抑":   { dir: "u", look: "把感受收起來，假裝沒事。", tip: "說出來，它就小了一半。" },
+  "交出":   { dir: "u", look: "把判斷交給別人，或交給規矩。", tip: "你的看法也算數。" },
+  "冷眼":   { dir: "u", look: "看得很清楚，卻站在外面不下場。", tip: "看懂了，就伸一次手。" },
+  "無力":   { dir: "u", look: "覺得自己不配，反正也沒用。", tip: "小小一步，真的會改變什麼。" },
+  "不自覺": { dir: "o", look: "衝得太快，沒看見身邊的人。", tip: "停一下，看看身邊的人。" },
+  "急於證明": { dir: "o", look: "想贏、想被看見、想被理解。", tip: "你不用證明，也值得。" },
+  "掌控":   { dir: "o", look: "要事情照自己的意思走。", tip: "留一點空間給別人。" },
+  "硬撐":   { dir: "o", look: "一個人扛，不肯停下來。", tip: "累了就分出去，休息也是前進。" },
+  "拯救":   { dir: "o", look: "想一次替所有人解決。", tip: "先幫眼前這一個人就好。" },
+  "放大":   { dir: "o", look: "把一件事放大成全部。", tip: "它只是一件事，不是全部。" },
+  "反擊":   { dir: "o", look: "用憤怒和指責擋住自己的痛。", tip: "痛的時候，先承認痛。" }
+};
+function tiltOf(code, up, att) {
+  const t = TILT[code + (up ? "U" : "R")];
+  const tag = t && t[att];
+  return tag ? { dir: tag[0], mode: tag.slice(1) } : null;
+}
+// 一趟旅程的傾向：每塊土地做對／過頭／不足的次數，加上最常出現的樣態
+function journeyTilt() {
+  const modes = {};
+  const lands = CHAPTERS.map(ch => {
+    const land = (journey && journey.lands || []).find(x => x.id === ch.id);
+    const r = land ? (land.learned || []).length : 0;
+    let o = 0, u = 0;
+    ((land && land.missed) || []).forEach(m => {
+      const t = tiltOf(m.code, m.up, m.att);
+      if (!t) return;
+      if (t.dir === "o") o++; else u++;
+      modes[t.mode] = (modes[t.mode] || 0) + 1;
+    });
+    return { title: ch.title, played: !!land, r, o, u };
+  });
+  const top = Object.entries(modes).sort((a, b) => b[1] - a[1]);
+  return { lands, top: top.length ? { mode: top[0][0], n: top[0][1] } : null };
+}
+function tiltWord(o, u) {
+  if (!o && !u) return "剛好";
+  if (o === u) return "兩邊都有";
+  return o > u ? "偏過頭" : "偏不足";
+}
 
 // ---------- 旅程結束頁與紀念卡 ----------
 const WALL_KEY = "tarot-wall-v2";
@@ -2740,8 +2799,9 @@ function buildRecord(n) {
   const ending = journey.ending || "輪迴結局";
   const stats = journeyStats();
   return {
-    v: 3, n, date: dateStr(), ending,
+    v: 4, n, date: dateStr(), ending,
     type: typeOf(stats),
+    tilt: journeyTilt(),
     stats: stats.map(s => ({ title: s.title, meter: s.meter, tool: s.tool, n: s.n, awake: s.awake })),
     lands: CHAPTERS.map((ch, i) => {
       const land = (journey.lands || []).find(x => x.id === ch.id);
@@ -2803,6 +2863,28 @@ function shareText(rec) {
   return `我在《我來異世界可不想再成為塔羅師》走完第 ${rec.n} 趟旅程，是「${T.name}」。\n「${T.quote}」\n你呢？ ${SHARE_URL}`;
 }
 
+function tiltPos(l) {
+  const tot = l.r + l.o + l.u;
+  return tot ? 50 + (l.o - l.u) / tot * 50 : 50;
+}
+function tiltBox(t) {
+  const box = el("div", "keep-tilt");
+  box.appendChild(el("h3", null, "這一趟，你在每塊土地的選擇"));
+  const ends = el("div", "tilt-ends"); ends.innerHTML = "<span></span><span><i>不足</i><i>剛好</i><i>過頭</i></span><span></span>"; box.appendChild(ends);
+  t.lands.forEach(l => {
+    const row = el("div", "tilt-row");
+    row.innerHTML = `<span>${esc(l.title)}</span><span class="tilt-axis">${l.played ? `<i class="tilt-dot" style="left:${tiltPos(l)}%"></i>` : ""}</span><span class="tilt-word">${l.played ? `${tiltWord(l.o, l.u)}・對 ${l.r}／過 ${l.o}／缺 ${l.u}` : "沒走到"}</span>`;
+    box.appendChild(row);
+  });
+  const m = t.top && MODES[t.top.mode];
+  const p = el("div", "tilt-mode");
+  p.innerHTML = m
+    ? `你最常掉進去的是 <b>${esc(t.top.mode)}</b>（${m.dir === "o" ? "過頭" : "不足"}，${t.top.n} 次）：${esc(m.look)}<br>給下一趟的自己：${esc(m.tip)}`
+    : "這一趟，你幾乎都走在剛好的地方。";
+  box.appendChild(p);
+  return box;
+}
+
 async function showKeepsake(rec, fromJourney) {
   if (!fromJourney) { setChapter(FINALE); run = null; queue = []; updateHud(); }
   const T = TYPES[rec.type || "fool"];
@@ -2822,6 +2904,7 @@ async function showKeepsake(rec, fromJourney) {
     lines.forEach(l => box.appendChild(el("p", null, esc(l))));
     s.appendChild(box);
   }
+  if (rec.tilt) s.appendChild(tiltBox(rec.tilt));
   s.appendChild(el("p", "hint center", "手機上也可以長按圖片另存。"));
   const row2 = el("div", "btn-row");
   s.appendChild(row2);
@@ -2931,94 +3014,129 @@ function drawStar(g, cx, cy, r) {
 const EL_COLOR = { fire: "#e0794a", water: "#5aa6c9", air: "#a8acd8", earth: "#a9b85a", fool: "#c9a774" };
 
 async function drawKeepsake(rec) {
-  const W = 1080, H = 1080, F = '"Iansui","Noto Serif TC","Songti TC",serif';
+  const W = 1080, H = 1350, F = '"Iansui","Noto Serif TC","Songti TC",serif';
   const typeId = rec.type || "fool", T = TYPES[typeId], accent = EL_COLOR[typeId];
   const isTrue = (rec.ending || "真結局") === "真結局";
-  const stats = rec.stats || [];
-  // 卡片字型（芫荽）只載入卡上用到的字
-  const allText = `愚人之旅第趟旅程真結局輪迴這一，你是元素皆衡${rec.n}${rec.date}${T.name}${T.quote}${T.desc}${nameOf(T.card)}「」・醒睡我來異世界可不想再成為塔羅師也走看自己哪種` + stats.map(s => s.title + s.meter + s.tool).join("") + SHARE_URL;
+  const tilt = rec.tilt;
+  const M = tilt && tilt.top ? MODES[tilt.top.mode] : null;
+  const allText = `愚人之旅第趟旅程真結局輪迴這一，你是元素皆衡${rec.n}${rec.date}${T.name}${T.quote}${nameOf(T.card)}「」・醒睡我來異世界可不想再成為塔羅師也走看自己哪種四塊土地上的選擇不足剛好過頭兩邊都有偏沒到對最常掉進去的給下一趟幾乎都在地方張卡畫分析加入之前次（）：，`
+    + (rec.lands || []).map(l => l.title + l.tool).join("") + (M ? tilt.top.mode + M.look + M.tip : "") + SHARE_URL;
   try { if (document.fonts) { await document.fonts.load(`40px "Iansui"`, allText); await document.fonts.ready; } } catch (e) {}
   const [art, cardImg, lib] = await Promise.all([loadImg(`img/types/${typeId}.jpg`), loadImg(`img/cards/${T.card}.jpg`), qrLib()]);
   const cv = document.createElement("canvas"); cv.width = W; cv.height = H;
   const g = cv.getContext("2d");
-  const fit = (text, max, size, weight = "") => { let s = size; do { g.font = `${weight}${s}px ${F}`; s -= 2; } while (g.measureText(text).width > max && s > 20); };
+  const fit = (text, max, size, weight = "") => { let z = size; do { g.font = `${weight}${z}px ${F}`; z -= 2; } while (g.measureText(text).width > max && z > 18); };
+  const rule = (y) => { g.beginPath(); g.moveTo(90, y); g.lineTo(W - 90, y); g.strokeStyle = "rgba(201,167,116,.35)"; g.lineWidth = 1; g.stroke(); };
 
-  // 背景：深紫夜空＋類型顏色光暈＋星點
+  // 背景：深紫夜空、原型顏色光暈、星點、雙框
   const bg = g.createLinearGradient(0, 0, 0, H);
   bg.addColorStop(0, "#2c2338"); bg.addColorStop(1, "#0d0b12");
   g.fillStyle = bg; g.fillRect(0, 0, W, H);
-  const glow = g.createRadialGradient(270, 490, 30, 270, 490, 420);
+  const glow = g.createRadialGradient(265, 420, 30, 265, 420, 380);
   glow.addColorStop(0, accent + "66"); glow.addColorStop(1, accent + "00");
   g.fillStyle = glow; g.fillRect(0, 0, W, H);
   let seed = rec.n * 97 + 13; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
-  g.fillStyle = "rgba(240,234,219,.5)";
-  for (let i = 0; i < 55; i++) { const r = rnd() * 2 + .4; g.beginPath(); g.arc(rnd() * W, rnd() * 760, r, 0, Math.PI * 2); g.fill(); }
-  g.fillStyle = "#c9a774"; drawStar(g, 1000, 250, 10); drawStar(g, 1010, 700, 7); drawStar(g, 62, 760, 9);
-
-  // 雙框
+  g.fillStyle = "rgba(240,234,219,.45)";
+  for (let i = 0; i < 50; i++) { const r = rnd() * 2 + .4; g.beginPath(); g.arc(rnd() * W, rnd() * 660, r, 0, Math.PI * 2); g.fill(); }
+  g.fillStyle = "#c9a774"; drawStar(g, 1000, 200, 10); drawStar(g, 70, 690, 8);
   g.strokeStyle = "#c9a774"; g.lineWidth = 3; g.strokeRect(28, 28, W - 56, H - 56);
   g.lineWidth = 1; g.strokeRect(40, 40, W - 80, H - 80);
 
-  // 左：塔羅牌（有專屬插圖時改用插圖）
-  const cx = 290, top = 90, boxH = 640;
+  // 標題列
+  g.textAlign = "left";
+  g.fillStyle = "#c9a774"; fit("我來異世界可不想再成為塔羅師", 640, 32); g.fillText("我來異世界可不想再成為塔羅師", 90, 112);
+  g.fillStyle = "#c2b9a3"; g.font = `22px ${F}`; g.fillText(`第 ${rec.n} 趟旅程・${rec.date}`, 90, 150);
+  const tag = isTrue ? "真結局" : "輪迴結局";
+  g.font = `22px ${F}`; const tw = g.measureText(tag).width + 36;
+  roundRect(g, W - 90 - tw, 92, tw, 40, 20);
+  g.fillStyle = isTrue ? "#c9a774" : "rgba(255,255,255,.06)"; g.fill();
+  g.strokeStyle = "#c9a774"; g.lineWidth = 2; g.stroke();
+  g.fillStyle = isTrue ? "#1a1722" : "#c9a774"; g.fillText(tag, W - 90 - tw + 18, 120);
+
+  // 原型：左牌、右名字與語錄
+  const top = 190, ch = 420;
   if (art) {
-    const s = 420, x = cx - s / 2, y = top + (boxH - s) / 2;
-    g.save(); roundRect(g, x, y, s, s, 20); g.clip(); g.drawImage(art, x, y, s, s); g.restore();
-    roundRect(g, x, y, s, s, 20); g.strokeStyle = "#c9a774"; g.lineWidth = 3; g.stroke();
+    const z = 380, x = 265 - z / 2, y = top + (ch - z) / 2;
+    g.save(); roundRect(g, x, y, z, z, 18); g.clip(); g.drawImage(art, x, y, z, z); g.restore();
+    roundRect(g, x, y, z, z, 18); g.strokeStyle = "#c9a774"; g.lineWidth = 3; g.stroke();
   } else if (cardImg) {
-    const h = boxH, w = Math.round(h * cardImg.width / cardImg.height), x = cx - w / 2;
-    g.save(); g.shadowColor = accent; g.shadowBlur = 46;
+    const h = ch, w = Math.round(h * cardImg.width / cardImg.height), x = 265 - w / 2;
+    g.save(); g.shadowColor = accent; g.shadowBlur = 44;
     roundRect(g, x, top, w, h, 14); g.fillStyle = "#000"; g.fill(); g.restore();
     g.save(); roundRect(g, x, top, w, h, 14); g.clip(); g.drawImage(cardImg, x, top, w, h); g.restore();
     roundRect(g, x, top, w, h, 14); g.strokeStyle = "#c9a774"; g.lineWidth = 3; g.stroke();
   }
-
-  // 右：遊戲標題、日期、結局、原型、語錄、描述
-  const rx = 540, rw = W - 90 - rx;
-  g.textAlign = "left";
-  g.fillStyle = "#c9a774"; fit("我來異世界可不想再成為塔羅師", rw, 32); g.fillText("我來異世界可不想再成為塔羅師", rx, 128);
-  g.fillStyle = "#c2b9a3"; g.font = `22px ${F}`; g.fillText(`第 ${rec.n} 趟旅程・${rec.date}`, rx, 168);
-  const tag = isTrue ? "真結局" : "輪迴結局";
-  g.font = `22px ${F}`; const tw = g.measureText(tag).width + 36;
-  roundRect(g, rx, 192, tw, 38, 19);
-  g.fillStyle = isTrue ? "#c9a774" : "rgba(255,255,255,.06)"; g.fill();
-  g.strokeStyle = "#c9a774"; g.lineWidth = 2; g.stroke();
-  g.fillStyle = isTrue ? "#1a1722" : "#c9a774"; g.fillText(tag, rx + 18, 219);
-  g.fillStyle = "#c2b9a3"; g.font = `30px ${F}`; g.fillText("這一趟，你是", rx, 318);
-  g.fillStyle = "#f6efe0"; fit(T.name, rw, 86); g.fillText(T.name, rx, 412);
+  const rx = 500, rw = W - 90 - rx;
+  g.fillStyle = "#c2b9a3"; g.font = `28px ${F}`; g.fillText("這一趟，你是", rx, 290);
+  g.fillStyle = "#f6efe0"; fit(T.name, rw, 84); g.fillText(T.name, rx, 382);
   g.fillStyle = accent; g.font = `24px ${F}`;
-  g.fillText(`${nameOf(T.card)}・${T.el === "空" ? "四元素皆衡" : T.el + "元素"}`, rx, 458);
+  g.fillText(`${nameOf(T.card)}・${T.el === "空" ? "四元素皆衡" : T.el + "元素"}`, rx, 428);
   g.fillStyle = "#e8c27a";
-  let y = 535;
+  let y = 500;
   const q = `「${T.quote}」`;
-  // 語錄稍微超出一行時縮小字級放成一行，太長才換行
-  g.font = `30px ${F}`;
-  if (g.measureText(q).width <= rw) { fit(q, rw, 36); g.fillText(q, rx, y); y += 52; }
-  else { g.font = `36px ${F}`; wrapText(g, q, rw).slice(0, 3).forEach(l => { g.fillText(l, rx, y); y += 52; }); }
-  g.fillStyle = "#d9d0bd"; g.font = `26px ${F}`; y += 14;
-  wrapText(g, T.desc, rw).slice(0, 4).forEach(l => { g.fillText(l, rx, y); y += 42; });
+  g.font = `32px ${F}`;
+  if (g.measureText(q).width <= rw) { g.fillText(q, rx, y); }
+  else { wrapText(g, q, rw).slice(0, 3).forEach(l => { g.fillText(l, rx, y); y += 46; }); }
 
-  // 四塊土地：橫排四欄，標籤＋數字＋長條
-  const by = 812, colW = (W - 180) / 4;
-  g.strokeStyle = "rgba(201,167,116,.35)"; g.lineWidth = 1;
-  g.beginPath(); g.moveTo(90, by - 40); g.lineTo(W - 90, by - 40); g.stroke();
-  stats.forEach((st, i) => {
-    const x0 = 90 + i * colW, bw = colW - 30, elId = LAND_EL[CHAPTERS[i].id];
-    g.textAlign = "left"; g.fillStyle = "#c2b9a3"; g.font = `22px ${F}`;
-    g.fillText(`${st.title}・${st.meter}`, x0, by);
-    g.textAlign = "right"; g.fillStyle = st.n ? "#f0eadb" : "#857d6c";
-    g.fillText(`${st.n}/${THRESHOLD}`, x0 + bw, by);
-    roundRect(g, x0, by + 18, bw, 14, 7); g.fillStyle = "rgba(255,255,255,.08)"; g.fill();
-    const pct = Math.min(st.n / THRESHOLD, 1);
-    if (pct > 0) { roundRect(g, x0, by + 18, Math.max(bw * pct, 14), 14, 7); g.fillStyle = EL_COLOR[elId]; g.fill(); }
+  // 四塊土地上的選擇：不足 ← 剛好 → 過頭
+  const sy = 672;
+  rule(sy - 20);
+  g.fillStyle = "#c9a774"; g.font = `26px ${F}`; g.textAlign = "left";
+  g.fillText("四塊土地上的選擇", 90, sy + 22);
+  const ax0 = 300, ax1 = 780, axc = (ax0 + ax1) / 2;
+  g.font = `18px ${F}`; g.fillStyle = "#857d6c";
+  g.textAlign = "left"; g.fillText("← 不足", ax0, sy + 66);
+  g.textAlign = "center"; g.fillText("剛好", axc, sy + 66);
+  g.textAlign = "right"; g.fillText("過頭 →", ax1, sy + 66);
+  const lands = tilt ? tilt.lands : [];
+  (rec.lands || []).forEach((L, i) => {
+    const yy = sy + 112 + i * 56;
+    const elId = LAND_EL[CHAPTERS[i].id];
+    const st = (rec.stats || [])[i] || {};
+    g.textAlign = "left"; g.font = `24px ${F}`; g.fillStyle = "#e9e1cf";
+    g.fillText(L.title, 90, yy + 8);
+    g.font = `18px ${F}`; g.fillStyle = st.awake ? EL_COLOR[elId] : "#857d6c";
+    g.fillText(`${L.tool}${st.awake ? "醒" : "睡"}`, 188, yy + 8);
+    g.strokeStyle = "rgba(201,167,116,.4)"; g.lineWidth = 2;
+    g.beginPath(); g.moveTo(ax0, yy); g.lineTo(ax1, yy); g.stroke();
+    g.fillStyle = "#c9a774"; g.fillRect(axc - 1, yy - 9, 2, 18);
+    const l = lands[i];
+    g.textAlign = "right"; g.font = `18px ${F}`;
+    if (l && l.played) {
+      const px = ax0 + (ax1 - ax0) * tiltPos(l) / 100;
+      g.save(); g.shadowColor = EL_COLOR[elId]; g.shadowBlur = 16;
+      g.beginPath(); g.arc(px, yy, 11, 0, Math.PI * 2); g.fillStyle = EL_COLOR[elId]; g.fill(); g.restore();
+      g.fillStyle = "#c2b9a3"; g.fillText(`${tiltWord(l.o, l.u)}・對 ${l.r}`, W - 90, yy + 7);
+    } else {
+      g.fillStyle = "#857d6c"; g.fillText(tilt ? "沒走到" : "", W - 90, yy + 7);
+    }
   });
+  if (!tilt) { g.textAlign = "center"; g.fillStyle = "#857d6c"; g.font = `20px ${F}`; g.fillText("這張卡畫在傾向分析加入之前，下一趟就會有了。", W / 2, sy + 112 + 4 * 56 + 80); }
 
-  // 底部：一句邀請＋QR
-  const fy = 930;
-  g.beginPath(); g.moveTo(90, fy - 46); g.lineTo(W - 90, fy - 46); g.strokeStyle = "rgba(201,167,116,.35)"; g.stroke();
-  g.textAlign = "left"; g.fillStyle = "#c9a774"; g.font = `30px ${F}`;
-  g.fillText("你也來走一趟，看看自己是哪一種人", 90, fy + 40);
-  if (lib) { try { drawQR(g, lib, SHARE_URL, W - 90 - 110, fy - 28, 110); } catch (e) {} }
+  // 最常掉進去的樣態
+  const my = sy + 112 + 4 * 56 - 6;
+  rule(my);
+  g.textAlign = "left";
+  if (M) {
+    g.fillStyle = "#c2b9a3"; g.font = `24px ${F}`; g.fillText("你最常掉進去的", 90, my + 52);
+    g.fillStyle = "#f6efe0"; g.font = `52px ${F}`; g.fillText(tilt.top.mode, 90, my + 118);
+    const nameW = g.measureText(tilt.top.mode).width;
+    g.fillStyle = M.dir === "o" ? "#e0794a" : "#5aa6c9"; g.font = `22px ${F}`;
+    g.fillText(`${M.dir === "o" ? "過頭" : "不足"}・${tilt.top.n} 次`, 90 + nameW + 18, my + 116);
+    const tx = 470, tw2 = W - 90 - tx;
+    g.fillStyle = "#d9d0bd"; g.font = `24px ${F}`;
+    let ty = my + 60; wrapText(g, M.look, tw2).slice(0, 2).forEach(t => { g.fillText(t, tx, ty); ty += 36; });
+    g.fillStyle = "#e8c27a"; wrapText(g, `給下一趟的自己：${M.tip}`, tw2).slice(0, 2).forEach(t => { g.fillText(t, tx, ty + 6); ty += 36; });
+  } else if (tilt) {
+    g.fillStyle = "#e8c27a"; g.font = `30px ${F}`; g.fillText("這一趟，你幾乎都走在剛好的地方。", 90, my + 90);
+  }
+
+  // 底部：邀請＋QR
+  const fy = H - 150;
+  rule(fy - 16);
+  g.textAlign = "left"; g.fillStyle = "#c9a774"; g.font = `28px ${F}`;
+  g.fillText("你也來走一趟，看看自己是哪一種人", 90, fy + 58);
+  if (lib) { try { drawQR(g, lib, SHARE_URL, W - 90 - 100, fy, 100); } catch (e) {} }
   return cv;
 }
 
