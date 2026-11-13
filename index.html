@@ -251,6 +251,17 @@ body[data-theme="cliff"] .option.picked{background:rgba(184,145,63,.18)}
 .mini.rev{transform:rotate(180deg)}
 .spread-quotes p{margin:4px 0;color:var(--ink);font-size:16px}
 .narr.wedge{font-size:18px;line-height:2.1}
+.wedge-img{display:block;width:100%;max-width:760px;margin:6px auto 18px;border-radius:10px;border:1px solid var(--line);aspect-ratio:1299/833;object-fit:cover}
+.atlas-btn{position:relative}
+.atlas-btn.fresh{border-color:var(--gold);color:var(--gold);box-shadow:0 0 0 0 rgba(232,194,122,.6);animation:atlasPulse 1.8s ease-out infinite}
+.atlas-btn.fresh::after{content:"新";position:absolute;top:-8px;right:-8px;background:var(--gold);color:#2a1a0c;font-size:11px;font-weight:700;border-radius:10px;padding:1px 6px}
+@keyframes atlasPulse{0%{box-shadow:0 0 0 0 rgba(232,194,122,.55)}70%{box-shadow:0 0 0 14px rgba(232,194,122,0)}100%{box-shadow:0 0 0 0 rgba(232,194,122,0)}}
+.atlas-lead{color:var(--ink2);margin:0 0 6px}
+.atlas-nav{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px}
+.atlas-nav a{font-size:13px;color:var(--ink2);border:1px solid var(--line);border-radius:14px;padding:2px 12px;text-decoration:none}
+.atlas-land{margin-top:28px;padding-top:6px;border-top:1px solid var(--line)}
+.atlas-land h2{font-size:22px;margin:10px 0 4px;letter-spacing:.1em}
+.atlas-missing{font-size:14px;color:var(--ink2);margin:4px 0 0;padding:8px 12px;border-left:3px solid var(--gold);background:rgba(255,255,255,.03);border-radius:0 8px 8px 0}
 .wedge-card{justify-content:center}
 .keep-title{text-align:center;font-size:26px;margin:6px 0;letter-spacing:.08em}
 .keep-holder{display:flex;justify-content:center;margin:16px 0}
@@ -1847,6 +1858,11 @@ const PROLOGUE = {
   lead: "忘了自己是誰，好像也是一種輕鬆。", theme: "cliff", storeKey: "tarot-prologue-proto-v1",
   quote: "日子像一副洗了太多次的牌，邊角都軟了，翻開來永遠是同一張。直到那天晚上，一陣怪風把其中一張吹走了。",
   cardNames: { M00: "愚人", M01: "魔術師", M02: "女祭司" },
+  people: [
+    { name: "毛球", tag: "舔醒綾的白色小狗", card: "愚人（白狗）", intro: "一團白色的毛球，尾巴搖得像要飛起來。綾走到哪裡，牠就跟到哪裡；綾太靠近懸崖時，牠會咬住他的褲管。" },
+    { name: "老人", tag: "懸崖小屋裡煮湯的白髮老人", card: "魔術師", intro: "在懸崖上等了一千年的魔法師。手臂上有褪色的紋路，灶裡一小撮火就能把湯煮滾。負責讓看不見的東西變成看得見。" },
+    { name: "老婆婆", tag: "山路盡頭神廟裡的老婆婆", card: "女祭司", intro: "守著神廟和一卷地圖的老婆婆，也等了一千年。負責記住那些看不見的東西，說話總是只說一半。" }
+  ],
   scenes: [
     {
       code: "M00",
@@ -1992,6 +2008,7 @@ function showHome() {
   s.appendChild(intro);
   const jr = el("div", "btn-row journey-box");
   jr.appendChild(continueBtn("踏上旅程", startJourney));
+  if (hasEnded()) jr.appendChild(atlasButton());
   const saved = loadJourney();
   if (saved && saved.idx > 0 && saved.idx < journeyOrder().length) {
     const rb = el("button", "btn ghost", `繼續上次的旅程（${journeyOrder()[saved.idx].title}）`); rb.onclick = resumeJourney; jr.appendChild(rb);
@@ -2294,31 +2311,87 @@ function showSummary() {
 function showCollection(back) {
   const s = stage();
   s.appendChild(el("div", "step-label", `${C.title}圖鑑`));
-  const metN = C.people.filter(pp => progress.met[pp.name]).length;
-  s.appendChild(el("h3", "sec", `人物 ${metN} / ${C.people.length}`));
+  renderCollection(s, C, progress);
+  const row = el("div", "btn-row");
+  row.appendChild(continueBtn("返回", back));
+  s.appendChild(row);
+}
+
+function portraitHtml(pp) {
+  const f = PORTRAIT_FILE[pp.card];
+  return f ? `<div class="portrait has-img"><img src="img/v2/avatar_${f}.jpg" alt="${pp.name}" loading="lazy"></div>` : `<div class="portrait"><span>${pp.name}</span></div>`;
+}
+
+// 一個章節的人物與事件；atlas = true 時多一行「還缺什麼」
+function renderCollection(s, ch, prog, atlas) {
+  const people = ch.people || [];
+  const events = ch.events || {};
+  const metN = people.filter(pp => prog.met && prog.met[pp.name]).length;
+  if (atlas) {
+    const evAll = Object.keys(events).length;
+    const solvedN = Object.keys(prog.solved || {}).length;
+    const seenN = Object.keys(events).filter(id => (prog.seen || {})[id]).length;
+    const bits = [];
+    if (people.length - metN) bits.push(`還沒遇見 ${people.length - metN} 位人物`);
+    if (evAll && evAll - solvedN) bits.push(`還有 ${evAll - solvedN} 件事沒做對` + (evAll - seenN ? `（其中 ${evAll - seenN} 件還沒遇過）` : ""));
+    if (ch.tool) bits.push(`${ch.tool}${prog.awake ? "已醒" : "還在沉睡"}`);
+    s.appendChild(el("p", "atlas-missing", bits.length ? bits.join("；") + "。" : "這裡的人和事，都已經找齊了。"));
+  }
+  s.appendChild(el("h3", "sec", `人物 ${metN} / ${people.length}`));
   const pg = el("div", "people");
-  C.people.forEach(pp => {
-    const met = progress.met[pp.name];
+  people.forEach(pp => {
+    const met = prog.met && prog.met[pp.name];
     const c = el("div", "person " + (met ? "met" : "unmet"));
     c.innerHTML = met
-      ? (PORTRAIT_FILE[pp.card] ? `<div class="portrait has-img"><img src="img/v1/portrait_${PORTRAIT_FILE[pp.card]}.jpg" alt="${pp.name}" loading="lazy"></div>` : `<div class="portrait"><span>${pp.name}</span><small>圖待生成</small></div>`) + `<div class="pinfo"><div class="pname">${pp.name}<span class="pcard">${pp.card}</span></div><p>${pp.intro}</p></div>`
+      ? portraitHtml(pp) + `<div class="pinfo"><div class="pname">${pp.name}<span class="pcard">${pp.card}</span></div><p>${pp.intro}</p></div>`
       : `<div class="portrait"><span>？</span></div><div class="pinfo"><div class="pname">？？？</div><p>還沒在旅途中遇見。</p></div>`;
     pg.appendChild(c);
   });
   s.appendChild(pg);
-  s.appendChild(el("h3", "sec", `事件 ${Object.keys(progress.solved).length} / ${Object.keys(C.events).length}`));
+  if (!ch.cardOrder) return;
+  s.appendChild(el("h3", "sec", `事件 ${Object.keys(prog.solved || {}).length} / ${Object.keys(events).length}`));
   s.appendChild(el("p", "hint", "亮起：已懂　淡色：遇過但還沒做對　問號：還沒遇過"));
   const grid = el("div", "cgrid");
-  C.cardOrder.forEach(code => {
+  ch.cardOrder.forEach(code => {
     ["U", "R"].forEach(o => {
       const id = code + o;
-      const st = progress.solved[id] ? "solved" : progress.seen[id] ? "seen" : "unseen";
+      const st = (prog.solved || {})[id] ? "solved" : (prog.seen || {})[id] ? "seen" : "unseen";
       grid.appendChild(el("div", "ccell " + st, st === "unseen"
         ? `<span class="mini-art back">？</span><span>？？？</span><small>${o === "U" ? "正位" : "逆位"}</small>`
-        : `${miniArt(code, o === "U")}<span>${C.cardNames[code]}</span><small>${o === "U" ? "正位" : "逆位"}</small>`));
+        : `${miniArt(code, o === "U")}<span>${ch.cardNames[code]}</span><small>${o === "U" ? "正位" : "逆位"}</small>`));
     });
   });
   s.appendChild(grid);
+}
+
+// ---------- 總圖鑑：走完第一趟旅程後出現在首頁 ----------
+const ATLAS_KEY = "tarot-atlas-seen-v1"; let memAtlas = false;
+function atlasSeen() { try { return localStorage.getItem(ATLAS_KEY) === "1" || memAtlas; } catch (e) { return memAtlas; } }
+function markAtlasSeen() { memAtlas = true; try { localStorage.setItem(ATLAS_KEY, "1"); } catch (e) {} }
+function atlasButton() {
+  const b = el("button", "btn ghost atlas-btn" + (atlasSeen() ? "" : " fresh"), "圖鑑");
+  b.onclick = () => showAtlas(showHome);
+  markAtlasSeen();
+  return b;
+}
+function showAtlas(back) {
+  setChapter(null);
+  run = null; queue = [];
+  updateHud();
+  const s = stage();
+  s.appendChild(el("div", "step-label", "圖鑑"));
+  s.appendChild(el("p", "atlas-lead", "這一路上經歷過的事、遇見過的人，還有還沒找到的。"));
+  const lands = [PROLOGUE, ...CHAPTERS];
+  const nav = el("div", "atlas-nav");
+  lands.forEach(ch => { const a = el("a", null, `${ch.kicker}・${ch.title}`); a.href = "#"; a.onclick = (e) => { e.preventDefault(); document.getElementById("atlas-" + ch.id).scrollIntoView({ behavior: "smooth" }); }; nav.appendChild(a); });
+  s.appendChild(nav);
+  lands.forEach(ch => {
+    const sec = el("div", "atlas-land");
+    sec.id = "atlas-" + ch.id;
+    sec.appendChild(el("h2", null, `${ch.kicker}・${ch.title}`));
+    renderCollection(sec, ch, loadProgress(ch), true);
+    s.appendChild(sec);
+  });
   const row = el("div", "btn-row");
   row.appendChild(continueBtn("返回", back));
   s.appendChild(row);
@@ -2356,6 +2429,7 @@ function showFinaleTitle() {
   run = null;
   updateHud();
   const s = stage();
+  addCover(s, C);
   s.appendChild(el("div", "chapter-kicker", C.kicker));
   s.appendChild(el("h1", "chapter-title", C.title));
   s.appendChild(el("p", "lead", C.lead));
@@ -2450,6 +2524,7 @@ function showPrologueTitle() {
   run = null;
   updateHud();
   const s = stage();
+  addCover(s, C);
   s.appendChild(el("div", "chapter-kicker", C.kicker));
   s.appendChild(el("h1", "chapter-title", C.title));
   s.appendChild(el("p", "lead", C.lead));
@@ -2474,6 +2549,7 @@ function startPrologue(withWedge) {
 function showWedge(t, last) {
   const s = stage();
   s.appendChild(el("div", "step-label", "楔子"));
+  const wi = el("img", "wedge-img"); wi.src = WEDGE_IMG; wi.alt = "夜市騎樓下的塔羅攤"; s.appendChild(wi);
   if (last) { const w = el("div", "event wedge-card"); w.appendChild(cardFace("M00", true)); s.appendChild(w); }
   s.appendChild(el("p", "narr wedge", t));
   if (last) s.appendChild(el("p", "narr wedge", C.wedgeEnd));
@@ -2483,6 +2559,7 @@ function showWedge(t, last) {
 function showPrologueScene(sc) {
   const { s, txt } = majorScene(sc.code, "序章");
   sc.text.forEach(t => txt.appendChild(el("p", "narr", t)));
+  markMet(sc.text.join(""), txt);
   if (progress.runs && sc.dejavu) txt.appendChild(el("p", "dejavu", sc.dejavu));
   if (!sc.choice) { s.appendChild(el("div", "btn-row")).appendChild(continueBtn()); return; }
   if (sc.hint) s.appendChild(el("p", "narr center", sc.hint));
@@ -2558,12 +2635,14 @@ function nameOf(code) {
 function miniArt(code, up, cls) {
   return `<span class="mini-art${up === false ? " rev" : ""}${cls ? " " + cls : ""}"><img src="img/cards/${code}.jpg" alt="${nameOf(code)}" loading="lazy"></span>`;
 }
-const PORTRAIT_FILE = { "權杖侍者": "W11_zhang", "權杖騎士": "W12_liefeng", "權杖王后": "W13_kui", "權杖國王": "W14_chicheng",
+const PORTRAIT_FILE = { "魔術師": "M01_laoren", "女祭司": "M02_popo", "權杖侍者": "W11_zhang", "權杖騎士": "W12_liefeng", "權杖王后": "W13_kui", "權杖國王": "W14_chicheng",
   "聖杯侍者": "C11_lian", "聖杯騎士": "C12_luolan", "聖杯王后": "C13_baihe", "聖杯國王": "C14_bailang",
   "寶劍侍者": "S11_qingyuan", "寶劍騎士": "S12_jishi", "寶劍王后": "S13_die", "寶劍國王": "S14_hengzhu",
   "錢幣侍者": "P11_suier", "錢幣騎士": "P12_banong", "錢幣王后": "P13_sangniang", "錢幣國王": "P14_fenggu" };
+const COVER_FILE = { chiyuan: "chiyuan", chenghu: "chenghu", fengcheng: "fengcheng", jinsui: "jinsui", prologue: "cliff", finale: "cliff" };
 const COVER_IDS = ["chiyuan", "chenghu", "fengcheng", "jinsui"];
-const coverSrc = (ch) => ch && COVER_IDS.includes(ch.id) ? `img/v1/cover_${ch.id}.jpg` : null;
+const coverSrc = (ch) => ch && COVER_FILE[ch.id] ? `img/v2/cover_${COVER_FILE[ch.id]}.jpg` : null;
+const WEDGE_IMG = "img/v2/cover_nightmarket.jpg";
 // 地區封面：章節標在圖上方，地名與副標疊在圖裡
 function landHero(s, ch) {
   s.appendChild(el("div", "chapter-kicker", ch.kicker));
