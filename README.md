@@ -15,7 +15,7 @@
 ## 檔案結構
 
 - `index.html`、`data.js`、`data/`、`img/`：共同首頁與《來異世界找塔羅師》
-- `story/`：《我來異世界可不想再成為塔羅師》
+- `story/`：《我來異世界可不想再成為塔羅師》（V1.1）；人物立繪放在 `story/img/sprite/`，檔名對照見該資料夾的 README
 - `fonts/`、`lib/`：兩款遊戲共用的字型與 QR code 產生程式
 
 ## 圖片與字型

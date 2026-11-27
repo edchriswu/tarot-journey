@@ -369,6 +369,57 @@ main{display:flex;flex-direction:column;min-height:calc(100svh - 52px)}
 #stage > .btn-row:last-child:has(> .btn:only-child),#stage .outcome > .btn-row:last-child:has(> .btn:only-child){position:sticky;bottom:0;z-index:4;margin-top:auto;padding:16px 0 calc(14px + env(safe-area-inset-bottom));
   background:linear-gradient(180deg,rgba(28,20,16,0),var(--bg) 45%)}
 #stage .outcome > .btn-row:last-child:has(> .btn:only-child){margin-top:22px}
+/* ---------- V1.1 舞台：牌在左、人在右 ---------- */
+.vn-stage{position:relative;aspect-ratio:4/3;overflow:hidden;border-radius:12px;border:1px solid var(--line);background:#120d0a}
+@media (min-width:600px){.vn-stage{aspect-ratio:16/10}}
+.vn-bg{position:absolute;inset:-2%;background:#2a1d14 center 55%/cover no-repeat;filter:brightness(.55) saturate(.8)}
+.vn-stage::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;background:linear-gradient(180deg,rgba(0,0,0,.1) 0%,rgba(0,0,0,0) 40%,rgba(8,6,10,.72) 100%)}
+.vn-stage[data-mood=dusk] .vn-bg{filter:brightness(.45) saturate(.7) sepia(.35) hue-rotate(-12deg)}
+.vn-stage[data-mood=dusk]::after{background:linear-gradient(180deg,rgba(90,40,80,.35),rgba(0,0,0,0) 45%,rgba(8,6,10,.75))}
+.vn-stage[data-mood=fog] .vn-bg{filter:brightness(.72) contrast(.6) saturate(.35) blur(1.5px)}
+.vn-stage[data-mood=fog]::after{background:linear-gradient(180deg,rgba(220,230,235,.45),rgba(200,215,225,.22) 55%,rgba(8,10,14,.62))}
+.vn-stage[data-mood=cell] .vn-bg{filter:brightness(.25) saturate(.25) blur(1px)}
+.vn-stage[data-mood=cell]::after{background:radial-gradient(ellipse at 50% 40%,rgba(0,0,0,0) 30%,rgba(0,0,0,.75) 100%),repeating-linear-gradient(90deg,rgba(0,0,0,0) 0 46px,rgba(10,10,14,.55) 46px 54px)}
+.vn-stage[data-mood=snow] .vn-bg{filter:brightness(.7) saturate(.2) contrast(.85)}
+.vn-stage[data-mood=snow]::after{background:radial-gradient(circle,rgba(255,255,255,.85) 0 1.4px,transparent 2px) 0 0/34px 34px,radial-gradient(circle,rgba(255,255,255,.6) 0 1px,transparent 1.6px) 17px 11px/26px 26px,linear-gradient(180deg,rgba(200,215,230,.22),rgba(8,10,14,.62))}
+.vn-stage[data-mood=night] .vn-bg{filter:brightness(.3) saturate(.5) hue-rotate(200deg)}
+.vn-stage[data-mood=night]::after{background:linear-gradient(180deg,rgba(20,30,70,.45),rgba(5,6,14,.72))}
+.vn-stage .card.vn-card{position:absolute;z-index:3;left:6%;bottom:14%;height:60%;width:auto;aspect-ratio:3/5;transform:rotate(-3deg);cursor:zoom-in;
+  transition:left .9s cubic-bezier(.5,0,.2,1),height .9s cubic-bezier(.5,0,.2,1),bottom .9s,transform .9s,box-shadow .6s}
+.vn-stage.duo .card.vn-card{height:50%}
+.vn-stage.solo .card.vn-card,.vn-stage .card.vn-card.enter{left:50%;height:72%;bottom:13%;transform:translateX(-50%)}
+.vn-card .card-cap{bottom:-22px;color:#f3e6cf;text-shadow:0 1px 6px #000}
+.vn-stage .card.vn-card.lit{box-shadow:0 0 0 2px var(--gold),0 0 28px rgba(232,194,122,.65),0 6px 16px rgba(0,0,0,.45)}
+.vn-fig{position:absolute;z-index:2;bottom:0;right:3%;height:96%}
+.vn-fig .sp{display:block;height:100%;width:auto;filter:drop-shadow(0 8px 14px rgba(0,0,0,.55));transition:opacity 1s,transform 1s}
+.vn-fig.pos1{right:30%;height:86%;z-index:1}
+.vn-fig.pos1 .sp{filter:brightness(.85) drop-shadow(0 8px 14px rgba(0,0,0,.55))}
+.vn-fig.wide{height:64%;right:2%}
+.vn-fig.pending .sp,.vn-fig.pending .vn-plate{opacity:0}
+.vn-fig.arrive .sp{animation:vnArrive 1.1s both}
+@keyframes vnArrive{from{opacity:0;transform:scale(.96);filter:brightness(2.2) drop-shadow(0 0 22px rgba(232,194,122,.9))}to{opacity:1;transform:none}}
+.vn-plate{position:absolute;right:4px;bottom:6px;font-size:12px;line-height:1.6;padding:1px 10px;border-radius:12px;background:rgba(12,9,8,.82);border:1px solid var(--line);color:var(--ink);white-space:nowrap;transition:opacity .6s}
+.vn-plate b{color:var(--gold);font-weight:600;margin-right:6px}
+.vn-fig.pos1 .vn-plate{right:auto;left:4px}
+.vn-court{position:absolute;left:50%;bottom:14%;height:62%;aspect-ratio:3/5;transform:translate(-50%,24px);opacity:0;transition:opacity .7s,transform .7s,filter 1s}
+.vn-court img{width:100%;height:100%;object-fit:cover;display:block;border-radius:6px;border:2px solid #c9a774}
+.vn-court.in{opacity:1;transform:translate(-50%,0)}
+.vn-court.glow{filter:brightness(1.35) drop-shadow(0 0 24px rgba(232,194,122,.95))}
+.vn-court.gone{opacity:0;transform:translate(-50%,-6px) scale(1.08);filter:brightness(2.4) blur(5px)}
+.vn-stage::before{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;opacity:0;background:radial-gradient(circle at 75% 55%,rgba(255,236,190,.5),transparent 45%);transition:opacity .6s}
+.vn-stage.flash::before{opacity:1}
+.vn-text{position:relative;margin:22px 0 6px;padding:18px 16px 6px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03)}
+.vn-speaker{position:absolute;top:-13px;left:14px;font-size:13px;line-height:24px;padding:0 12px;border-radius:12px;background:var(--bg2);border:1px solid var(--line);color:var(--gold)}
+.meaning-box.merged{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:start}
+.meaning-box.merged .mb-card{width:44px;border-radius:3px;border:1px solid #c9a774;display:block}
+.meaning-box.merged .mb-card.rev{transform:rotate(180deg)}
+.meaning-box.merged b{display:block;color:var(--gold)}
+.mb-att{display:block;color:var(--ink);margin:2px 0}
+.mb-mean{display:block;color:var(--ink2)}
+.hero-fly{position:fixed;z-index:40;object-fit:cover;border-radius:12px;border:1px solid var(--line);pointer-events:none;
+  transition:left .9s cubic-bezier(.5,0,.2,1),top .9s cubic-bezier(.5,0,.2,1),width .9s cubic-bezier(.5,0,.2,1),height .9s cubic-bezier(.5,0,.2,1),border-radius .9s,border-color .9s,transform .9s,filter .9s}
+.ver{font-size:12px;color:var(--muted);align-self:center;letter-spacing:.1em}
+@media (prefers-reduced-motion:reduce){.vn-stage .card.vn-card,.vn-court,.vn-fig .sp{transition:none}.vn-fig.arrive .sp{animation:none}}
 </style>
 </head>
 <body>
@@ -388,7 +439,8 @@ main{display:flex;flex-direction:column;min-height:calc(100svh - 52px)}
   <div class="btn-row"><button class="btn primary" id="confirm-yes">清除</button><button class="btn ghost" id="confirm-no">取消</button></div></div></div>
 <script>
 // ================================================================
-// 版本開關：試玩版與正式版 v1.0 用同一份程式。
+// 版本開關：試玩版與正式版 V1.1 用同一份程式。
+const VERSION = "V1.1";
 // 正式版只改兩處：這一行改成 false，<title> 拿掉「試玩版：」。
 // 試玩版：章節選單一開始就開放、顯示測試工具；正式版：真結局後才開放章節選單。
 const DEMO = false;
@@ -2265,11 +2317,9 @@ function updateHud() {
 
 function markMet(text, box) {
   C.people.forEach(pp => {
-    if (text.includes(pp.name) && !progress.met[pp.name]) {
-      progress.met[pp.name] = true; saveProgress();
-      if (box) box.appendChild(el("div", "meet", `<span class="meet-label">人物登場</span><b>${pp.name}</b>　${pp.tag}`));
-      const t = $("#toast"); t.textContent = `新人物：${pp.name}`; t.classList.remove("show"); void t.offsetWidth; t.classList.add("show");
-    }
+    if (!text.includes(pp.name)) return;
+    if (curStage) curStage.meet(pp.name);
+    noteMet(pp.name);
   });
 }
 
@@ -2310,7 +2360,7 @@ function showHome() {
   INTRO.forEach(x => intro.appendChild(el("p", null, x)));
   s.appendChild(intro);
   const jr = el("div", "btn-row journey-box");
-  jr.appendChild(continueBtn("踏上旅程", startJourney));
+  jr.appendChild(continueBtn("踏上旅程", () => enterJourney(hero)));
   if (hasEnded()) jr.appendChild(atlasButton());
   const saved = loadJourney();
   if (saved && saved.idx > 0 && saved.idx < journeyOrder().length) {
@@ -2322,6 +2372,7 @@ function showHome() {
     if (hasEnded()) foot0.appendChild(btnGhost("回憶牆", showWall, "small"));
     if ((hasEnded() || BETA) && FEEDBACK_PAGE) foot0.appendChild(btnGhost("給作者回饋", () => showFeedback(showHome), "small"));
     foot0.appendChild(btnGhost("隱私說明", () => showPrivacy(showHome), "small"));
+    foot0.appendChild(el("span", "ver", VERSION));
     s.appendChild(foot0);
     return;
   }
@@ -2345,6 +2396,7 @@ function showHome() {
   if (hasEnded()) foot.appendChild(btnGhost("回憶牆", showWall, "small"));
   if ((hasEnded() || BETA) && FEEDBACK_PAGE) foot.appendChild(btnGhost("給作者回饋", () => showFeedback(showHome), "small"));
   foot.appendChild(btnGhost("隱私說明", () => showPrivacy(showHome), "small"));
+  foot.appendChild(el("span", "ver", VERSION));
   s.appendChild(foot);
 }
 
@@ -2495,10 +2547,8 @@ function showEvent(code, up, where) {
   const id = flip ? id0 + "2" : id0;
   if (run.trail) run.trail.push({ code, up });
   const s = stage();
-  s.appendChild(el("div", "step-label", where));
-  const wrap = el("div", "event");
-  wrap.appendChild(cardFace(code, up));
-  const txt = el("div", "event-text");
+  const sg = sceneStage(s, { code, up, label: where, castKey: id0, mood: MOOD[where] });
+  const txt = sg.txt;
   let opening = pickOpen(ev);
   if (code === C.endCode && run.choice && C.lastPrefix[run.choice]) opening = C.lastPrefix[run.choice] + opening;
   txt.appendChild(el("p", "narr", opening + ev.body));
@@ -2507,8 +2557,7 @@ function showEvent(code, up, where) {
   const solved = !!progress.solved[id];
   if (solved) txt.appendChild(el("p", "dejavu", "（這件事，綾已經懂了。）"));
   else if (flip || progress.seen[id]) txt.appendChild(el("p", "dejavu", ev.dejavu));
-  wrap.appendChild(txt);
-  s.appendChild(wrap);
+  sg.speaker();
   // 第一次遇到逆位時，說明一次就好
   if (!up && !tipSeen("rev")) {
     s.appendChild(el("p", "tip-box", "這張牌是<b>逆位</b>：牌倒過來出現。逆位通常代表這張牌的力量卡住了、不夠，或是用過頭了。"));
@@ -2540,16 +2589,15 @@ function showEvent(code, up, where) {
       out.appendChild(el("p", "narr", resText));
       markMet(resText, out);
       extraLines.forEach(t => { out.appendChild(el("p", "narr", t)); markMet(t, out); });
-      // 這個行動背後的涵義
-      if (o.att) out.appendChild(el("p", "attitude", o.att));
-      // 選完之後才揭曉牌意：不提前給答案，但每一次都學得到
-      const mm = CARD_MEANING[code];
-      if (mm) out.appendChild(el("div", "meaning-box", `<b>${C.cardNames[code] || nameOf(code)}・${up ? "正位" : "逆位"}</b>${mm[up ? 0 : 1]}`));
+      // 選完之後：做法＋牌意合成一個框（選錯也顯示），舞台上的牌亮起來
+      sg.revealAll();
+      sg.light();
+      out.appendChild(meaningBox(code, up, o.att));
       if (gain) out.appendChild(el("div", "gain", `${C.meter} +1`));
       else if (o.s === 1) out.appendChild(el("div", "gain muted", "已經懂了，不再加分"));
       out.appendChild(el("div", "btn-row")).appendChild(continueBtn());
       updateHud();
-      out.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      (sg.busy || Promise.resolve()).then(() => out.scrollIntoView({ behavior: "smooth", block: "nearest" }));
     };
     opts.appendChild(b);
   });
@@ -2567,22 +2615,21 @@ function showMajor(code) {
   const R2 = r2Data();
   if (run.trail) run.trail.push({ code, up: true });
   const s = stage();
-  s.appendChild(el("div", "step-label major-label", "主線"));
-  const wrap = el("div", "event");
-  wrap.appendChild(cardFace(code, true));
-  const txt = el("div", "event-text");
+  const key = `${C.id}:${code}`;
+  const sg = sceneStage(s, { code, up: true, label: "主線", castKey: key, major: true, mood: MOOD[key] });
+  const txt = sg.txt;
   if (R2 && R2.pre) pastParas(R2.pre[code], txt);
   txt.appendChild(el("p", "narr", m.text));
   markMet(m.text, txt);
-  wrap.appendChild(txt);
-  s.appendChild(wrap);
   const finish = () => { m.reset.forEach(c => run.flags[c] = "normal"); next(); };
   const line = majorLine(m);
 
   if (!m.choice || m.lineBefore) {
     if (line) { txt.appendChild(el("p", "narr", line)); markMet(line, txt); }
   }
+  sg.speaker();
   if (!m.choice) {
+    sg.revealAll();
     s.appendChild(el("div", "btn-row")).appendChild(continueBtn("繼續", finish));
     return;
   }
@@ -2594,6 +2641,7 @@ function showMajor(code) {
       opts.querySelectorAll("button").forEach(x => { x.disabled = true; if (x !== b) x.classList.add("faded"); });
       b.classList.add("picked");
       run.choice = o.key;
+      sg.revealAll();
       const tail = m.after + (m.lineBefore ? "" : line) + (R2 && R2.majorTail && R2.majorTail[code] || "") + m.end;
       out.appendChild(el("p", "narr", o.res));
       out.appendChild(el("p", "narr", tail));
@@ -2904,15 +2952,12 @@ function showFinaleTitle() {
   s.appendChild(row);
 }
 
-function majorScene(code, label) {
+function majorScene(code, label, key) {
   const s = stage();
-  s.appendChild(el("div", "step-label major-label", label || "終章"));
-  const wrap = el("div", "event");
-  wrap.appendChild(cardFace(code, true));
-  const txt = el("div", "event-text");
-  wrap.appendChild(txt);
-  s.appendChild(wrap);
-  return { s, txt };
+  const k = key || `${C.id}:${code}`;
+  const sg = sceneStage(s, { code, up: true, label: label || "終章", castKey: k, major: true, mood: MOOD[k] });
+  setTimeout(() => { if (curStage === sg) sg.revealAll(); }, 1400);
+  return { s, txt: sg.txt, sg };
 }
 
 function startFinale(testAll) {
@@ -2932,7 +2977,7 @@ function startFinale(testAll) {
 
 function showWheel(lit, all) {
   const w = FINALE.wheel;
-  const { s, txt } = majorScene(w.code, "回到懸崖");
+  const { s, txt } = majorScene(w.code, "回到懸崖", "finale:wheel");
   txt.appendChild(el("p", "narr", w.text));
   const unlit = toolStatus().filter(t => !lit.some(x => x.ch === t.ch)).map(t => t.land).join("和");
   let line = all ? w.all : lit.length ? w.some.replace("{lit}", lit.map(t => t.tool).join("、")).replace("{unlit}", unlit) : w.none;
@@ -2941,7 +2986,7 @@ function showWheel(lit, all) {
 }
 
 function showLoop(st) {
-  const { s, txt } = majorScene("M10", "輪迴");
+  const { s, txt } = majorScene("M10", "輪迴", "finale:loop");
   txt.appendChild(el("p", "narr", FINALE.wheel.loop));
   const box = el("div", "ending half");
   box.appendChild(el("p", "narr", "還沒醒的土地：" + st.filter(t => !t.awake).map(t => `${t.land}（${t.tool}）`).join("、")));
@@ -3215,6 +3260,7 @@ function landHero(s, ch) {
 function rulesPanel(ch) {
   const info = el("div", "panel");
   info.innerHTML = `<p>進入${ch.title}時，會先抽兩張牌：旅程的起點與終點。之後每段路都要從洗好的牌裡抽牌。</p>
+    ${ch.id === "chiyuan" ? "<p>這片大陸上的人，多半就是宮廷牌裡的人物。第一次遇見某個人時，牌會變成那個人。</p>" : ""}
     <p>每件事有三種做法。選中符合這張牌牌意的那一種，<b>${ch.meter}</b>就會 +1。${ch.meter}跨輪累積，到 ${THRESHOLD}，${ch.tool}就會醒來。同一件事只在第一次做對時加分。</p>`;
   return info;
 }
@@ -4119,6 +4165,226 @@ function showWorld() {
   s.appendChild(row);
 }
 
+
+// ================================================================
+// V1.1 舞台：牌在左、人在右（視覺小說式）
+// 立繪一律用固定檔名放在 img/sprite/，換圖只要覆蓋同名檔案，不用改程式。
+// ================================================================
+const SPRITE_DIR = "img/sprite/";
+// 不是宮廷牌的人物（沒有出現在圖鑑裡）
+const NPC = {
+  "毛球": { file: "npc_maoqiu", tag: "白色的小狗" },
+  "姑娘": { file: "npc_guniang", tag: "漁鋪家的姑娘" },
+  "大嬸": { file: "npc_auntie", tag: "漁鋪的大嬸" },
+  "老婦人": { file: "npc_sheepwoman", tag: "拉著羊繩的老婦人" },
+  "分糧的老婦人": { file: "npc_grainwoman", name: "老婦人", tag: "排在最後面的老婦人" },
+  "牧羊人": { file: "npc_shepherds", tag: "鄰谷的牧羊人", wide: true },
+  "長老": { file: "npc_elder", name: "牧羊人長老", tag: "井邊的長老" },
+  "獄卒": { file: "npc_jailer", tag: "風城的獄卒" }
+};
+// 宮廷牌名稱 → 牌的代碼（W11…P14），「牌變成人」時用
+const COURT_CODE = {};
+["W", "C", "S", "P"].forEach(su => ["11", "12", "13", "14"].forEach(rk => { COURT_CODE[SUIT_NAME[su] + RANK_NAME[rk]] = su + rk; }));
+function personInfo(name) {
+  for (const ch of MENU) {
+    const pp = (ch.people || []).find(p => p.name === name);
+    if (pp && PORTRAIT_FILE[pp.card]) return { name, tag: pp.tag, card: pp.card, file: PORTRAIT_FILE[pp.card], code: COURT_CODE[pp.card] || null, ch };
+  }
+  const n = NPC[name];
+  return n ? { name: n.name || name, tag: n.tag, file: n.file, wide: !!n.wide, code: null } : null;
+}
+
+// 每一頁在場的人（最多兩位，第一位站最右邊）。沒有列出＝只有綾一個人，牌站到舞台中央。
+const CAST = {
+  // 赤原
+  W01U: ["丈"], W01R: ["丈"], W02U: ["赤城", "丈"], W02R: ["赤城", "丈"],
+  W04U: ["葵"], W04R: ["葵"], W05U: ["烈風", "丈"], W05R: ["烈風"],
+  W03U: ["赤城"], W03R: ["赤城", "丈"], W07U: ["老婦人"], W07R: ["老婦人"],
+  W08U: ["烈風", "丈"], W08R: ["丈", "烈風"], W06U: ["牧羊人"], W06R: ["烈風"],
+  W09U: ["丈"], W09R: ["丈"], W10U: ["赤城"], W10R: ["赤城"],
+  "chiyuan:M04": ["赤城"], "chiyuan:M08": ["赤城"], "chiyuan:M14": ["長老", "赤城"],
+  // 澄湖
+  C01U: ["蓮"], C01R: ["蓮"], C02U: ["羅蘭", "姑娘"], C02R: ["姑娘", "羅蘭"],
+  C03U: ["蓮", "大嬸"], C03R: ["蓮"], C06U: ["蓮"], C06R: ["蓮"],
+  C04U: ["蓮"], C04R: ["姑娘"], C05U: ["姑娘"], C05R: ["姑娘"],
+  C08U: ["白浪"], C08R: ["白浪"], C10U: ["百合"], C10R: ["羅蘭", "姑娘"],
+  "chenghu:M07": ["羅蘭", "姑娘"], "chenghu:M13": ["白浪"],
+  // 風城
+  S01U: ["青鳶"], S01R: ["青鳶"], S02U: ["青鳶"], S02R: ["青鳶"],
+  S05U: ["疾矢"], S05R: ["疾矢"], S07U: ["青鳶"], S07R: ["青鳶"],
+  S03U: ["獄卒"], S08R: ["青鳶"], S04R: ["蝶"],
+  S06U: ["蝶", "青鳶"], S06R: ["蝶", "青鳶"], S10U: ["疾矢"], S10R: ["疾矢"],
+  "fengcheng:M06": ["疾矢", "青鳶"], "fengcheng:M11": ["衡主", "蝶"], "fengcheng:M17": ["蝶"],
+  // 金穗谷
+  P01U: ["桑娘"], P01R: ["桑娘"], P02R: ["桑娘", "巴農"], P03U: ["穗兒"],
+  P07U: ["巴農"], P07R: ["巴農"], P05U: ["分糧的老婦人"], P08U: ["穗兒"], P08R: ["穗兒"],
+  P06U: ["桑娘", "分糧的老婦人"], P09U: ["桑娘", "豐谷"], P09R: ["穗兒"],
+  P10U: ["豐谷", "穗兒"], P10R: ["豐谷", "穗兒"],
+  "jinsui:M05": ["穗兒"], "jinsui:M15": ["豐谷"],
+  // 序章、終章：大牌是人就讓人出來；代表心境的大牌由牌獨佔畫面
+  "prologue:M00": ["毛球"], "prologue:M01": ["老人"], "prologue:M02": ["老婆婆"],
+  "finale:wheel": ["老人"], "finale:M03": ["老婆婆"], "finale:M19": ["毛球"],
+  "finale:M20": ["老婆婆"], "finale:M21": ["老婆婆", "老人"]
+};
+// 背景：同一張地區封面，依段落換色調
+const MOOD = {
+  "出征路上": "dusk", "對峙之後": "dusk", "等待": "dusk", "霧中": "fog", "牢裡": "cell",
+  "入冬": "snow", "雪停之後": "snow",
+  "chiyuan:M08": "dusk", "chiyuan:M14": "dusk", "chenghu:M18": "fog", "chenghu:M13": "fog",
+  "fengcheng:M06": "night", "fengcheng:M17": "night", "jinsui:M15": "snow", "jinsui:M09": "snow",
+  "finale:M16": "night", "finale:M12": "night", "finale:loop": "night"
+};
+let curStage = null;
+const wait = (ms) => new Promise(r => setTimeout(r, matchMedia("(prefers-reduced-motion: reduce)").matches ? 20 : ms));
+
+function sceneStage(s, opt) {
+  const { code, up, label, castKey, major, mood } = opt;
+  s.appendChild(el("div", "step-label" + (major ? " major-label" : ""), label));
+  const names = (CAST[castKey] || []).filter(n => personInfo(n));
+  const st = el("div", "vn-stage" + (names.length ? "" : " solo") + (names.length > 1 ? " duo" : ""));
+  st.dataset.mood = mood || "";
+  const bg = el("div", "vn-bg");
+  const src = coverSrc(C);
+  if (src) bg.style.backgroundImage = `url(${src})`;
+  st.appendChild(bg);
+  const card = cardFace(code, up);
+  card.classList.add("vn-card", "enter");
+  card.setAttribute("role", "button");
+  card.setAttribute("aria-label", "放大這張牌");
+  st.appendChild(card);
+  const figs = {};
+  names.slice(0, 2).forEach((n, i) => {
+    const info = personInfo(n);
+    const fig = el("div", "vn-fig pos" + i + (info.wide ? " wide" : ""));
+    fig.innerHTML = `<img class="sp" src="${SPRITE_DIR}${info.file}.webp" alt="${info.name}" draggable="false">`;
+    const plate = el("div", "vn-plate", `<b>${info.name}</b>${info.code ? info.card : info.tag}`);
+    fig.appendChild(plate);
+    const pending = !!(info.ch && info.ch === C && C.people.some(p => p.name === n) && !progress.met[n]);
+    if (pending) fig.classList.add("pending");
+    st.appendChild(fig);
+    figs[n] = { fig, info, pending };
+  });
+  s.appendChild(st);
+  const txt = el("div", "vn-text");
+  s.appendChild(txt);
+  const t0 = Date.now();
+  requestAnimationFrame(() => requestAnimationFrame(() => card.classList.remove("enter")));
+  const api = {
+    st, txt, card, code, up, revealed: false,
+    // 第一次遇見：宮廷牌先浮出來，再變成人；其他人物直接淡入
+    busy: null,
+    meet(n) {
+      const f = figs[n];
+      if (!f || !f.pending) return api.busy;
+      f.pending = false;
+      api.busy = (async () => {
+        const delay = Math.max(0, 1000 - (Date.now() - t0));
+        if (delay) await wait(delay);
+        if (curStage !== api) return;
+        // 舞台不在畫面裡時，先捲回來，讓玩家看得到這一刻
+        const hudH = ($("#hud") && $("#hud").offsetHeight) || 0;
+        const r = st.getBoundingClientRect();
+        if (r.top < hudH || r.bottom > window.innerHeight) {
+          window.scrollTo({ top: window.scrollY + r.top - hudH - 12, behavior: "smooth" });
+          await wait(600);
+        }
+        if (f.info.code) {
+          const c = el("div", "vn-court", `<img src="img/cards/${f.info.code}.jpg" alt="${f.info.card}">`);
+          f.fig.appendChild(c);
+          await wait(40); c.classList.add("in");
+          await wait(1000); c.classList.add("glow");
+          await wait(800);
+          st.classList.add("flash");
+          c.classList.add("gone");
+          f.fig.classList.remove("pending");
+          f.fig.classList.add("arrive");
+          await wait(800);
+          st.classList.remove("flash");
+          c.remove();
+        } else {
+          f.fig.classList.remove("pending");
+          f.fig.classList.add("arrive");
+        }
+      })();
+      return api.busy;
+    },
+    // 選完之後，還沒現身的人也出來（名牌已經寫了名字，就一起記進圖鑑）
+    revealAll() {
+      Object.keys(figs).forEach(n => {
+        if (!figs[n].pending) return;
+        if (C.people.some(p => p.name === n)) noteMet(n);
+        api.meet(n);
+      });
+    },
+    // 只有一個人、而且已經認識時，對話框掛他的名牌
+    speaker() {
+      const ns = Object.keys(figs);
+      if (ns.length !== 1 || figs[ns[0]].pending || !txt.textContent.includes("「")) return;
+      txt.prepend(el("span", "vn-speaker", figs[ns[0]].info.name));
+    },
+    light() { card.classList.add("lit"); api.revealed = true; }
+  };
+  card.onclick = () => zoomStageCard(code, up, api.revealed);
+  curStage = api;
+  return api;
+}
+function zoomStageCard(code, up, revealed) {
+  const major = code.startsWith("M");
+  const name = (C && C.cardNames && C.cardNames[code]) || nameOf(code);
+  const m = CARD_MEANING[code];
+  openZoom(`<div class="zoom-card${up ? "" : " rev"}"><img src="img/cards/${code}.jpg" alt="${name}"></div>`
+    + `<div class="zoom-body"><h3>${name}</h3><div class="zoom-sub">${major ? "大牌" : up ? "正位" : "逆位"}</div>`
+    + (revealed && m ? `<div class="zoom-sec">牌意</div><p>${m[up ? 0 : 1]}</p>` : (m ? `<p class="zoom-not">選完之後，再來看這張牌在說什麼。</p>` : ""))
+    + `</div>`);
+}
+function noteMet(name) {
+  if (progress.met[name]) return;
+  progress.met[name] = true; saveProgress();
+  const t = $("#toast"); t.textContent = `圖鑑新增：${name}`; t.classList.remove("show"); void t.offsetWidth; t.classList.add("show");
+}
+// 選完之後的說明：做法＋牌意合成一個框
+function meaningBox(code, up, att) {
+  const name = (C.cardNames && C.cardNames[code]) || nameOf(code);
+  const mm = CARD_MEANING[code];
+  const box = el("div", "meaning-box merged");
+  box.innerHTML = `<img class="mb-card${up ? "" : " rev"}" src="img/cards/${code}.jpg" alt="">`
+    + `<div><b>${name}・${up ? "正位" : "逆位"}</b>`
+    + (att ? `<span class="mb-att">你的做法：${att}</span>` : "")
+    + (mm ? `<span class="mb-mean">${mm[up ? 0 : 1]}</span>` : "") + `</div>`;
+  return box;
+}
+
+// 首頁 → 楔子：夜市圖不換，從首頁的位置平滑移到楔子的位置
+function enterJourney(hero) {
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!hero || reduce || !hero.complete) return startJourney();
+  const r0 = hero.getBoundingClientRect();
+  const fly = hero.cloneNode();
+  fly.className = "hero-fly";
+  Object.assign(fly.style, { left: r0.left + "px", top: r0.top + "px", width: r0.width + "px", height: r0.height + "px" });
+  document.body.appendChild(fly);
+  const stg = $("#stage");
+  stg.style.opacity = "0";
+  const withWedge = journeyCount() === 0;
+  startJourney();
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    const im = withWedge && document.querySelector(".ws-top img");
+    fly.classList.add("go");
+    if (im) {
+      const r1 = im.getBoundingClientRect();
+      Object.assign(fly.style, { left: r1.left + "px", top: r1.top + "px", width: r1.width + "px", height: r1.height + "px", borderRadius: "0px", borderColor: "transparent" });
+    } else {
+      Object.assign(fly.style, { transform: "scale(1.12)", filter: "brightness(.15)" });
+    }
+    setTimeout(() => {
+      stg.style.transition = "opacity .5s";
+      stg.style.opacity = "1";
+      fly.style.transition = "opacity .5s";
+      fly.style.opacity = "0";
+      setTimeout(() => { fly.remove(); stg.style.transition = ""; }, 520);
+    }, 900);
+  }));
+}
 </script>
 <button id="credit-tag" type="button">© 圖片出處</button>
 <div id="credits"><div class="box">
